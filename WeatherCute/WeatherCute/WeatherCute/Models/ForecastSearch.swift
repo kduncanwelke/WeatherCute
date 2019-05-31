@@ -9,8 +9,8 @@
 import Foundation
 
 struct ForecastSearch {
-	static var gridX = 31
-	static var gridY = 80
-	static var station = "TOP"
-	static var observationStation = "KMYZ"
+	static var gridX = 0
+	static var gridY = 0
+	static var station = ""
+	static var observationStation = ""
 }
