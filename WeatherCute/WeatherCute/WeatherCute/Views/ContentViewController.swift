@@ -15,19 +15,25 @@ class ContentViewController: UIViewController {
 	@IBOutlet weak var location: UILabel!
 	@IBOutlet weak var temp: UILabel!
 	@IBOutlet weak var descrip: UILabel!
+	@IBOutlet weak var humidity: UILabel!
 	@IBOutlet weak var dewpoint: UILabel!
-	@IBOutlet weak var windChill: UILabel!
 	@IBOutlet weak var heatIndex: UILabel!
+	@IBOutlet weak var heatIndexLabel: UILabel!
+	@IBOutlet weak var collectionView: UICollectionView!
+	
 	
 	// MARK: Variables
 	
 	var itemIndex = 0
 	var weather: SavedLocation?
+	var forecast: [ForecastData] = []
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		collectionView.dataSource = self
+		
 		guard let current = weather else { return }
 		
 		location.text = current.name
@@ -41,6 +47,7 @@ class ContentViewController: UIViewController {
 		ForecastSearch.observationStation = current.observationStation!
 		
 		getCurrent()
+		getForecast()
     }
 	
 	
@@ -57,31 +64,48 @@ class ContentViewController: UIViewController {
 					self.temp.text = "\(temp)°"
 						
 					self.descrip.text = data.properties.textDescription
+					
+					let humidity = Int(data.properties.relativeHumidity.value)
+					self.humidity.text = "\(humidity)%"
 						
 					let dew = (Int(data.properties.dewpoint.value) * 9/5) + 32
 					self.dewpoint.text = "\(dew)"
-						
-					self.windChill.text = {
-						if let chill = data.properties.windChill.value  {
+					
+					self.heatIndex.text = {
+						if let heat = data.properties.heatIndex.value {
+							self.heatIndexLabel.text = "Heat Index"
+							return "\(Int(heat * 9/5) + 32)°"
+						} else if let chill = data.properties.windChill.value {
+							self.heatIndexLabel.text = "Wind Chill"
 							return "\(Int(chill * 9/5) + 32)°"
 						} else {
 							return "N/A"
 						}
 					}()
-					self.heatIndex.text = {
-						if let heat = data.properties.heatIndex.value {
-							return "\(Int(heat * 9/5) + 32)°"
-						} else {
-							return "N/A"
-						}
-					}()
-					print(data)
 				}
 			case .failure(let error):
 				print(error)
 			}
 		}
-		
+	}
+	
+	func getForecast() {
+		DataManager<Forecast>.fetch() { result in
+			switch result {
+			case .success(let response):
+				DispatchQueue.main.async {
+					guard let data = response.first?.properties.periods else { return }
+
+					for forecast in data {
+						self.forecast.append(forecast)
+						// insert items into collection view
+						self.collectionView.insertItems(at: [IndexPath(item: self.forecast.count - 1, section: 0)])
+					}
+				}
+			case .failure(let error):
+				print(error)
+			}
+		}
 	}
 
     /*
@@ -94,4 +118,21 @@ class ContentViewController: UIViewController {
     }
     */
 
+}
+
+extension ContentViewController: UICollectionViewDataSource {
+	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+		return forecast.count
+	}
+	
+	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "forecastCell", for: indexPath) as! ForecastCollectionViewCell
+		
+		cell.cellTitle.text = forecast[indexPath.row].name
+		cell.cellTemp.text = "\(forecast[indexPath.row].temperature)°"
+		cell.cellForecast.text = forecast[indexPath.row].shortForecast
+		
+		return cell
+	}
+	
 }

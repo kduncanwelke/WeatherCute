@@ -24,7 +24,8 @@ class SearchTableViewController: UITableViewController {
 		
 		// set up table view qualities
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "searchCell")
-		//tableView.backgroundColor = UIColor(red:0.00, green:0.00, blue:0.00, alpha:1.0)
+		tableView.backgroundColor = UIColor(red:0.14, green:0.64, blue:1.00, alpha:1.0)
+		tableView.rowHeight = 70.0
 	}
 	
 	override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -35,11 +36,17 @@ class SearchTableViewController: UITableViewController {
 		var cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath)
 		cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "searchCell")
 		
+		cell.backgroundColor = UIColor(red:0.14, green:0.64, blue:1.00, alpha:1.0)
+		
 		// get map placemark and details
 		let selectedItem = resultsList[indexPath.row].placemark
 		cell.textLabel?.text = selectedItem.name
+		cell.textLabel?.font = UIFont.systemFont(ofSize: 20.0)
+		cell.textLabel?.textColor = UIColor.white
 		
 		// parse address to show in cell
+		cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 15.0)
+		cell.detailTextLabel?.textColor = UIColor.white
 		cell.detailTextLabel?.text = LocationManager.parseAddress(selectedItem: selectedItem)
 		return cell
 	}

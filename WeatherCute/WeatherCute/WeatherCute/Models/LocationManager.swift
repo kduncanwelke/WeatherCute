@@ -19,13 +19,13 @@ struct LocationManager {
 		// put a space between "Washington" and "DC"
 		let secondSpace = (selectedItem.subAdministrativeArea != nil && selectedItem.administrativeArea != nil) ? ", " : ""
 		let addressLine = String(
-			format:"%@%@%@%@%@%@%@",
+			format:"%@%@%@",//%@%@%@%@%@",
 			// street number
-			selectedItem.subThoroughfare ?? "",
-			firstSpace,
+			//selectedItem.subThoroughfare ?? "",
+			//firstSpace,
 			// street name
-			selectedItem.thoroughfare ?? "",
-			comma,
+			//selectedItem.thoroughfare ?? "",
+			//comma,
 			// city
 			selectedItem.locality ?? "",
 			secondSpace,

@@ -21,8 +21,6 @@ struct ForecastData: Codable {
 	var name: String
 	var isDaytime: Bool
 	var temperature: Int
-	var windSpeed: String
-	var windDirection: String
 	var shortForecast: String
 	var detailedForecast: String
 }

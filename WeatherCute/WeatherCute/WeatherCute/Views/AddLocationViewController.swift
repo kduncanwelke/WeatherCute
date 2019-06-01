@@ -16,6 +16,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 	
 	@IBOutlet weak var mapView: MKMapView!
 	@IBOutlet weak var locationLabel: UILabel!
+	@IBOutlet weak var useThisLocationButton: UIButton!
 	
 	// MARK: Variables
 	
@@ -26,6 +27,8 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		useThisLocationButton.layer.cornerRadius = 15
+		
 		mapView.delegate = self
 		
 		// set up search bar
