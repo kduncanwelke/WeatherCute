@@ -127,6 +127,33 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		getLocation()
 	}
 	
+	func saveEntry(location: SavedLocation) {
+		var managedContext = CoreDataManager.shared.managedObjectContext
+		
+		let newLocation = Saved(context: managedContext)
+		
+		newLocation.latitude = location.latitude
+		newLocation.longitude = location.longitude
+		newLocation.name = location.name
+		newLocation.observation = location.observationStation
+		newLocation.station = location.station
+		
+		if let x = location.xCoord, let y = location.yCoord {
+			newLocation.xCoord = Int16(x)
+			newLocation.yCoord = Int16(y)
+		}
+		
+		WeatherLocations.locations.append(newLocation)
+		
+		do {
+			try managedContext.save()
+			print("saved")
+		} catch {
+			// this should never be displayed but is here to cover the possibility
+			showAlert(title: "Save failed", message: "Notice: Data has not successfully been saved.")
+		}
+	}
+	
 	// MARK: IBActions
 	
 	@IBAction func mapTapped(_ sender: UITapGestureRecognizer) {
@@ -152,8 +179,15 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		
 		let weather = SavedLocation(name: name, latitude: LocationSearch.latitude, longitude: LocationSearch.longitude, xCoord: ForecastSearch.gridX, yCoord: ForecastSearch.gridY, station: ForecastSearch.station, observationStation: ForecastSearch.observationStation)
 		
-		WeatherLocations.locations.append(weather)
-
+		saveEntry(location: weather)
+		
+		// only change count if there is more than one item
+		/*if WeatherLocations.locations.count != 1 {
+			PageControllerManager.currentPage += 1
+		}*/
+		
+		//NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
+		
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 		self.dismiss(animated: true, completion: nil)

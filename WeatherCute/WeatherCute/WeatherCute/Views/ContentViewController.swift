@@ -21,30 +21,31 @@ class ContentViewController: UIViewController {
 	@IBOutlet weak var heatIndexLabel: UILabel!
 	@IBOutlet weak var collectionView: UICollectionView!
 	
-	
 	// MARK: Variables
 	
 	var itemIndex = 0
-	var weather: SavedLocation?
+	var weather: Saved?
 	var forecast: [ForecastData] = []
+	var forecastLoaded = false
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		
 		collectionView.dataSource = self
 		
-		guard let current = weather else { return }
+		guard let current = weather, let station = current.station, let obs = current.observation else { return }
 		
 		location.text = current.name
 		
 		LocationSearch.latitude = current.latitude
 		LocationSearch.longitude = current.longitude
 		
-		ForecastSearch.gridX = current.xCoord!
-		ForecastSearch.gridY = current.yCoord!
-		ForecastSearch.station = current.station!
-		ForecastSearch.observationStation = current.observationStation!
+		ForecastSearch.gridX = Int(current.xCoord)
+		ForecastSearch.gridY = Int(current.yCoord)
+		ForecastSearch.station = station
+		ForecastSearch.observationStation = obs
 		
 		getCurrent()
 		getForecast()
@@ -95,12 +96,13 @@ class ContentViewController: UIViewController {
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let data = response.first?.properties.periods else { return }
-
+					
 					for forecast in data {
 						self.forecast.append(forecast)
-						// insert items into collection view
-						self.collectionView.insertItems(at: [IndexPath(item: self.forecast.count - 1, section: 0)])
 					}
+					
+					self.forecastLoaded = true
+					self.collectionView.reloadData()
 				}
 			case .failure(let error):
 				print(error)
@@ -128,9 +130,11 @@ extension ContentViewController: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "forecastCell", for: indexPath) as! ForecastCollectionViewCell
 		
-		cell.cellTitle.text = forecast[indexPath.row].name
-		cell.cellTemp.text = "\(forecast[indexPath.row].temperature)°"
-		cell.cellForecast.text = forecast[indexPath.row].shortForecast
+		if forecastLoaded {
+			cell.cellTitle.text = forecast[indexPath.row].name
+			cell.cellTemp.text = "\(forecast[indexPath.row].temperature)°"
+			cell.cellForecast.text = forecast[indexPath.row].shortForecast
+		}
 		
 		return cell
 	}

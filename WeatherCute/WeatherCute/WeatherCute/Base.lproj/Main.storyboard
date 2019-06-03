@@ -43,15 +43,27 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MYv-Zv-Xep">
+                                <rect key="frame" x="18" y="38" width="31" height="57"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="37"/>
+                                <state key="normal" title="✗">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="removePressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RAc-tO-asp"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="0.14313618413260176" green="0.63863428013832935" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="fFQ-TZ-zyU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6rz-Fb-fRW"/>
                             <constraint firstItem="nBk-GU-Sca" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="-10" id="BG6-ya-VqL"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="nBk-GU-Sca" secondAttribute="trailing" constant="20" id="Dab-os-o5a"/>
+                            <constraint firstItem="MYv-Zv-Xep" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="18" id="Iiu-uj-tHZ"/>
                             <constraint firstItem="fFQ-TZ-zyU" firstAttribute="top" secondItem="IfI-fA-acd" secondAttribute="bottom" constant="10" id="NBv-IV-0kN"/>
                             <constraint firstItem="IfI-fA-acd" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="Sgh-sJ-zL9"/>
                             <constraint firstItem="gy6-ot-MPt" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="ZfV-UP-Vsk"/>
+                            <constraint firstItem="MYv-Zv-Xep" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="38" id="ckc-B5-MGj"/>
                             <constraint firstItem="gy6-ot-MPt" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="jyc-iR-ufx"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="fFQ-TZ-zyU" secondAttribute="bottom" id="ka8-FC-FNl"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="IfI-fA-acd" secondAttribute="trailing" id="lbt-db-wx7"/>
@@ -60,6 +72,8 @@
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
+                        <outlet property="container" destination="IfI-fA-acd" id="GOG-am-Cdy"/>
+                        <outlet property="deleteButton" destination="MYv-Zv-Xep" id="Ui6-VH-P1y"/>
                         <outlet property="noDataLabel" destination="gy6-ot-MPt" id="7q4-mo-gKU"/>
                         <outlet property="pageControl" destination="fFQ-TZ-zyU" id="SjF-Ni-v63"/>
                         <segue destination="5nn-eC-Me7" kind="presentation" identifier="addLocation" id="sT2-Px-I7n"/>
@@ -272,7 +286,7 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="MFA-74-JZi">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsHorizontalScrollIndicator="NO" dataMode="prototypes" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MFA-74-JZi">
                                 <rect key="frame" x="5" y="380" width="365" height="398"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Yjf-Ct-xJF">

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class PageViewController: UIPageViewController {
 	
@@ -19,6 +20,9 @@ class PageViewController: UIPageViewController {
         // Do any additional setup after loading the view.
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(deleteLocation), name: NSNotification.Name(rawValue: "deleteLocation"), object: nil)
+		
 
 		dataSource = self
 		delegate = self
@@ -43,11 +47,44 @@ class PageViewController: UIPageViewController {
 	
 	// MARK: Custom functions
 	
+	@objc func deleteLocation() {
+		var managedContext = CoreDataManager.shared.managedObjectContext
+		
+		let index = PageControllerManager.currentPage
+		print(index)
+		managedContext.delete(WeatherLocations.locations[index])
+		WeatherLocations.locations.remove(at: index)
+		
+		do {
+			try managedContext.save()
+			print("delete successful")
+		} catch {
+			print("Failed to save")
+		}
+		
+		if WeatherLocations.locations.isEmpty {
+			self.dataSource = nil
+			PageControllerManager.currentPage = 0
+		} else {
+			var viewControllers: [UIViewController] = self.children
+			viewControllers.remove(at: index)
+			self.setViewControllers(viewControllers, direction: UIPageViewController.NavigationDirection.forward, animated: true, completion: nil)
+			
+			if index != 0 {
+				PageControllerManager.currentPage -= 1
+				print(PageControllerManager.currentPage)
+			}
+			
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
+		}
+		
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+	}
+	
 	func createPageViewController() {
 		if WeatherLocations.locations.count > 0 {
 			let contentController = getContentViewController(withIndex: 0)!
 			let contentControllers = [contentController]
-			print("called")
 			
 			self.setViewControllers(contentControllers, direction: UIPageViewController.NavigationDirection.forward, animated: true, completion: nil)
 		}

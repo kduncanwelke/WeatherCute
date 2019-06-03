@@ -9,5 +9,5 @@
 import Foundation
 
 struct WeatherLocations {
-	static var locations: [SavedLocation] = []
+	static var locations: [Saved] = []
 }
