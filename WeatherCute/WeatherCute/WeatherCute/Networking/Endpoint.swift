@@ -13,7 +13,7 @@ enum Endpoint {
 	case forecast
 	case stations
 	case current
-
+	
 	private var baseURL: URL {
 		return URL(string: "https://api.weather.gov/")!
 	}

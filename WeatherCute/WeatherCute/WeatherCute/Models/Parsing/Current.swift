@@ -20,6 +20,7 @@ struct CurrentCondition: Codable {
 	var windChill: WindChill
 	var heatIndex: HeatIndex
 	var relativeHumidity: Humidity
+	var icon: String
 }
 
 struct Temperature: Codable {

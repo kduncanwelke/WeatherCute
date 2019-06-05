@@ -185,11 +185,11 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		/*if WeatherLocations.locations.count != 1 {
 			PageControllerManager.currentPage += 1
 		}*/
-		
-		//NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
+	
 		
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getNextPage"), object: nil)
 		self.dismiss(animated: true, completion: nil)
 	}
 	

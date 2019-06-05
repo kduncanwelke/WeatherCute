@@ -43,7 +43,7 @@ class ViewController: UIViewController {
 		
 		do {
 			WeatherLocations.locations = try managedContext.fetch(fetchRequest)
-			print("reminders loaded")
+			print("locations loaded")
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 		} catch let error as NSError {
 			showAlert(title: "Could not retrieve data", message: "\(error.userInfo)")
@@ -66,6 +66,8 @@ class ViewController: UIViewController {
 	
 	@objc func sectionChanged() {
 		pageControl.currentPage = PageControllerManager.currentPage
+		print("section changed")
+		print(PageControllerManager.currentPage)
 	}
 
 	@IBAction func addPressed(_ sender: UIButton) {
@@ -73,8 +75,7 @@ class ViewController: UIViewController {
 	}
 	
 	@IBAction func removePressed(_ sender: UIButton) {
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "deleteLocation"), object: nil)
-		//updateSectionCount()
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
 	}
 	
 }

@@ -21,8 +21,9 @@ class PageViewController: UIPageViewController {
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(refresh), name: NSNotification.Name(rawValue: "refresh"), object: nil)
 		
-		NotificationCenter.default.addObserver(self, selector: #selector(deleteLocation), name: NSNotification.Name(rawValue: "deleteLocation"), object: nil)
+		NotificationCenter.default.addObserver(self, selector: #selector(getPrevPage), name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
 		
+		NotificationCenter.default.addObserver(self, selector: #selector(getNextPage), name: NSNotification.Name(rawValue: "getNextPage"), object: nil)
 
 		dataSource = self
 		delegate = self
@@ -32,6 +33,7 @@ class PageViewController: UIPageViewController {
 	
 	@objc func refresh() {
 		createPageViewController()
+		//self.viewDidLoad()
 	}
     
 
@@ -47,7 +49,30 @@ class PageViewController: UIPageViewController {
 	
 	// MARK: Custom functions
 	
-	@objc func deleteLocation() {
+	@objc func getNextPage() {
+		guard let currentViewController = self.viewControllers?.first else { return }
+	
+		guard let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) else { return }
+		
+		setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
+		
+		PageControllerManager.currentPage += 1
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
+	}
+	
+	@objc func getPrevPage() {
+		if let currentViewController = self.viewControllers?.first, let previousViewController = dataSource?.pageViewController( self, viewControllerBefore: currentViewController ) {
+			setViewControllers([previousViewController], direction: .reverse, animated: true, completion: nil)
+		} else if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
+			setViewControllers([nextViewController], direction: .forward, animated: false, completion: nil)
+		}
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
+	
+		deleteLocation()
+	}
+	
+	
+	func deleteLocation() {
 		var managedContext = CoreDataManager.shared.managedObjectContext
 		
 		let index = PageControllerManager.currentPage
@@ -62,23 +87,22 @@ class PageViewController: UIPageViewController {
 			print("Failed to save")
 		}
 		
-		if WeatherLocations.locations.isEmpty {
+		if index == 0 {
 			self.dataSource = nil
 			PageControllerManager.currentPage = 0
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 		} else {
-			var viewControllers: [UIViewController] = self.children
-			viewControllers.remove(at: index)
-			self.setViewControllers(viewControllers, direction: UIPageViewController.NavigationDirection.forward, animated: true, completion: nil)
+			print("delete: \(PageControllerManager.currentPage)")
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+			//getPrevPage()
 			
 			if index != 0 {
 				PageControllerManager.currentPage -= 1
-				print(PageControllerManager.currentPage)
 			}
-			
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 		}
 		
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+		//NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 	}
 	
 	func createPageViewController() {
@@ -102,13 +126,11 @@ class PageViewController: UIPageViewController {
 		
 		return nil
 	}
-
 }
 
 extension PageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
 		let contentVC = viewController as! ContentViewController
-		
 		if contentVC.itemIndex > 0 {
 			return getContentViewController(withIndex: contentVC.itemIndex - 1)
 		} else {
@@ -118,7 +140,7 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 	
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
 		let contentVC = viewController as! ContentViewController
-		
+
 		if contentVC.itemIndex + 1 < WeatherLocations.locations.count {
 			return getContentViewController(withIndex: contentVC.itemIndex + 1)
 		} else {
@@ -135,6 +157,7 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 			let currentIndex = pendingIndex
 			if let index = currentIndex {
 				PageControllerManager.currentPage = index
+				print(PageControllerManager.currentPage)
 				NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 			}
 		}

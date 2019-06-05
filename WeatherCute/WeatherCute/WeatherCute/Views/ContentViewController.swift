@@ -20,6 +20,9 @@ class ContentViewController: UIViewController {
 	@IBOutlet weak var heatIndex: UILabel!
 	@IBOutlet weak var heatIndexLabel: UILabel!
 	@IBOutlet weak var collectionView: UICollectionView!
+	@IBOutlet weak var currentFrom: UILabel!
+	@IBOutlet weak var largeImage: UIImageView!
+	
 	
 	// MARK: Variables
 	
@@ -35,6 +38,8 @@ class ContentViewController: UIViewController {
 		
 		collectionView.dataSource = self
 		
+		NotificationCenter.default.addObserver(self, selector: #selector(reloadCurrent), name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
+		
 		guard let current = weather, let station = current.station, let obs = current.observation else { return }
 		
 		location.text = current.name
@@ -47,6 +52,8 @@ class ContentViewController: UIViewController {
 		ForecastSearch.station = station
 		ForecastSearch.observationStation = obs
 		
+		currentFrom.text = "Current conditions from \(obs)"
+		
 		getCurrent()
 		getForecast()
     }
@@ -54,35 +61,46 @@ class ContentViewController: UIViewController {
 	
 	// MARK: Custom functions
 	
+	@objc func reloadCurrent() {
+		currentFrom.text = "Current conditions from \(ForecastSearch.observationStation)"
+		getCurrent()
+	}
+	
 	func getCurrent() {
-		DataManager<Current>.fetch() { [unowned self] result in
+		DataManager<Current>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let data = response.first else { return }
 					
 					let temp = (Int(data.properties.temperature.value) * 9/5) + 32
-					self.temp.text = "\(temp)°"
+					self?.temp.text = "\(temp)°"
 						
-					self.descrip.text = data.properties.textDescription
+					self?.descrip.text = data.properties.textDescription
 					
 					let humidity = Int(data.properties.relativeHumidity.value)
-					self.humidity.text = "\(humidity)%"
+					self?.humidity.text = "\(humidity)%"
 						
 					let dew = (Int(data.properties.dewpoint.value) * 9/5) + 32
-					self.dewpoint.text = "\(dew)"
+					self?.dewpoint.text = "\(dew)"
 					
-					self.heatIndex.text = {
+					self?.heatIndex.text = {
 						if let heat = data.properties.heatIndex.value {
-							self.heatIndexLabel.text = "Heat Index"
+							self?.heatIndexLabel.text = "Heat Index"
 							return "\(Int(heat * 9/5) + 32)°"
 						} else if let chill = data.properties.windChill.value {
-							self.heatIndexLabel.text = "Wind Chill"
+							self?.heatIndexLabel.text = "Wind Chill"
 							return "\(Int(chill * 9/5) + 32)°"
 						} else {
 							return "N/A"
 						}
 					}()
+					
+					let separated =  data.properties.icon.components(separatedBy: "/")[6]
+					
+					let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
+					
+					self?.largeImage.image = self?.getImage(icon: icon)
 				}
 			case .failure(let error):
 				print(error)
@@ -109,6 +127,47 @@ class ContentViewController: UIViewController {
 			}
 		}
 	}
+	
+	func getImage(icon: String) -> UIImage? {
+		switch icon {
+		case Icons.clear.rawValue:
+			return UIImage(named: "sunny")
+		case Icons.fewClouds.rawValue, Icons.partlyCloudy.rawValue:
+			return UIImage(named: "partlycloudy")
+		case Icons.mostlyCloudy.rawValue, Icons.overcast.rawValue:
+			return UIImage(named: "cloudy")
+		case Icons.clearWind.rawValue, Icons.windFew.rawValue:
+			return UIImage(named: "clearwindy")
+		case Icons.partCloudWindy.rawValue, Icons.mostCloudyWind.rawValue, Icons.windOvercast.rawValue:
+			return UIImage(named: "cloudywindy")
+		case Icons.snow.rawValue:
+			return UIImage(named: "snow")
+		case Icons.rainSnow.rawValue, Icons.rainSleet.rawValue, Icons.snowSleet.rawValue:
+			return UIImage(named: "mix")
+		case Icons.freezingRain.rawValue, Icons.rainFreezing.rawValue, Icons.snowFreezing.rawValue, Icons.sleet.rawValue:
+			return UIImage(named: "sleet")
+		case Icons.rain.rawValue, Icons.rainshowers.rawValue, Icons.rainshowersHi.rawValue:
+			return UIImage(named: "rain")
+		case Icons.thunderstorm.rawValue, Icons.thunderstormScattered.rawValue, Icons.thunderstormHi.rawValue:
+			return UIImage(named: "thunderstorm")
+		case Icons.tornado.rawValue:
+			return UIImage(named: "tornado")
+		case Icons.hurricane.rawValue, Icons.tropicalStorm.rawValue:
+			return UIImage(named: "hurricane")
+		case Icons.smoke.rawValue:
+			return UIImage(named: "smoke")
+		case Icons.haze.rawValue, Icons.fog.rawValue:
+			return UIImage(named: "haze")
+		case Icons.hot.rawValue:
+			return UIImage(named: "hot")
+		case Icons.cold.rawValue:
+			return UIImage(named: "cold")
+		case Icons.blizzard.rawValue:
+			return UIImage(named: "blizzard")
+		default:
+			return UIImage(named: "none")
+		}
+	}
 
     /*
     // MARK: - Navigation
@@ -119,6 +178,12 @@ class ContentViewController: UIViewController {
         // Pass the selected object to the new view controller.
     }
     */
+	
+	// MARK: IBActions
+	
+	@IBAction func changeButtonPressed(_ sender: UIButton) {
+		performSegue(withIdentifier: "changeStation", sender: Any?.self)
+	}
 
 }
 
@@ -133,7 +198,12 @@ extension ContentViewController: UICollectionViewDataSource {
 		if forecastLoaded {
 			cell.cellTitle.text = forecast[indexPath.row].name
 			cell.cellTemp.text = "\(forecast[indexPath.row].temperature)°"
-			cell.cellForecast.text = forecast[indexPath.row].shortForecast
+		
+			let separated = forecast[indexPath.row].icon.components(separatedBy: "/")[6]
+			
+			let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
+		
+			cell.cellImage.image = getImage(icon: icon)
 		}
 		
 		return cell

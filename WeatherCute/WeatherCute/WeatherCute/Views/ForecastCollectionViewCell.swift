@@ -11,6 +11,5 @@ import UIKit
 class ForecastCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var cellTitle: UILabel!
 	@IBOutlet weak var cellTemp: UILabel!
-	@IBOutlet weak var cellForecast: UILabel!
-	
+	@IBOutlet weak var cellImage: UIImageView!
 }

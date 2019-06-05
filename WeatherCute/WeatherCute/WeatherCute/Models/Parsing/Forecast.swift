@@ -23,4 +23,5 @@ struct ForecastData: Codable {
 	var temperature: Int
 	var shortForecast: String
 	var detailedForecast: String
+	var icon: String
 }
