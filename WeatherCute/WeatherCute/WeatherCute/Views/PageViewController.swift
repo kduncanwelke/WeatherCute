@@ -33,7 +33,6 @@ class PageViewController: UIPageViewController {
 	
 	@objc func refresh() {
 		createPageViewController()
-		//self.viewDidLoad()
 	}
     
 

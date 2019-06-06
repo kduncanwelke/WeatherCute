@@ -78,4 +78,8 @@ class ViewController: UIViewController {
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
 	}
 	
+	@IBAction func degreeSegmentChanged(_ sender: UISegmentedControl) {
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
+	}
+	
 }

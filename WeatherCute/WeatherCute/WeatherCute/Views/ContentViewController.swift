@@ -30,6 +30,16 @@ class ContentViewController: UIViewController {
 	var weather: Saved?
 	var forecast: [ForecastData] = []
 	var forecastLoaded = false
+	var currentLoaded = false
+	
+	var unit = TemperatureUnit.fahrenheit
+	
+	var currentTemp: Int?
+	var currentDescrip: String?
+	var currentHumidity: String?
+	var currentDewpoint: Int?
+	var currentHeatOrChill: Int?
+	var currentIcon: String?
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -39,6 +49,8 @@ class ContentViewController: UIViewController {
 		collectionView.dataSource = self
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(reloadCurrent), name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(degreeUnitChanged), name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
 		
 		guard let current = weather, let station = current.station, let obs = current.observation else { return }
 		
@@ -54,12 +66,93 @@ class ContentViewController: UIViewController {
 		
 		currentFrom.text = "Current conditions from \(obs)"
 		
-		getCurrent()
-		getForecast()
+		if currentLoaded && forecastLoaded {
+			displayCurrent()
+		} else {
+			getCurrent()
+			getForecast()
+		}
     }
 	
 	
 	// MARK: Custom functions
+	
+	func displayCurrent() {
+		if let tempy = currentTemp {
+			temp.text = " \(tempy)°"
+		}
+		
+		descrip.text = currentDescrip
+		humidity.text = currentHumidity
+		
+		if let dew = currentDewpoint {
+			dewpoint.text = "\(dew)°"
+		}
+		
+		if let heatChill = currentHeatOrChill {
+			heatIndex.text = "\(heatChill)°"
+		}
+		
+		if let image = currentIcon {
+			largeImage.image = getImage(icon: image)
+		}
+	}
+	
+	@objc func degreeUnitChanged() {
+		if unit == TemperatureUnit.fahrenheit {
+			unit = TemperatureUnit.celsius
+		} else if unit == TemperatureUnit.celsius {
+			unit = TemperatureUnit.fahrenheit
+		}
+		
+		if currentLoaded {
+			if unit == TemperatureUnit.fahrenheit {
+				if let current = currentTemp {
+					let newTemp = convertToFahrenheit(value: current)
+					currentTemp = newTemp
+				}
+				
+				if let currentDew = currentDewpoint {
+					let newDew = convertToFahrenheit(value: currentDew)
+					currentDewpoint = newDew
+				}
+				
+				if let currentHeatChill = currentHeatOrChill {
+					let newHeatChill = convertToFahrenheit(value: currentHeatChill)
+					currentHeatOrChill = newHeatChill
+				}
+			} else if unit == TemperatureUnit.celsius {
+				if let current = currentTemp {
+					let newTemp = convertToCelsius(value: current)
+					currentTemp = newTemp
+				}
+				
+				if let currentDew = currentDewpoint {
+					let newDew = convertToCelsius(value: currentDew)
+					currentDewpoint = newDew
+				}
+				
+				if let currentHeatChill = currentHeatOrChill {
+					let newHeatChill = convertToCelsius(value: currentHeatChill)
+					currentHeatOrChill = newHeatChill
+				}
+			}
+			
+			displayCurrent()
+			collectionView.reloadData()
+		}
+	}
+	
+	func convertToFahrenheit(value: Int) -> Int {
+		let result = (value * 9/5) + 32
+		return Int(result)
+	}
+	
+	func convertToCelsius(value: Int) -> Int {
+		let double = Double(value)
+		let result = (double - 32) / 1.8
+		return Int(result)
+	}
 	
 	@objc func reloadCurrent() {
 		currentFrom.text = "Current conditions from \(ForecastSearch.observationStation)"
@@ -74,33 +167,36 @@ class ContentViewController: UIViewController {
 					guard let data = response.first else { return }
 					
 					let temp = (Int(data.properties.temperature.value) * 9/5) + 32
-					self?.temp.text = "\(temp)°"
-						
-					self?.descrip.text = data.properties.textDescription
+					self?.currentTemp = temp
+					
+					self?.currentDescrip = data.properties.textDescription
 					
 					let humidity = Int(data.properties.relativeHumidity.value)
-					self?.humidity.text = "\(humidity)%"
+					self?.currentHumidity = "\(humidity)%"
 						
 					let dew = (Int(data.properties.dewpoint.value) * 9/5) + 32
-					self?.dewpoint.text = "\(dew)"
+					self?.currentDewpoint = dew
 					
-					self?.heatIndex.text = {
+					self?.currentHeatOrChill = {
 						if let heat = data.properties.heatIndex.value {
 							self?.heatIndexLabel.text = "Heat Index"
-							return "\(Int(heat * 9/5) + 32)°"
+							return Int(heat * 9/5) + 32
 						} else if let chill = data.properties.windChill.value {
 							self?.heatIndexLabel.text = "Wind Chill"
-							return "\(Int(chill * 9/5) + 32)°"
+							return Int(chill * 9/5) + 32
 						} else {
-							return "N/A"
+							return 0
 						}
 					}()
 					
 					let separated =  data.properties.icon.components(separatedBy: "/")[6]
 					
 					let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
+					self?.currentIcon = icon
 					
-					self?.largeImage.image = self?.getImage(icon: icon)
+					self?.currentLoaded = true
+					
+					self?.displayCurrent()
 				}
 			case .failure(let error):
 				print(error)
@@ -197,8 +293,14 @@ extension ContentViewController: UICollectionViewDataSource {
 		
 		if forecastLoaded {
 			cell.cellTitle.text = forecast[indexPath.row].name
-			cell.cellTemp.text = "\(forecast[indexPath.row].temperature)°"
-		
+			
+			if unit == TemperatureUnit.fahrenheit {
+				cell.cellTemp.text = "\(forecast[indexPath.row].temperature)°"
+			} else if unit == TemperatureUnit.celsius {
+				let newTemp = convertToCelsius(value: forecast[indexPath.row].temperature)
+				cell.cellTemp.text = "\(newTemp)°"
+			}
+			
 			let separated = forecast[indexPath.row].icon.components(separatedBy: "/")[6]
 			
 			let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
