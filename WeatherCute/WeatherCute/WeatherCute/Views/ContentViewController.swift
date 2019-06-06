@@ -26,7 +26,7 @@ class ContentViewController: UIViewController {
 	
 	// MARK: Variables
 	
-	var itemIndex = 0
+	var itemIndex = PageControllerManager.currentPage
 	var weather: Saved?
 	var forecast: [ForecastData] = []
 	var forecastLoaded = false
@@ -91,6 +91,8 @@ class ContentViewController: UIViewController {
 		
 		if let heatChill = currentHeatOrChill {
 			heatIndex.text = "\(heatChill)°"
+		} else {
+			heatIndex.text = "N/A"
 		}
 		
 		if let image = currentIcon {
@@ -166,7 +168,15 @@ class ContentViewController: UIViewController {
 				DispatchQueue.main.async {
 					guard let data = response.first else { return }
 					
-					let temp = (Int(data.properties.temperature.value) * 9/5) + 32
+					let temp: Int = {
+						if self?.unit == TemperatureUnit.celsius {
+							return Int(data.properties.temperature.value)
+						} else {
+							let tempy = Int(data.properties.temperature.value)
+							return self?.convertToFahrenheit(value: tempy) ?? 0
+						}
+					}()
+					
 					self?.currentTemp = temp
 					
 					self?.currentDescrip = data.properties.textDescription
@@ -174,18 +184,36 @@ class ContentViewController: UIViewController {
 					let humidity = Int(data.properties.relativeHumidity.value)
 					self?.currentHumidity = "\(humidity)%"
 						
-					let dew = (Int(data.properties.dewpoint.value) * 9/5) + 32
+					let dew: Int = {
+						if self?.unit == TemperatureUnit.celsius {
+							return Int(data.properties.dewpoint.value)
+						} else {
+							let dew = Int(data.properties.dewpoint.value)
+							return self?.convertToFahrenheit(value: dew) ?? 0
+						}
+					}()
+			
 					self?.currentDewpoint = dew
 					
 					self?.currentHeatOrChill = {
 						if let heat = data.properties.heatIndex.value {
 							self?.heatIndexLabel.text = "Heat Index"
-							return Int(heat * 9/5) + 32
+							
+							if self?.unit == TemperatureUnit.celsius {
+								return Int(heat)
+							} else {
+								return self?.convertToFahrenheit(value: Int(heat))
+							}
 						} else if let chill = data.properties.windChill.value {
 							self?.heatIndexLabel.text = "Wind Chill"
-							return Int(chill * 9/5) + 32
+							
+							if self?.unit == TemperatureUnit.celsius {
+								return Int(chill)
+							} else {
+								return self?.convertToFahrenheit(value: Int(chill))
+							}
 						} else {
-							return 0
+							return nil
 						}
 					}()
 					

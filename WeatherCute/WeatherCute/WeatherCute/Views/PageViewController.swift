@@ -49,25 +49,65 @@ class PageViewController: UIPageViewController {
 	// MARK: Custom functions
 	
 	@objc func getNextPage() {
-		guard let currentViewController = self.viewControllers?.first else { return }
-	
-		guard let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) else { return }
+		if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
+			setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
+		}
+
+		// if not currently on last page, move forward as many pages as there are between the current and the last
+		if WeatherLocations.locations.count > 1 {
+			let weatherCount = WeatherLocations.locations.count - 1
+			for i in 1...weatherCount - PageControllerManager.currentPage {
+				if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
+					setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
+				}
+			}
+			
+			PageControllerManager.currentPage = WeatherLocations.locations.count - 1
+		}
 		
-		setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
-		
-		PageControllerManager.currentPage += 1
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 	}
 	
 	@objc func getPrevPage() {
-		if let currentViewController = self.viewControllers?.first, let previousViewController = dataSource?.pageViewController( self, viewControllerBefore: currentViewController ) {
-			setViewControllers([previousViewController], direction: .reverse, animated: true, completion: nil)
-		} else if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
-			setViewControllers([nextViewController], direction: .forward, animated: false, completion: nil)
+		if PageControllerManager.currentPage == 0 {
+			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
+				setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
+			}
+			
+			deleteLocation()
+			
+			print("delete: \(PageControllerManager.currentPage)")
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
+		} else if PageControllerManager.currentPage == (WeatherLocations.locations.count - 1) {
+			deleteLocation()
+			
+			print("delete: \(PageControllerManager.currentPage)")
+			
+			PageControllerManager.currentPage -= 1
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+			
+			if let currentViewController = self.viewControllers?.first, let previousViewController = dataSource?.pageViewController( self, viewControllerBefore: currentViewController ) {
+				setViewControllers([previousViewController], direction: .reverse, animated: true, completion: nil)
+			}
+			
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
+		} else {
+			deleteLocation()
+			
+			print("delete: \(PageControllerManager.currentPage)")
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+			
+			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
+				setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
+			}
+			
+			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 		}
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
-	
-		deleteLocation()
 	}
 	
 	
@@ -86,27 +126,15 @@ class PageViewController: UIPageViewController {
 			print("Failed to save")
 		}
 		
-		if index == 0 {
+		if WeatherLocations.locations.isEmpty {
 			self.dataSource = nil
 			PageControllerManager.currentPage = 0
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
-		} else {
-			print("delete: \(PageControllerManager.currentPage)")
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
-			//getPrevPage()
-			
-			if index != 0 {
-				PageControllerManager.currentPage -= 1
-			}
 		}
-		
-		//NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 	}
 	
 	func createPageViewController() {
 		if WeatherLocations.locations.count > 0 {
-			let contentController = getContentViewController(withIndex: 0)!
+			let contentController = getContentViewController(withIndex: PageControllerManager.currentPage)!
 			let contentControllers = [contentController]
 			
 			self.setViewControllers(contentControllers, direction: UIPageViewController.NavigationDirection.forward, animated: true, completion: nil)
@@ -129,6 +157,7 @@ class PageViewController: UIPageViewController {
 
 extension PageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+		print("this called")
 		let contentVC = viewController as! ContentViewController
 		if contentVC.itemIndex > 0 {
 			return getContentViewController(withIndex: contentVC.itemIndex - 1)
