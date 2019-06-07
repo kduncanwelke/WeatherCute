@@ -84,24 +84,23 @@ class PageViewController: UIPageViewController {
 		} else if PageControllerManager.currentPage == (WeatherLocations.locations.count - 1) {
 			deleteLocation()
 			
-			print("delete: \(PageControllerManager.currentPage)")
-			
 			PageControllerManager.currentPage -= 1
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 			
+			// move down a section if not last page
 			if let currentViewController = self.viewControllers?.first, let previousViewController = dataSource?.pageViewController( self, viewControllerBefore: currentViewController ) {
-				setViewControllers([previousViewController], direction: .reverse, animated: true, completion: nil)
+				setViewControllers([previousViewController], direction: .forward, animated: true, completion: nil)
 			}
 			
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 		} else {
 			deleteLocation()
-			
-			print("delete: \(PageControllerManager.currentPage)")
+		
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 			
+			// move up a section if last paget
 			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
 				setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
 			}
@@ -157,8 +156,8 @@ class PageViewController: UIPageViewController {
 
 extension PageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-		print("this called")
 		let contentVC = viewController as! ContentViewController
+		
 		if contentVC.itemIndex > 0 {
 			return getContentViewController(withIndex: contentVC.itemIndex - 1)
 		} else {

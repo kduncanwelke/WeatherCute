@@ -178,7 +178,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		guard let name = locationLabel.text else { return }
 		
 		let weather = SavedLocation(name: name, latitude: LocationSearch.latitude, longitude: LocationSearch.longitude, xCoord: ForecastSearch.gridX, yCoord: ForecastSearch.gridY, station: ForecastSearch.station, observationStation: ForecastSearch.observationStation)
-		
+	
 		saveEntry(location: weather)
 		
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)

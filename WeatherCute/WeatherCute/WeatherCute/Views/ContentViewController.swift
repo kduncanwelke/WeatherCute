@@ -22,6 +22,7 @@ class ContentViewController: UIViewController {
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var currentFrom: UILabel!
 	@IBOutlet weak var largeImage: UIImageView!
+	@IBOutlet weak var alertButton: UIButton!
 	
 	
 	// MARK: Variables
@@ -36,7 +37,7 @@ class ContentViewController: UIViewController {
 	
 	var currentTemp: Int?
 	var currentDescrip: String?
-	var currentHumidity: String?
+	var currentHumidity: Int?
 	var currentDewpoint: Int?
 	var currentHeatOrChill: Int?
 	var currentIcon: String?
@@ -45,6 +46,7 @@ class ContentViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		alertButton.isHidden = true
 		
 		collectionView.dataSource = self
 		
@@ -69,6 +71,8 @@ class ContentViewController: UIViewController {
 		if currentLoaded && forecastLoaded {
 			displayCurrent()
 		} else {
+			ForecastSearch.currentAlerts.removeAll()
+			getAlerts()
 			getCurrent()
 			getForecast()
 		}
@@ -80,13 +84,22 @@ class ContentViewController: UIViewController {
 	func displayCurrent() {
 		if let tempy = currentTemp {
 			temp.text = " \(tempy)°"
+		} else {
+			temp.text = "No data"
 		}
-		
+	
 		descrip.text = currentDescrip
-		humidity.text = currentHumidity
+		
+		if let humid = currentHumidity {
+			humidity.text = "\(humid)%"
+		} else {
+			humidity.text = "No data"
+		}
 		
 		if let dew = currentDewpoint {
 			dewpoint.text = "\(dew)°"
+		} else {
+			dewpoint.text = "No data"
 		}
 		
 		if let heatChill = currentHeatOrChill {
@@ -162,18 +175,27 @@ class ContentViewController: UIViewController {
 	}
 	
 	func getCurrent() {
+		print("called")
 		DataManager<Current>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
-					guard let data = response.first else { return }
+					guard let data = response.first else {
+
+						return
+					}
 					
-					let temp: Int = {
+					let temp: Int? = {
 						if self?.unit == TemperatureUnit.celsius {
-							return Int(data.properties.temperature.value)
+							if let result = data.properties.temperature.value {
+								return Int(result)
+							} else {
+								return nil
+							}
+						} else if let tempy = data.properties.temperature.value {
+							return self?.convertToFahrenheit(value: Int(tempy))
 						} else {
-							let tempy = Int(data.properties.temperature.value)
-							return self?.convertToFahrenheit(value: tempy) ?? 0
+							return nil
 						}
 					}()
 					
@@ -181,15 +203,27 @@ class ContentViewController: UIViewController {
 					
 					self?.currentDescrip = data.properties.textDescription
 					
-					let humidity = Int(data.properties.relativeHumidity.value)
-					self?.currentHumidity = "\(humidity)%"
-						
-					let dew: Int = {
-						if self?.unit == TemperatureUnit.celsius {
-							return Int(data.properties.dewpoint.value)
+					let humidity: Int? = {
+						if let result = data.properties.relativeHumidity.value {
+							return Int(result)
 						} else {
-							let dew = Int(data.properties.dewpoint.value)
-							return self?.convertToFahrenheit(value: dew) ?? 0
+							return nil
+						}
+					}()
+					
+					self?.currentHumidity = humidity
+						
+					let dew: Int? = {
+						if self?.unit == TemperatureUnit.celsius {
+							if let result = data.properties.dewpoint.value {
+								return Int(result)
+							} else {
+								return nil
+							}
+						} else if let dew = data.properties.dewpoint.value {
+							return self?.convertToFahrenheit(value: Int(dew))
+						} else {
+							return nil
 						}
 					}()
 			
@@ -245,6 +279,30 @@ class ContentViewController: UIViewController {
 					
 					self.forecastLoaded = true
 					self.collectionView.reloadData()
+				}
+			case .failure(let error):
+				print(error)
+			}
+		}
+	}
+	
+	func getAlerts() {
+		DataManager<Alert>.fetch() { [weak self ]result in
+			switch result {
+			case .success(let response):
+				DispatchQueue.main.async {
+					guard let data = response.first?.features else { return }
+					
+					// remove all to make sure there are no duplicates
+					ForecastSearch.currentAlerts.removeAll()
+					
+					for alert in data {
+						ForecastSearch.currentAlerts.append(alert)
+					}
+					
+					if ForecastSearch.currentAlerts.count > 0 {
+						self?.alertButton.isHidden = false
+					}
 				}
 			case .failure(let error):
 				print(error)
@@ -308,7 +366,12 @@ class ContentViewController: UIViewController {
 	@IBAction func changeButtonPressed(_ sender: UIButton) {
 		performSegue(withIdentifier: "changeStation", sender: Any?.self)
 	}
-
+	
+	@IBAction func alertButtonPressed(_ sender: UIButton) {
+		performSegue(withIdentifier: "viewAlerts", sender: Any?.self)
+	}
+	
+	
 }
 
 extension ContentViewController: UICollectionViewDataSource {
@@ -319,6 +382,7 @@ extension ContentViewController: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "forecastCell", for: indexPath) as! ForecastCollectionViewCell
 		
+		cell.activityIndicator.startAnimating()
 		if forecastLoaded {
 			cell.cellTitle.text = forecast[indexPath.row].name
 			
@@ -335,6 +399,8 @@ extension ContentViewController: UICollectionViewDataSource {
 		
 			cell.cellImage.image = getImage(icon: icon)
 		}
+		
+		cell.activityIndicator.stopAnimating()
 		
 		return cell
 	}

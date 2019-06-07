@@ -9,6 +9,6 @@
 import Foundation
 
 struct LocationSearch {
-	static var latitude: Double = 0
-	static var longitude: Double = 0
+	static var latitude: Double = 36.243
+	static var longitude: Double = -86.559
 }

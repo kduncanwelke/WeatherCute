@@ -21,6 +21,8 @@ class ChangeObservationViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+		stations.removeAll()
+		
         // Do any additional setup after loading the view.
 		collectionView.dataSource = self
 		collectionView.delegate = self

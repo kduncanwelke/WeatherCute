@@ -13,9 +13,10 @@ enum Endpoint {
 	case forecast
 	case stations
 	case current
+	case alert
 	
 	private var baseURL: URL {
-		return URL(string: "https://api.weather.gov/")!
+		return URL(string: "https://api.weather.gov/")! //https://api.weather.gov/stations/KMGM/observations/latest
 	}
 	
 	// generate url based on type
@@ -49,6 +50,13 @@ enum Endpoint {
 			
 			let components = URLComponents(url: baseURL.appendingPathComponent("stations/\(observation)/observations/latest"), resolvingAgainstBaseURL: false)
 			
+			return components!.url!
+		case .alert:
+			let latitude = LocationSearch.latitude
+			let longitude = LocationSearch.longitude
+			
+			var components = URLComponents(url: baseURL.appendingPathComponent("alerts/active"), resolvingAgainstBaseURL: false)
+			components!.queryItems = [URLQueryItem(name: "status", value: "actual"), URLQueryItem(name: "point", value: "\(latitude),\(longitude)")]
 			return components!.url!
 		}
 	}

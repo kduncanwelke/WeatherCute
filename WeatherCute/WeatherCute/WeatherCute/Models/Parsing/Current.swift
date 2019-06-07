@@ -24,12 +24,12 @@ struct CurrentCondition: Codable {
 }
 
 struct Temperature: Codable {
-	var value: Double
+	var value: Double?
 	var unitCode: String
 }
 
 struct DewPoint: Codable {
-	var value: Double
+	var value: Double?
 	var unitCode: String
 }
 
@@ -44,5 +44,5 @@ struct HeatIndex: Codable {
 }
 
 struct Humidity: Codable {
-	var value: Double
+	var value: Double?
 }
