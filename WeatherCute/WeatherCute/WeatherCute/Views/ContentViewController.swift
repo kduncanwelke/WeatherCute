@@ -7,8 +7,9 @@
 //
 
 import UIKit
+import CoreData
 
-class ContentViewController: UIViewController {
+class ContentViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 
 	// MARK: IBOutlets
 	
@@ -49,6 +50,7 @@ class ContentViewController: UIViewController {
 		alertButton.isHidden = true
 		
 		collectionView.dataSource = self
+		collectionView.delegate = self
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(reloadCurrent), name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
 		
@@ -172,10 +174,24 @@ class ContentViewController: UIViewController {
 	@objc func reloadCurrent() {
 		currentFrom.text = "Current conditions from \(ForecastSearch.observationStation)"
 		getCurrent()
+		
+		// save changed observation station into core data object
+		var managedContext = CoreDataManager.shared.managedObjectContext
+		
+		guard let current = weather else { return }
+		
+		current.observation = ForecastSearch.observationStation
+		
+		do {
+			try managedContext.save()
+			print("resave successful")
+		} catch {
+			// this should never be displayed but is here to cover the possibility
+			showAlert(title: "Save failed", message: "Notice: Data has not successfully been saved.")
+		}
 	}
 	
 	func getCurrent() {
-		print("called")
 		DataManager<Current>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
@@ -261,43 +277,55 @@ class ContentViewController: UIViewController {
 					self?.displayCurrent()
 				}
 			case .failure(let error):
-				print(error)
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+					default:
+						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+					}
+				}
 			}
 		}
 	}
 	
 	func getForecast() {
-		DataManager<Forecast>.fetch() { result in
+		DataManager<Forecast>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let data = response.first?.properties.periods else { return }
 					
 					for forecast in data {
-						self.forecast.append(forecast)
+						self?.forecast.append(forecast)
 					}
 					
-					self.forecastLoaded = true
-					self.collectionView.reloadData()
+					self?.forecastLoaded = true
+					self?.collectionView.reloadData()
 				}
 			case .failure(let error):
-				print(error)
+				DispatchQueue.main.async {
+					switch error {
+						case Errors.networkError:
+							self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+					default:
+						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+					}
+				}
 			}
 		}
 	}
 	
 	func getAlerts() {
-		DataManager<Alert>.fetch() { [weak self ]result in
+		DataManager<Alert>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let data = response.first?.features else { return }
 					
-					// remove all to make sure there are no duplicates
-					ForecastSearch.currentAlerts.removeAll()
-					
 					for alert in data {
 						ForecastSearch.currentAlerts.append(alert)
+						print(alert)
 					}
 					
 					if ForecastSearch.currentAlerts.count > 0 {
@@ -305,7 +333,14 @@ class ContentViewController: UIViewController {
 					}
 				}
 			case .failure(let error):
-				print(error)
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+					default:
+						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+					}
+				}
 			}
 		}
 	}
@@ -405,4 +440,13 @@ extension ContentViewController: UICollectionViewDataSource {
 		return cell
 	}
 	
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+		let cellWidth : CGFloat = 110.0
+		
+		let numberOfCells = floor(self.view.frame.size.width / cellWidth)
+		let edgeInsets = (self.view.frame.size.width - (numberOfCells * cellWidth)) / (numberOfCells + 1)
+		
+		return UIEdgeInsets(top: 10, left: edgeInsets, bottom: 0, right: edgeInsets)
+	}
 }
+

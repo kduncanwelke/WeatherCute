@@ -16,6 +16,7 @@ class ChangeObservationViewController: UIViewController {
 	// MARK: Variables
 	
 	var stations: [String] = []
+	var stationNames: [String] = []
 	var stationsLoaded = false
 	
     override func viewDidLoad() {
@@ -39,13 +40,21 @@ class ChangeObservationViewController: UIViewController {
 					
 					for item in data {
 						self?.stations.append(item.properties.stationIdentifier)
+						self?.stationNames.append(item.properties.name)
 					}
 					
 					self?.stationsLoaded = true
 					self?.collectionView.reloadData()
 				}
 			case .failure(let error):
-				print(error)
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+					default:
+						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+					}
+				}
 			}
 		}
 	}
@@ -77,6 +86,7 @@ extension ChangeObservationViewController: UICollectionViewDataSource {
 		
 		if stationsLoaded {
 			cell.cellLabel.text = stations[indexPath.row]
+			cell.nameLabel.text = stationNames[indexPath.row]
 		}
 		
 		return cell

@@ -48,6 +48,13 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		navigationItem.searchController = searchController
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
+		
+		// center map on geographic center of us
+		let coordinate = CLLocationCoordinate2D(latitude: 39.50, longitude: -98.35)
+		let regionRadius: CLLocationDistance = 3500000
+		let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+		
+		mapView.setRegion(region, animated: false)
     }
 	
 	// MARK: Custom functions
@@ -65,13 +72,20 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 					self?.getStation()
 				}
 			case .failure(let error):
-				print(error)
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+					default:
+						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+					}
+				}
 			}
 		}
 	}
 	
 	func getStation() {
-		DataManager<Stations>.fetch() { result in
+		DataManager<Stations>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
@@ -80,7 +94,14 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 					ForecastSearch.observationStation = data.features.first?.properties.stationIdentifier ?? "None"
 				}
 			case .failure(let error):
-				print(error)
+				DispatchQueue.main.async {
+					switch error {
+					case Errors.networkError:
+						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+					default:
+						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+					}
+				}
 			}
 		}
 	}

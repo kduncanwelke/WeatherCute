@@ -10,4 +10,5 @@ import UIKit
 
 class StationCollectionViewCell: UICollectionViewCell {
 	@IBOutlet weak var cellLabel: UILabel!
+	@IBOutlet weak var nameLabel: UILabel!
 }

@@ -19,4 +19,5 @@ struct Feature: Codable {
 
 struct Identifier: Codable {
 	var stationIdentifier: String
+	var name: String
 }

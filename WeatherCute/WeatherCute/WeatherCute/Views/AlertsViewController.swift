@@ -29,6 +29,7 @@ class AlertsViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		currentAlertIndex = 0
 		
 		backButton.layer.cornerRadius = 15
 		nextButton.layer.cornerRadius = 15
@@ -40,14 +41,16 @@ class AlertsViewController: UIViewController {
 	// MARK: Custom functions
 	
 	func loadAlert() {
-		let currentAlert = ForecastSearch.currentAlerts[currentAlertIndex]
-		
-		titleLabel.text = currentAlert.properties.event
-		severity.text = currentAlert.properties.severity
-		certainty.text = currentAlert.properties.certainty
-		urgency.text = currentAlert.properties.urgency
-		instruction.text = currentAlert.properties.instruction.replacingOccurrences(of: "\n", with: " ")
-		descriptionLabel.text = currentAlert.properties.headline.replacingOccurrences(of: "\n", with: " ")
+		if ForecastSearch.currentAlerts.count != 0 {
+			var currentAlert = ForecastSearch.currentAlerts[currentAlertIndex]
+			
+			titleLabel.text = currentAlert.properties.event
+			severity.text = currentAlert.properties.severity
+			certainty.text = currentAlert.properties.certainty
+			urgency.text = currentAlert.properties.urgency
+			instruction.text = currentAlert.properties.instruction.replacingOccurrences(of: "\n", with: " ")
+			descriptionLabel.text = currentAlert.properties.headline.replacingOccurrences(of: "\n", with: " ")
+		}
 	}
 	
 	func updateButtons() {
