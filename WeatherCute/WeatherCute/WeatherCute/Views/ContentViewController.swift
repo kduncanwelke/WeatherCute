@@ -24,6 +24,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	@IBOutlet weak var currentFrom: UILabel!
 	@IBOutlet weak var largeImage: UIImageView!
 	@IBOutlet weak var alertButton: UIButton!
+	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+	@IBOutlet weak var collectionViewActivityIndicator: UIActivityIndicatorView!
 	
 	
 	// MARK: Variables
@@ -192,6 +194,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	}
 	
 	func getCurrent() {
+		activityIndicator.startAnimating()
 		DataManager<Current>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
@@ -271,6 +274,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					
 					let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
 					self?.currentIcon = icon
+					self?.activityIndicator.stopAnimating()
 					
 					self?.currentLoaded = true
 					
@@ -280,9 +284,11 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 				DispatchQueue.main.async {
 					switch error {
 					case Errors.networkError:
-						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+						self?.activityIndicator.stopAnimating()
+						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
 					default:
-						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+						self?.activityIndicator.stopAnimating()
+						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
 					}
 				}
 			}
@@ -290,6 +296,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	}
 	
 	func getForecast() {
+		collectionViewActivityIndicator.startAnimating()
 		DataManager<Forecast>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
@@ -301,15 +308,19 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					}
 					
 					self?.forecastLoaded = true
+					
+					self?.collectionViewActivityIndicator.stopAnimating()
 					self?.collectionView.reloadData()
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
 					switch error {
 						case Errors.networkError:
-							self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+							self?.collectionViewActivityIndicator.stopAnimating()
+							NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
 					default:
-						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+						self?.collectionViewActivityIndicator.stopAnimating()
+						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
 					}
 				}
 			}
@@ -336,12 +347,77 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 				DispatchQueue.main.async {
 					switch error {
 					case Errors.networkError:
-						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
 					default:
-						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
 					}
 				}
 			}
+		}
+	}
+	
+	func getForecastText(icon: String) -> String {
+		switch icon {
+		case Icons.clear.rawValue:
+			return "Clear"
+		case Icons.fewClouds.rawValue:
+			return "Few Clouds"
+		case Icons.partlyCloudy.rawValue:
+			return "Partly Cloudy"
+		case Icons.mostlyCloudy.rawValue:
+			return "Mostly Cloudy"
+		case Icons.overcast.rawValue:
+			return "Overcast"
+		case Icons.clearWind.rawValue:
+			return "Clear and Windy"
+		case  Icons.windFew.rawValue:
+			return "Few Clouds, Windy"
+		case Icons.partCloudWindy.rawValue:
+			return "Parly Cloudy, Windy"
+		case Icons.mostCloudyWind.rawValue:
+			return "Mostly Cloudy, Windy"
+		case Icons.windOvercast.rawValue:
+			return "Windy and Overcast"
+		case Icons.snow.rawValue:
+			return "Snow"
+		case Icons.rainSnow.rawValue:
+			return "Rain/Snow"
+		case Icons.rainSleet.rawValue, Icons.snowSleet.rawValue:
+			return "Rain/Sleet"
+		case Icons.freezingRain.rawValue:
+			return "Freezing Rain"
+		case Icons.rainFreezing.rawValue:
+			return "Rain/Freezing Rain"
+		case Icons.snowFreezing.rawValue:
+			return "Freezing Rain/Snow"
+		case Icons.sleet.rawValue:
+			return "Sleet"
+		case Icons.rain.rawValue:
+			return "Rain"
+		case Icons.rainshowers.rawValue, Icons.rainshowersHi.rawValue:
+			return "Rain Showers"
+		case Icons.thunderstorm.rawValue, Icons.thunderstormScattered.rawValue, Icons.thunderstormHi.rawValue:
+			return "Thunderstorms"
+		case Icons.tornado.rawValue:
+			return "Tornado"
+		case Icons.hurricane.rawValue:
+			return "Hurricane"
+		case Icons.tropicalStorm.rawValue:
+			return "Tropical Storm"
+		case Icons.smoke.rawValue:
+			return "Smoke"
+		case Icons.haze.rawValue:
+			return "Haze"
+		case Icons.fog.rawValue:
+			return "Fog"
+		case Icons.hot.rawValue:
+			return "Hot"
+		case Icons.cold.rawValue:
+			return "Cold"
+		case Icons.blizzard.rawValue:
+			return "Blizzard"
+		default:
+			return "No data"
 		}
 	}
 	
@@ -416,8 +492,7 @@ extension ContentViewController: UICollectionViewDataSource {
 	
 	func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 		let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "forecastCell", for: indexPath) as! ForecastCollectionViewCell
-		
-		cell.activityIndicator.startAnimating()
+	
 		if forecastLoaded {
 			cell.cellTitle.text = forecast[indexPath.row].name
 			
@@ -433,9 +508,9 @@ extension ContentViewController: UICollectionViewDataSource {
 			let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
 		
 			cell.cellImage.image = getImage(icon: icon)
+			
+			cell.descrip.text = getForecastText(icon: icon)
 		}
-		
-		cell.activityIndicator.stopAnimating()
 		
 		return cell
 	}

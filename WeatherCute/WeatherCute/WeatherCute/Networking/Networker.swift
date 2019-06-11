@@ -32,6 +32,8 @@ struct Networker {
 				} else if let data = data {
 					completion(.success(data))
 				}
+			} else if httpResponse.statusCode == 404 {
+				completion(.failure(Errors.noDataError))
 			} else {
 				completion(.failure(Errors.networkError))
 				print("status was not 200")

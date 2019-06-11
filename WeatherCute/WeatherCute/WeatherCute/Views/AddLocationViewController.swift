@@ -74,6 +74,9 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 			case .failure(let error):
 				DispatchQueue.main.async {
 					switch error {
+					case Errors.noDataError:
+						self?.showAlert(title: "Invalid Selection", message: Errors.noDataError.localizedDescription)
+						self?.clearMap()
 					case Errors.networkError:
 						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
 					default:
@@ -82,6 +85,19 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 				}
 			}
 		}
+	}
+	
+	func clearMap() {
+		mapView.removeAnnotations(mapView.annotations)
+		
+		locationLabel.text = "No Selection"
+		
+		// center map on geographic center of us
+		let coordinate = CLLocationCoordinate2D(latitude: 39.50, longitude: -98.35)
+		let regionRadius: CLLocationDistance = 3500000
+		let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+		
+		mapView.setRegion(region, animated: false)
 	}
 	
 	func getStation() {
@@ -131,7 +147,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 				}
 				else {
 					// an error occurred during geocoding
-					self.showAlert(title: "Error geocoding", message: "Location could not be parsed")
+					self.showAlert(title: "Network Lost", message: "The location cannot be found - please check your network connection")
 				}
 			})
 		} else {
@@ -139,13 +155,14 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 			annotation.title = LocationManager.parseAddress(selectedItem: location)
 		}
 		
+		getLocation()
+			
 		annotation.coordinate = coordinate
 		mapView.addAnnotation(annotation)
 		mapView.setRegion(region, animated: true)
 		
 		locationLabel.text = annotation.title
-		
-		getLocation()
+	
 	}
 	
 	func saveEntry(location: SavedLocation) {

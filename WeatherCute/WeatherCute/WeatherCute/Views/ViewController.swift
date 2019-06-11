@@ -33,6 +33,10 @@ class ViewController: UIViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(sectionChanged), name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(updateSectionCount), name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(alert), name: NSNotification.Name(rawValue: "alert"), object: nil)
+		
+		NotificationCenter.default.addObserver(self, selector: #selector(otherAlert), name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
 	}
 	
 	// MARK: Custom functions
@@ -48,6 +52,14 @@ class ViewController: UIViewController {
 		} catch let error as NSError {
 			showAlert(title: "Could not retrieve data", message: "\(error.userInfo)")
 		}
+	}
+	
+	@objc func alert() {
+		self.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+	}
+	
+	@objc func otherAlert() {
+		self.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
 	}
 	
 	@objc func updateSectionCount() {

@@ -88,9 +88,9 @@ class PageViewController: UIPageViewController {
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 			
-			// move down a section if not last page
+			// move up a section if last page
 			if let currentViewController = self.viewControllers?.first, let previousViewController = dataSource?.pageViewController( self, viewControllerBefore: currentViewController ) {
-				setViewControllers([previousViewController], direction: .forward, animated: true, completion: nil)
+				setViewControllers([previousViewController], direction: .reverse, animated: true, completion: nil)
 			}
 			
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
@@ -100,7 +100,7 @@ class PageViewController: UIPageViewController {
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 			
-			// move up a section if last paget
+			// move down a section if not last page
 			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
 				setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
 			}
@@ -133,8 +133,8 @@ class PageViewController: UIPageViewController {
 	
 	func createPageViewController() {
 		if WeatherLocations.locations.count > 0 {
-			let contentController = getContentViewController(withIndex: PageControllerManager.currentPage)!
-			let contentControllers = [contentController]
+			var contentController = getContentViewController(withIndex: PageControllerManager.currentPage)!
+			var contentControllers = [contentController]
 			
 			self.setViewControllers(contentControllers, direction: UIPageViewController.NavigationDirection.forward, animated: true, completion: nil)
 		}
@@ -143,7 +143,7 @@ class PageViewController: UIPageViewController {
 	// create content view
 	func getContentViewController(withIndex index: Int) -> ContentViewController? {
 		if index < WeatherLocations.locations.count {
-			let contentVC = self.storyboard?.instantiateViewController(withIdentifier: "contentVC") as! ContentViewController
+			var contentVC = self.storyboard?.instantiateViewController(withIdentifier: "contentVC") as! ContentViewController
 			contentVC.itemIndex = index
 			contentVC.weather = WeatherLocations.locations[index]
 			
@@ -156,7 +156,7 @@ class PageViewController: UIPageViewController {
 
 extension PageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-		let contentVC = viewController as! ContentViewController
+		var contentVC = viewController as! ContentViewController
 		
 		if contentVC.itemIndex > 0 {
 			return getContentViewController(withIndex: contentVC.itemIndex - 1)
@@ -166,7 +166,7 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 	}
 	
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-		let contentVC = viewController as! ContentViewController
+		var contentVC = viewController as! ContentViewController
 
 		if contentVC.itemIndex + 1 < WeatherLocations.locations.count {
 			return getContentViewController(withIndex: contentVC.itemIndex + 1)
