@@ -7,10 +7,12 @@
     },
     {
       "idiom" : "universal",
+      "filename" : "snowx2.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "snowx3.png",
       "scale" : "3x"
     }
   ],

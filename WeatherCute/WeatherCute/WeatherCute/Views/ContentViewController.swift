@@ -72,10 +72,12 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		
 		currentFrom.text = "Current conditions from \(obs)"
 		
+		ForecastSearch.currentAlerts.removeAll()
+		
 		if currentLoaded && forecastLoaded {
 			displayCurrent()
+			getAlerts()
 		} else {
-			ForecastSearch.currentAlerts.removeAll()
 			getAlerts()
 			getCurrent()
 			getForecast()
@@ -336,7 +338,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					
 					for alert in data {
 						ForecastSearch.currentAlerts.append(alert)
-						print(alert)
 					}
 					
 					if ForecastSearch.currentAlerts.count > 0 {
@@ -482,7 +483,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		performSegue(withIdentifier: "viewAlerts", sender: Any?.self)
 	}
 	
-	
 }
 
 extension ContentViewController: UICollectionViewDataSource {
@@ -516,12 +516,12 @@ extension ContentViewController: UICollectionViewDataSource {
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-		let cellWidth : CGFloat = 110.0
+		let cellWidth : CGFloat = 150.0
 		
 		let numberOfCells = floor(self.view.frame.size.width / cellWidth)
 		let edgeInsets = (self.view.frame.size.width - (numberOfCells * cellWidth)) / (numberOfCells + 1)
 		
-		return UIEdgeInsets(top: 10, left: edgeInsets, bottom: 0, right: edgeInsets)
+		return UIEdgeInsets(top: 0, left: edgeInsets, bottom: 20, right: edgeInsets)
 	}
 }
 

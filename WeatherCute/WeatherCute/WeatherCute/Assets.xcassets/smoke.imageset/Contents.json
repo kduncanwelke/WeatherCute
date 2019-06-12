@@ -7,10 +7,12 @@
     },
     {
       "idiom" : "universal",
+      "filename" : "smokex2.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "smokex3.png",
       "scale" : "3x"
     }
   ],

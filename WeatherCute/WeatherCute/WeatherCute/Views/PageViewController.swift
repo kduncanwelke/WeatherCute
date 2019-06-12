@@ -77,7 +77,6 @@ class PageViewController: UIPageViewController {
 			
 			deleteLocation()
 			
-			print("delete: \(PageControllerManager.currentPage)")
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
@@ -88,9 +87,9 @@ class PageViewController: UIPageViewController {
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
 			
-			// move up a section if last page
-			if let currentViewController = self.viewControllers?.first, let previousViewController = dataSource?.pageViewController( self, viewControllerBefore: currentViewController ) {
-				setViewControllers([previousViewController], direction: .reverse, animated: true, completion: nil)
+			// move up a section as this is last page
+			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
+				setViewControllers([nextViewController], direction: .reverse, animated: true, completion: nil)
 			}
 			
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
@@ -99,8 +98,8 @@ class PageViewController: UIPageViewController {
 		
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
-			
-			// move down a section if not last page
+		
+			// move down a section since this is not last page
 			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
 				setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
 			}

@@ -7,10 +7,12 @@
     },
     {
       "idiom" : "universal",
+      "filename" : "alertx2.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
+      "filename" : "alertx3.png",
       "scale" : "3x"
     }
   ],
