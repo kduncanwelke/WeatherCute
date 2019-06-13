@@ -16,11 +16,4 @@ extension UIViewController {
 		alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
 		self.present(alert, animated: true, completion: nil)
 	}
-	
-	func alertsActive(title: String, message: String) {
-		let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertController.Style.alert)
-		alert.addAction(UIAlertAction(title: "View", style: .default, handler:  { action in self.performSegue(withIdentifier: "viewAlerts", sender: self) }))
-		alert.addAction(UIAlertAction(title: "Dismiss", style: .cancel, handler: nil))
-		self.present(alert, animated: true, completion: nil)
-	}
 }

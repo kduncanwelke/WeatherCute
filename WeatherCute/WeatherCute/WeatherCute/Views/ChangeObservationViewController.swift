@@ -48,6 +48,8 @@ class ChangeObservationViewController: UIViewController {
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
+					self?.stationsLoaded = false
+					
 					switch error {
 					case Errors.networkError:
 						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
@@ -99,4 +101,16 @@ extension ChangeObservationViewController: UICollectionViewDelegate {
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
 		self.dismiss(animated: true, completion: nil)
 	}
+}
+
+extension ChangeObservationViewController: UICollectionViewDelegateFlowLayout {
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+		let cellWidth : CGFloat = 130.0
+		
+		let numberOfCells = floor(self.view.frame.size.width / cellWidth)
+		let edgeInsets = (self.view.frame.size.width - (numberOfCells * cellWidth)) / (numberOfCells + 1)
+		
+		return UIEdgeInsets(top: 0, left: edgeInsets, bottom: 10, right: edgeInsets)
+	}
+
 }

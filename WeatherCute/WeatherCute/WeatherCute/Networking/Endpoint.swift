@@ -16,7 +16,7 @@ enum Endpoint {
 	case alert
 	
 	private var baseURL: URL {
-		return URL(string: "https://api.weather.gov/")! //https://api.weather.gov/stations/KMGM/observations/latest
+		return URL(string: "https://api.weather.gov/")!
 	}
 	
 	// generate url based on type
