@@ -13,5 +13,4 @@ struct ForecastSearch {
 	static var gridY = 0
 	static var station = ""
 	static var observationStation = ""
-	static var currentAlerts: [AlertInfo] = []
 }

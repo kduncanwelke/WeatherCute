@@ -35,6 +35,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	var forecast: [ForecastData] = []
 	var forecastLoaded = false
 	var currentLoaded = false
+	var alertsLoaded = false
+	var alertList: [AlertInfo] = []
 	
 	var unit = TemperatureUnit.fahrenheit
 	
@@ -72,11 +74,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		
 		currentFrom.text = "Current conditions from \(obs)"
 		
-		ForecastSearch.currentAlerts.removeAll()
-		
-		if currentLoaded && forecastLoaded {
+		if currentLoaded && forecastLoaded && alertsLoaded {
 			displayCurrent()
-			getAlerts()
 		} else {
 			getAlerts()
 			getCurrent()
@@ -202,7 +201,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 			case .success(let response):
 				DispatchQueue.main.async {
 					guard let data = response.first else {
-
 						return
 					}
 					
@@ -337,12 +335,15 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					guard let data = response.first?.features else { return }
 					
 					for alert in data {
-						ForecastSearch.currentAlerts.append(alert)
+						self?.alertList.append(alert)
+						print(alert)
 					}
 					
-					if ForecastSearch.currentAlerts.count > 0 {
+					if data.count > 0 {
 						self?.alertButton.isHidden = false
 					}
+					
+					self?.alertsLoaded = true
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -463,15 +464,15 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		}
 	}
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
+    // MARK: Navigation
+	
+	override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+		if segue.destination is AlertsViewController {
+			let destinationViewController = segue.destination as? AlertsViewController
+			destinationViewController?.alerts = alertList
+		}
+	}
 	
 	// MARK: IBActions
 	
@@ -516,7 +517,7 @@ extension ContentViewController: UICollectionViewDataSource {
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-		let cellWidth : CGFloat = 150.0
+		let cellWidth : CGFloat = 145.0
 		
 		let numberOfCells = floor(self.view.frame.size.width / cellWidth)
 		let edgeInsets = (self.view.frame.size.width - (numberOfCells * cellWidth)) / (numberOfCells + 1)

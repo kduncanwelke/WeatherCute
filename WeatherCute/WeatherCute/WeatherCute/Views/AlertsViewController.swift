@@ -24,6 +24,7 @@ class AlertsViewController: UIViewController {
 	// MARK: Variables
 	
 	var currentAlertIndex = 0
+	var alerts: [AlertInfo] = []
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,8 +42,9 @@ class AlertsViewController: UIViewController {
 	// MARK: Custom functions
 	
 	func loadAlert() {
-		if ForecastSearch.currentAlerts.count != 0 {
-			var currentAlert = ForecastSearch.currentAlerts[currentAlertIndex]
+		print(alerts)
+		if alerts.count != 0 {
+			var currentAlert = alerts[currentAlertIndex]
 			
 			titleLabel.text = currentAlert.properties.event
 			severity.text = currentAlert.properties.severity
@@ -62,7 +64,7 @@ class AlertsViewController: UIViewController {
 			backButton.backgroundColor = UIColor.white
 		}
 		
-		if currentAlertIndex == (ForecastSearch.currentAlerts.count - 1) || ForecastSearch.currentAlerts.count == 1 {
+		if currentAlertIndex == (alerts.count - 1) || alerts.count == 1 {
 			nextButton.isEnabled = false
 			nextButton.backgroundColor = UIColor.clear
 		} else {
