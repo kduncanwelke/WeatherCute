@@ -52,6 +52,10 @@ class AlertsViewController: UIViewController {
 			urgency.text = currentAlert.properties.urgency
 			instruction.text = currentAlert.properties.instruction.replacingOccurrences(of: "\n", with: " ")
 			descriptionLabel.text = currentAlert.properties.headline.replacingOccurrences(of: "\n", with: " ")
+			
+			if currentAlert.properties.instruction == "" {
+				instruction.text = "No instructions at this time"
+			}
 		}
 	}
 	

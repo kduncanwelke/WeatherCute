@@ -283,15 +283,25 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 			case .failure(let error):
 				DispatchQueue.main.async {
 					self?.currentLoaded = false
-					print("current fail")
-					
 					switch error {
 					case Errors.networkError:
 						self?.activityIndicator.stopAnimating()
-						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
+						
+						// only show alerts on currently visible content view to prevent confusion
+						if let bool = self?.isViewLoaded {
+							if bool && self?.itemIndex == PageControllerManager.currentPage {
+								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
+							}
+						}
 					default:
 						self?.activityIndicator.stopAnimating()
-						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
+						
+						// only show alerts on currently visible content view to prevent confusion
+						if let bool = self?.isViewLoaded {
+							if bool && self?.itemIndex == PageControllerManager.currentPage {
+								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
+							}
+						}
 					}
 				}
 			}
@@ -318,14 +328,24 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 			case .failure(let error):
 				DispatchQueue.main.async {
 					self?.forecastLoaded = false
-					print("forecast fail")
 					switch error {
 					case Errors.networkError:
 						self?.collectionViewActivityIndicator.stopAnimating()
-						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
+						
+						// only show alerts on currently visible content view to prevent confusion
+						if let bool = self?.isViewLoaded {
+							if bool && self?.itemIndex == PageControllerManager.currentPage {
+								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
+							}
+						}
 					default:
 						self?.collectionViewActivityIndicator.stopAnimating()
-						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
+						// only show alerts on currently visible content view to prevent confusion
+						if let bool = self?.isViewLoaded {
+							if bool && self?.itemIndex == PageControllerManager.currentPage {
+								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
+							}
+						}
 					}
 				}
 			}
@@ -353,12 +373,22 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 			case .failure(let error):
 				DispatchQueue.main.async {
 					self?.alertsLoaded = false
-					print("alert fail")
 					switch error {
 					case Errors.networkError:
-						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
+						
+						// only show alerts on currently visible content view to prevent confusion
+						if let bool = self?.isViewLoaded {
+							if bool && self?.itemIndex == PageControllerManager.currentPage {
+								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
+							}
+						}
 					default:
-						NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
+						// only show alerts on currently visible content view to prevent confusion
+						if let bool = self?.isViewLoaded {
+							if bool && self?.itemIndex == PageControllerManager.currentPage {
+								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
+							}
+						}
 					}
 				}
 			}

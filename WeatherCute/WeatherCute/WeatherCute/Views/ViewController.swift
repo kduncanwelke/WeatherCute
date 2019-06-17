@@ -19,6 +19,7 @@ class ViewController: UIViewController {
 	@IBOutlet weak var noDataLabel: UILabel!
 	@IBOutlet weak var container: UIView!
 	@IBOutlet weak var deleteButton: UIButton!
+	@IBOutlet weak var tempSegmentedControl: UISegmentedControl!
 	
 	
 	// MARK: Variables
@@ -59,7 +60,7 @@ class ViewController: UIViewController {
 	}
 	
 	@objc func otherAlert() {
-		self.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
+		self.showAlert(title: "Networking Trouble", message: Errors.otherError.localizedDescription)
 	}
 	
 	@objc func updateSectionCount() {
@@ -67,10 +68,13 @@ class ViewController: UIViewController {
 			noDataLabel.isHidden = false
 			deleteButton.isHidden = true
 			container.isHidden = true
+			tempSegmentedControl.isEnabled = false
+			tempSegmentedControl.selectedSegmentIndex = 0
 		} else {
 			noDataLabel.isHidden = true
 			deleteButton.isHidden = false
 			container.isHidden = false
+			tempSegmentedControl.isEnabled = true
 		}
 		
 		pageControl.numberOfPages = WeatherLocations.locations.count
@@ -92,6 +96,10 @@ class ViewController: UIViewController {
 	
 	@IBAction func degreeSegmentChanged(_ sender: UISegmentedControl) {
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
+	}
+	
+	@IBAction func aboutPressed(_ sender: UIButton) {
+		performSegue(withIdentifier: "showAbout", sender: Any?.self)
 	}
 	
 }

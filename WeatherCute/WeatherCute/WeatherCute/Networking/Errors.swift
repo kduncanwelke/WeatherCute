@@ -19,7 +19,7 @@ enum Errors: Error {
 		case .networkError:
 			return "The network could not be reached successfully - data may not be current or complete. Please check your data or wifi connection."
 		case .otherError:
-			return "An unexpected error has occurred, please wait and try again."
+			return "An unexpected error has occurred and not all data could be retrieved. Please wait and try again."
 		case .noDataError:
 			return "Please check your selection; the National Weather Service cannot retrieve its data."
 		}
