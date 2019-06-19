@@ -190,6 +190,10 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 			// this should never be displayed but is here to cover the possibility
 			showAlert(title: "Save failed", message: "Notice: Data has not successfully been saved.")
 		}
+		
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
+		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getNextPage"), object: nil)
+		self.dismiss(animated: true, completion: nil)
 	}
 	
 	// MARK: IBActions
@@ -218,11 +222,6 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		let weather = SavedLocation(name: name, latitude: LocationSearch.latitude, longitude: LocationSearch.longitude, xCoord: ForecastSearch.gridX, yCoord: ForecastSearch.gridY, station: ForecastSearch.station, observationStation: ForecastSearch.observationStation)
 	
 		saveEntry(location: weather)
-		
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
-		//NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getNextPage"), object: nil)
-		self.dismiss(animated: true, completion: nil)
 	}
 	
 	@IBAction func cancelTapped(_ sender: UIButton) {
