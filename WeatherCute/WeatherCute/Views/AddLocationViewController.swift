@@ -9,6 +9,7 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Network
 
 class AddLocationViewController: UIViewController, UITableViewDelegate {
 
@@ -22,6 +23,8 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 	
 	var locationFromMapTap = false
 	var searchController = UISearchController(searchResultsController: nil)
+	let monitor = NWPathMonitor()
+	var connection = true
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -55,6 +58,19 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
 		
 		mapView.setRegion(region, animated: false)
+		
+		monitor.pathUpdateHandler = { [weak self] path in
+			if path.status == .satisfied {
+				print("connection successful")
+				self?.connection = true
+			} else {
+				print("no connection")
+				self?.connection = false
+			}
+		}
+		
+		let queue = DispatchQueue(label: "Monitor")
+		monitor.start(queue: queue)
     }
 	
 	// MARK: Custom functions
@@ -107,7 +123,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 				DispatchQueue.main.async {
 					guard let data = response.first else { return }
 				
-					ForecastSearch.observationStation = data.features.first?.properties.stationIdentifier ?? "None"
+					ForecastSearch.observationStation = data.features.first?.properties.stationIdentifier ?? ""
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -139,15 +155,15 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 			let locale = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
 			let geocoder = CLGeocoder()
 			
-			geocoder.reverseGeocodeLocation(locale, completionHandler: { [unowned self] (placemarks, error) in
+			geocoder.reverseGeocodeLocation(locale, completionHandler: { [weak self] (placemarks, error) in
 				if error == nil {
 					guard let firstLocation = placemarks?[0] else { return }
 					annotation.title = LocationManager.parseAddress(selectedItem: firstLocation)
-					self.locationLabel.text = annotation.title
+					self?.locationLabel.text = annotation.title
 				}
 				else {
 					// an error occurred during geocoding
-					self.showAlert(title: "Network Lost", message: "The location cannot be found - please check your network connection")
+					self?.showAlert(title: "Network Lost", message: "The location cannot be found - please check your network connection")
 				}
 			})
 		} else {
@@ -221,7 +237,13 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		
 		let weather = SavedLocation(name: name, latitude: LocationSearch.latitude, longitude: LocationSearch.longitude, xCoord: ForecastSearch.gridX, yCoord: ForecastSearch.gridY, station: ForecastSearch.station, observationStation: ForecastSearch.observationStation)
 	
-		saveEntry(location: weather)
+		if connection {
+			saveEntry(location: weather)
+		} else {
+			mapView.removeAnnotations(mapView.annotations)
+			locationLabel.text = ""
+			showAlert(title: "Cannot add location", message: "No network connection is available. Complete data for this location could not be retrieved.")
+		}
 	}
 	
 	@IBAction func cancelTapped(_ sender: UIButton) {

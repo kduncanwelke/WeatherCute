@@ -43,6 +43,10 @@ class ChangeObservationViewController: UIViewController {
 						self?.stationNames.append(item.properties.name)
 					}
 					
+					print(ForecastSearch.gridX)
+					print(ForecastSearch.gridY)
+					print(ForecastSearch.station)
+					
 					self?.stationsLoaded = true
 					self?.collectionView.reloadData()
 				}

@@ -17,7 +17,7 @@ struct LocationManager {
 		// put a comma between street and city/state
 		let comma = (selectedItem.locality != nil || selectedItem.administrativeArea != nil) && (selectedItem.subThoroughfare != nil || selectedItem.thoroughfare != nil) && (selectedItem.subAdministrativeArea != nil || selectedItem.administrativeArea != nil) ? ", " : ""
 		// put a space between "Washington" and "DC"
-		let secondSpace = (selectedItem.subAdministrativeArea != nil && selectedItem.administrativeArea != nil) ? ", " : ""
+		let secondSpace = (selectedItem.subAdministrativeArea != nil || selectedItem.administrativeArea != nil) ? ", " : ""
 		let addressLine = String(
 			format:"%@%@%@",//%@%@%@%@%@",
 			// street number
@@ -32,6 +32,7 @@ struct LocationManager {
 			// state
 			selectedItem.administrativeArea ?? ""
 		)
+		
 		return addressLine
 	}
 }

@@ -83,9 +83,22 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		}
     }
 	
+	override func viewDidAppear(_ animated: Bool) {
+		guard let current = weather, let station = current.station, let obs = current.observation else { return }
+		
+		location.text = current.name
+		
+		LocationSearch.latitude = current.latitude
+		LocationSearch.longitude = current.longitude
+		
+		ForecastSearch.gridX = Int(current.xCoord)
+		ForecastSearch.gridY = Int(current.yCoord)
+		ForecastSearch.station = station
+		ForecastSearch.observationStation = obs
+	}
 	
 	// MARK: Custom functions
-	
+
 	func displayCurrent() {
 		if let tempy = currentTemp {
 			temp.text = " \(tempy)°"
@@ -542,7 +555,7 @@ extension ContentViewController: UICollectionViewDataSource {
 			}
 			
 			let separated = forecast[indexPath.row].icon.components(separatedBy: "/")[6]
-			
+			print(forecast[indexPath.row].icon.components(separatedBy: "/")[5])
 			let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
 		
 			cell.cellImage.image = getImage(icon: icon)
