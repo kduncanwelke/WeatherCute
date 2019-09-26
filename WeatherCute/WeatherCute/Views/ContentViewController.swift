@@ -50,6 +50,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	var currentDewpoint: Int?
 	var currentHeatOrChill: Int?
 	var currentIcon: String?
+	var isDay: Bool?
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -133,8 +134,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 			heatIndex.text = "N/A"
 		}
 		
-		if let image = currentIcon {
-			largeImage.image = getImage(icon: image)
+		if let image = currentIcon, let isDayTime = isDay {
+			largeImage.image = getImage(icon: image, isDaytime: isDayTime)
 		}
 	}
 	
@@ -290,7 +291,14 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						}
 					}()
 					
-					let separated =  data.properties.icon.components(separatedBy: "/")[6]
+					let separated = data.properties.icon.components(separatedBy: "/")[6]
+					let dayNight = data.properties.icon.components(separatedBy: "/")[5]
+					
+					if dayNight == "day" {
+						self?.isDay = true
+					} else if dayNight == "night" {
+						self?.isDay = false
+					}
 					
 					let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
 					self?.currentIcon = icon
@@ -480,44 +488,85 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		}
 	}
 	
-	func getImage(icon: String) -> UIImage? {
-		switch icon {
-		case Icons.clear.rawValue:
-			return UIImage(named: "sunny")
-		case Icons.fewClouds.rawValue, Icons.partlyCloudy.rawValue:
-			return UIImage(named: "partlycloudy")
-		case Icons.mostlyCloudy.rawValue, Icons.overcast.rawValue:
-			return UIImage(named: "cloudy")
-		case Icons.clearWind.rawValue, Icons.windFew.rawValue:
-			return UIImage(named: "clearwindy")
-		case Icons.partCloudWindy.rawValue, Icons.mostCloudyWind.rawValue, Icons.windOvercast.rawValue:
-			return UIImage(named: "cloudywindy")
-		case Icons.snow.rawValue:
-			return UIImage(named: "snow")
-		case Icons.rainSnow.rawValue, Icons.rainSleet.rawValue, Icons.snowSleet.rawValue:
-			return UIImage(named: "mix")
-		case Icons.freezingRain.rawValue, Icons.rainFreezing.rawValue, Icons.snowFreezing.rawValue, Icons.sleet.rawValue:
-			return UIImage(named: "sleet")
-		case Icons.rain.rawValue, Icons.rainshowers.rawValue, Icons.rainshowersHi.rawValue:
-			return UIImage(named: "rain")
-		case Icons.thunderstorm.rawValue, Icons.thunderstormScattered.rawValue, Icons.thunderstormHi.rawValue:
-			return UIImage(named: "thunderstorm")
-		case Icons.tornado.rawValue:
-			return UIImage(named: "tornado")
-		case Icons.hurricane.rawValue, Icons.tropicalStorm.rawValue:
-			return UIImage(named: "hurricane")
-		case Icons.smoke.rawValue:
-			return UIImage(named: "smoke")
-		case Icons.haze.rawValue, Icons.fog.rawValue:
-			return UIImage(named: "haze")
-		case Icons.hot.rawValue:
-			return UIImage(named: "hot")
-		case Icons.cold.rawValue:
-			return UIImage(named: "cold")
-		case Icons.blizzard.rawValue:
-			return UIImage(named: "blizzard")
-		default:
-			return UIImage(named: "none")
+	func getImage(icon: String, isDaytime: Bool) -> UIImage? {
+		if isDaytime {
+			switch icon {
+			case Icons.clear.rawValue:
+				return UIImage(named: "sunny")
+			case Icons.fewClouds.rawValue, Icons.partlyCloudy.rawValue:
+				return UIImage(named: "partlycloudy")
+			case Icons.mostlyCloudy.rawValue, Icons.overcast.rawValue:
+				return UIImage(named: "cloudy")
+			case Icons.clearWind.rawValue, Icons.windFew.rawValue:
+				return UIImage(named: "clearwindy")
+			case Icons.partCloudWindy.rawValue, Icons.mostCloudyWind.rawValue, Icons.windOvercast.rawValue:
+				return UIImage(named: "cloudywindy")
+			case Icons.snow.rawValue:
+				return UIImage(named: "snow")
+			case Icons.rainSnow.rawValue, Icons.rainSleet.rawValue, Icons.snowSleet.rawValue:
+				return UIImage(named: "mix")
+			case Icons.freezingRain.rawValue, Icons.rainFreezing.rawValue, Icons.snowFreezing.rawValue, Icons.sleet.rawValue:
+				return UIImage(named: "sleet")
+			case Icons.rain.rawValue, Icons.rainshowers.rawValue, Icons.rainshowersHi.rawValue:
+				return UIImage(named: "rain")
+			case Icons.thunderstorm.rawValue, Icons.thunderstormScattered.rawValue, Icons.thunderstormHi.rawValue:
+				return UIImage(named: "thunderstorm")
+			case Icons.tornado.rawValue:
+				return UIImage(named: "tornado")
+			case Icons.hurricane.rawValue, Icons.tropicalStorm.rawValue:
+				return UIImage(named: "hurricane")
+			case Icons.smoke.rawValue:
+				return UIImage(named: "smoke")
+			case Icons.haze.rawValue, Icons.fog.rawValue:
+				return UIImage(named: "haze")
+			case Icons.hot.rawValue:
+				return UIImage(named: "hot")
+			case Icons.cold.rawValue:
+				return UIImage(named: "cold")
+			case Icons.blizzard.rawValue:
+				return UIImage(named: "blizzard")
+			default:
+				return UIImage(named: "none")
+			}
+		} else {
+			switch icon {
+			case Icons.clear.rawValue:
+				return UIImage(named: "nightsunny")
+			case Icons.fewClouds.rawValue, Icons.partlyCloudy.rawValue:
+				return UIImage(named: "nightpartlycloudy")
+			case Icons.mostlyCloudy.rawValue, Icons.overcast.rawValue:
+				return UIImage(named: "nightcloudy")
+			case Icons.clearWind.rawValue, Icons.windFew.rawValue:
+				return UIImage(named: "nightclearwindy")
+			case Icons.partCloudWindy.rawValue, Icons.mostCloudyWind.rawValue, Icons.windOvercast.rawValue:
+				return UIImage(named: "nightcloudywindy")
+			case Icons.snow.rawValue:
+				return UIImage(named: "nightsnow")
+			case Icons.rainSnow.rawValue, Icons.rainSleet.rawValue, Icons.snowSleet.rawValue:
+				return UIImage(named: "nightmix")
+			case Icons.freezingRain.rawValue, Icons.rainFreezing.rawValue, Icons.snowFreezing.rawValue, Icons.sleet.rawValue:
+				return UIImage(named: "nightsleet")
+			case Icons.rain.rawValue, Icons.rainshowers.rawValue, Icons.rainshowersHi.rawValue:
+				return UIImage(named: "nightrain")
+			case Icons.thunderstorm.rawValue, Icons.thunderstormScattered.rawValue, Icons.thunderstormHi.rawValue:
+				return UIImage(named: "nightthunderstorm")
+			case Icons.tornado.rawValue:
+				return UIImage(named: "nighttornado")
+			case Icons.hurricane.rawValue, Icons.tropicalStorm.rawValue:
+				return UIImage(named: "nighthurricane")
+			case Icons.smoke.rawValue:
+				return UIImage(named: "nightsmoke")
+			case Icons.haze.rawValue, Icons.fog.rawValue:
+				return UIImage(named: "nighthaze")
+			case Icons.hot.rawValue:
+				return UIImage(named: "nighthot")
+			case Icons.cold.rawValue:
+				return UIImage(named: "nightcold")
+			case Icons.blizzard.rawValue:
+				return UIImage(named: "nightblizzard")
+			default:
+				return UIImage(named: "none")
+			}
 		}
 	}
 
@@ -580,7 +629,7 @@ extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDe
 			
 			let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
 		
-			cell.cellImage.image = getImage(icon: icon)
+			cell.cellImage.image = getImage(icon: icon, isDaytime: forecast[indexPath.row].isDaytime)
 			
 			cell.descrip.text = getForecastText(icon: icon)
 			
