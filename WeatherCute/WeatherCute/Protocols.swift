@@ -13,3 +13,7 @@ import MapKit
 protocol MapUpdaterDelegate: class {
 	func updateMapLocation(for: MKPlacemark)
 }
+
+protocol CollectionViewTapDelegate: class {
+	func longPress(sender: ForecastCollectionViewCell, state: UIGestureRecognizer.State) 
+}

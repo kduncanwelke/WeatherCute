@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ChangeObservationViewController: UIViewController {
+class ChangeObservationViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 	
 	// MARK: IBOutlets
 	@IBOutlet weak var collectionView: UICollectionView!
@@ -97,24 +97,18 @@ extension ChangeObservationViewController: UICollectionViewDataSource {
 		
 		return cell
 	}
-}
-
-extension ChangeObservationViewController: UICollectionViewDelegate {
+	
+	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+		let cellWidth : CGFloat = 145.0
+		
+		let numberOfCells = floor(self.view.frame.size.width / cellWidth)
+		let edgeInsets = (self.view.frame.size.width - (numberOfCells * cellWidth)) / (numberOfCells + 1)
+		return UIEdgeInsets(top: 0, left: edgeInsets, bottom: 20, right: edgeInsets)
+	}
+	
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
 		ForecastSearch.observationStation = stations[indexPath.row]
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
 		self.dismiss(animated: true, completion: nil)
 	}
-}
-
-extension ChangeObservationViewController: UICollectionViewDelegateFlowLayout {
-	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-		let cellWidth : CGFloat = 130.0
-		
-		let numberOfCells = floor(self.view.frame.size.width / cellWidth)
-		let edgeInsets = (self.view.frame.size.width - (numberOfCells * cellWidth)) / (numberOfCells + 1)
-		
-		return UIEdgeInsets(top: 0, left: edgeInsets, bottom: 10, right: edgeInsets)
-	}
-
 }

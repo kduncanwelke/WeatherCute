@@ -17,3 +17,24 @@ extension UIViewController {
 		self.present(alert, animated: true, completion: nil)
 	}
 }
+
+extension UIView {
+	func goDown() {
+		UIView.animate(withDuration: 0.2, animations: {
+			self.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+		}, completion: { [unowned self] _ in
+			self.isHidden = true
+			//self.transform = CGAffineTransform.identity
+		})
+	}
+	
+	func popUp() {
+		UIView.animate(withDuration: 0.2, animations: {
+			self.isHidden = false
+			self.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
+			self.transform = CGAffineTransform(scaleX: 1.0, y: 1.0)
+		}, completion: { [unowned self] _ in
+			self.transform = CGAffineTransform.identity
+		})
+	}
+}

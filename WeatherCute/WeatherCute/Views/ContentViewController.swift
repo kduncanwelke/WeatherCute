@@ -27,6 +27,10 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	@IBOutlet weak var collectionViewActivityIndicator: UIActivityIndicatorView!
 	
+	@IBOutlet weak var detailForecastDay: UILabel!
+	@IBOutlet weak var detailForecastLabel: UILabel!
+	@IBOutlet weak var detailBackground: UIView!
+	
 	
 	// MARK: Variables
 	
@@ -51,6 +55,9 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+		detailBackground.layer.cornerRadius = 15
+		detailBackground.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+		detailBackground.isHidden = true
 		alertButton.isHidden = true
 		
 		collectionView.dataSource = self
@@ -536,7 +543,22 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	
 }
 
-extension ContentViewController: UICollectionViewDataSource {
+extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDelegate {
+	func longPress(sender: ForecastCollectionViewCell, state: UIGestureRecognizer.State) {
+		print("delegate called")
+		
+		if state == .ended || state == .failed || state == .cancelled {
+			detailBackground.goDown()
+		} else {
+			let path = self.collectionView.indexPath(for: sender)
+			if let selected = path {
+				detailBackground.popUp()
+				detailForecastDay.text = forecast[selected.row].name
+				detailForecastLabel.text = forecast[selected.row].detailedForecast
+			}
+		}
+	}
+	
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
 		return forecast.count
 	}
@@ -555,12 +577,14 @@ extension ContentViewController: UICollectionViewDataSource {
 			}
 			
 			let separated = forecast[indexPath.row].icon.components(separatedBy: "/")[6]
-			print(forecast[indexPath.row].icon.components(separatedBy: "/")[5])
+			
 			let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
 		
 			cell.cellImage.image = getImage(icon: icon)
 			
 			cell.descrip.text = getForecastText(icon: icon)
+			
+			cell.collectionDelegate = self
 		}
 		
 		return cell
