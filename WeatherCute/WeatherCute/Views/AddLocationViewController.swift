@@ -32,6 +32,11 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
         // Do any additional setup after loading the view.
 		useThisLocationButton.layer.cornerRadius = 15
 		
+		ForecastSearch.gridX = 0
+		ForecastSearch.gridY = 0
+		ForecastSearch.station = ""
+		ForecastSearch.observationStation = ""
+		
 		mapView.delegate = self
 		
 		// set up search bar
@@ -85,7 +90,9 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 					ForecastSearch.gridY = data.properties.gridY
 					ForecastSearch.station = data.properties.cwa
 					
-					self?.getStation()
+					if ForecastSearch.station != "" {
+						self?.getStation()
+					}
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {

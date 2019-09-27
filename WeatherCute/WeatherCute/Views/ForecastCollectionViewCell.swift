@@ -27,7 +27,6 @@ class ForecastCollectionViewCell: UICollectionViewCell {
 	}
 	
 	@objc func handleTap(recognizer: UILongPressGestureRecognizer) {
-		print("tap handled")
 		collectionDelegate?.longPress(sender: self, state: recognizer.state)
 	}
 }

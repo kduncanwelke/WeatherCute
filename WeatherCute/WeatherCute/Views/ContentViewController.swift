@@ -30,6 +30,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	@IBOutlet weak var detailForecastDay: UILabel!
 	@IBOutlet weak var detailForecastLabel: UILabel!
 	@IBOutlet weak var detailBackground: UIView!
+	@IBOutlet weak var reloadButton: UIButton!
+	@IBOutlet weak var reloadActivityIndicator: UIActivityIndicatorView!
 	
 	
 	// MARK: Variables
@@ -60,6 +62,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		detailBackground.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
 		detailBackground.isHidden = true
 		alertButton.isHidden = true
+		reloadButton.isHidden = true
 		
 		collectionView.dataSource = self
 		collectionView.delegate = self
@@ -137,6 +140,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		if let image = currentIcon, let isDayTime = isDay {
 			largeImage.image = getImage(icon: image, isDaytime: isDayTime)
 		}
+		
+		reloadButton.isHidden = false
 	}
 	
 	@objc func degreeUnitChanged() {
@@ -590,11 +595,26 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		performSegue(withIdentifier: "viewAlerts", sender: Any?.self)
 	}
 	
+	@IBAction func reload(_ sender: UIButton) {
+		reloadButton.setImage(UIImage(named: "loading"), for: .normal)
+		reloadActivityIndicator.startAnimating()
+		reloadButton.isEnabled = false
+		print("reload")
+		forecast.removeAll()
+		alertList.removeAll()
+		
+		getAlerts()
+		getCurrent()
+		getForecast()
+		reloadActivityIndicator.stopAnimating()
+		reloadButton.setImage(UIImage(named: "reload"), for: .normal)
+		reloadButton.isEnabled = true
+	}
+	
 }
 
 extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDelegate {
 	func longPress(sender: ForecastCollectionViewCell, state: UIGestureRecognizer.State) {
-		print("delegate called")
 		
 		if state == .ended || state == .failed || state == .cancelled {
 			detailBackground.goDown()
