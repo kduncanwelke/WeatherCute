@@ -21,7 +21,7 @@ class SearchTableViewController: UITableViewController {
 	override func viewDidLoad() {
 		self.tableView.delegate = self
 		self.tableView.dataSource = self
-		
+        
 		// set up table view qualities
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "searchCell")
 		tableView.backgroundColor = UIColor(red:0.14, green:0.64, blue:1.00, alpha:1.0)

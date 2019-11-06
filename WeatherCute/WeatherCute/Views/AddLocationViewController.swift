@@ -52,6 +52,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		searchController.searchBar.placeholder = "Type to a find location . . ."
 		searchController.delegate = self
 		searchController.searchBar.delegate = self // Monitor when the search button is tapped.
+        searchController.hidesNavigationBarDuringPresentation = false
 		
 		navigationItem.searchController = searchController
 		navigationItem.hidesSearchBarWhenScrolling = false

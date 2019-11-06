@@ -140,8 +140,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		if let image = currentIcon, let isDayTime = isDay {
 			largeImage.image = getImage(icon: image, isDaytime: isDayTime)
 		}
-		
-		reloadButton.isHidden = false
 	}
 	
 	@objc func degreeUnitChanged() {
@@ -312,6 +310,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					self?.currentLoaded = true
 					
 					self?.displayCurrent()
+                    self?.reloadButton.isHidden = false
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -319,7 +318,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					switch error {
 					case Errors.networkError:
 						self?.activityIndicator.stopAnimating()
-						
+                        self?.reloadButton.isHidden = false
+                        
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
@@ -328,7 +328,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						}
 					default:
 						self?.activityIndicator.stopAnimating()
-						
+                        self?.reloadButton.isHidden = false
+                        
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
@@ -616,16 +617,16 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDelegate {
 	func longPress(sender: ForecastCollectionViewCell, state: UIGestureRecognizer.State) {
 		
-		if state == .ended || state == .failed || state == .cancelled {
-			detailBackground.goDown()
-		} else {
+        if state == .began {
 			let path = self.collectionView.indexPath(for: sender)
 			if let selected = path {
 				detailBackground.popUp()
 				detailForecastDay.text = forecast[selected.row].name
 				detailForecastLabel.text = forecast[selected.row].detailedForecast
 			}
-		}
+        } else if state == .ended {
+            detailBackground.goDown()
+        }
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
