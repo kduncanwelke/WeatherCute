@@ -48,6 +48,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		searchController = UISearchController(searchResultsController: resultsTableController)
 		searchController.searchResultsUpdater = resultsTableController
 		searchController.searchBar.autocapitalizationType = .none
+        searchController.searchBar.searchTextField.textColor = .black
 		
 		searchController.searchBar.placeholder = "Type to a find location . . ."
 		searchController.delegate = self

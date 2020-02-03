@@ -10,4 +10,5 @@ import Foundation
 
 struct PageControllerManager {
 	static var currentPage: Int = 0
+    static var currentUnit: TemperatureUnit = .fahrenheit
 }

@@ -34,7 +34,7 @@ class ViewController: UIViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(sectionChanged), name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(updateSectionCount), name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
-		
+        
 		NotificationCenter.default.addObserver(self, selector: #selector(alert), name: NSNotification.Name(rawValue: "alert"), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(otherAlert), name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
@@ -79,7 +79,7 @@ class ViewController: UIViewController {
 		
 		pageControl.numberOfPages = WeatherLocations.locations.count
 	}
-	
+    
 	@objc func sectionChanged() {
 		pageControl.currentPage = PageControllerManager.currentPage
 		print("section changed")
@@ -95,6 +95,12 @@ class ViewController: UIViewController {
 	}
 	
 	@IBAction func degreeSegmentChanged(_ sender: UISegmentedControl) {
+        if tempSegmentedControl.selectedSegmentIndex == 0 {
+            PageControllerManager.currentUnit = .fahrenheit
+        } else {
+            PageControllerManager.currentUnit = .celsius
+        }
+        
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
 	}
 	

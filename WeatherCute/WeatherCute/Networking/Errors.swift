@@ -17,9 +17,9 @@ enum Errors: Error {
 	var localizedDescription: String {
 		switch self {
 		case .networkError:
-			return "The network could not be reached successfully - data may not be current or complete. Please check your data or wifi connection."
+			return "The network could not be reached - data may not be current or complete. Please try to refresh the view or check your connection."
 		case .otherError:
-			return "An unexpected error has occurred and not all data could be retrieved. Please wait and try again."
+			return "An unexpected error has occurred and not all data could be retrieved. The NWS API may not have current data available. Please wait and try again."
 		case .noDataError:
 			return "Please check your selection; the National Weather Service cannot retrieve its data."
 		}

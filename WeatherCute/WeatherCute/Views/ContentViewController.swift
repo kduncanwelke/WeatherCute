@@ -44,8 +44,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	var alertsLoaded = false
 	var alertList: [AlertInfo] = []
 	
-	var unit = TemperatureUnit.fahrenheit
-	
 	var currentTemp: Int?
 	var currentDescrip: String?
 	var currentHumidity: Int?
@@ -143,14 +141,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	}
 	
 	@objc func degreeUnitChanged() {
-		if unit == TemperatureUnit.fahrenheit {
-			unit = TemperatureUnit.celsius
-		} else if unit == TemperatureUnit.celsius {
-			unit = TemperatureUnit.fahrenheit
-		}
-		
 		if currentLoaded {
-			if unit == TemperatureUnit.fahrenheit {
+			if PageControllerManager.currentUnit == TemperatureUnit.fahrenheit {
 				if let current = currentTemp {
 					let newTemp = convertToFahrenheit(value: current)
 					currentTemp = newTemp
@@ -165,7 +157,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					let newHeatChill = convertToFahrenheit(value: currentHeatChill)
 					currentHeatOrChill = newHeatChill
 				}
-			} else if unit == TemperatureUnit.celsius {
+			} else if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 				if let current = currentTemp {
 					let newTemp = convertToCelsius(value: current)
 					currentTemp = newTemp
@@ -180,8 +172,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					let newHeatChill = convertToCelsius(value: currentHeatChill)
 					currentHeatOrChill = newHeatChill
 				}
-			}
-			
+            }
+            
 			displayCurrent()
 			collectionView.reloadData()
 		}
@@ -229,7 +221,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					}
 					
 					let temp: Int? = {
-						if self?.unit == TemperatureUnit.celsius {
+						if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 							if let result = data.properties.temperature.value {
 								return Int(result)
 							} else {
@@ -257,7 +249,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					self?.currentHumidity = humidity
 						
 					let dew: Int? = {
-						if self?.unit == TemperatureUnit.celsius {
+						if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 							if let result = data.properties.dewpoint.value {
 								return Int(result)
 							} else {
@@ -276,7 +268,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						if let heat = data.properties.heatIndex.value {
 							self?.heatIndexLabel.text = "Heat Index"
 							
-							if self?.unit == TemperatureUnit.celsius {
+							if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 								return Int(heat)
 							} else {
 								return self?.convertToFahrenheit(value: Int(heat))
@@ -284,7 +276,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						} else if let chill = data.properties.windChill.value {
 							self?.heatIndexLabel.text = "Wind Chill"
 							
-							if self?.unit == TemperatureUnit.celsius {
+							if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 								return Int(chill)
 							} else {
 								return self?.convertToFahrenheit(value: Int(chill))
@@ -310,7 +302,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					self?.currentLoaded = true
 					
 					self?.displayCurrent()
-                    self?.reloadButton.isHidden = false
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -318,7 +309,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					switch error {
 					case Errors.networkError:
 						self?.activityIndicator.stopAnimating()
-                        self?.reloadButton.isHidden = false
                         
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
@@ -328,7 +318,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						}
 					default:
 						self?.activityIndicator.stopAnimating()
-                        self?.reloadButton.isHidden = false
                         
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
@@ -337,6 +326,10 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 							}
 						}
 					}
+                    
+                    self?.currentLoaded = true
+                    
+                    self?.displayCurrent()
 				}
 			}
 		}
@@ -358,6 +351,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					
 					self?.collectionViewActivityIndicator.stopAnimating()
 					self?.collectionView.reloadData()
+                    self?.reloadButton.isHidden = false
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -365,7 +359,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					switch error {
 					case Errors.networkError:
 						self?.collectionViewActivityIndicator.stopAnimating()
-						
+                        self?.reloadButton.isHidden = false
+                        
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
@@ -374,6 +369,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						}
 					default:
 						self?.collectionViewActivityIndicator.stopAnimating()
+                        self?.reloadButton.isHidden = false
+                        
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
@@ -446,7 +443,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		case  Icons.windFew.rawValue:
 			return "Few Clouds, Windy"
 		case Icons.partCloudWindy.rawValue:
-			return "Parly Cloudy, Windy"
+			return "Partly Cloudy, Windy"
 		case Icons.mostCloudyWind.rawValue:
 			return "Mostly Cloudy, Windy"
 		case Icons.windOvercast.rawValue:
@@ -639,9 +636,9 @@ extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDe
 		if forecastLoaded {
 			cell.cellTitle.text = forecast[indexPath.row].name
 			
-			if unit == TemperatureUnit.fahrenheit {
+			if PageControllerManager.currentUnit == TemperatureUnit.fahrenheit {
 				cell.cellTemp.text = "\(forecast[indexPath.row].temperature)°"
-			} else if unit == TemperatureUnit.celsius {
+			} else if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 				let newTemp = convertToCelsius(value: forecast[indexPath.row].temperature)
 				cell.cellTemp.text = "\(newTemp)°"
 			}
