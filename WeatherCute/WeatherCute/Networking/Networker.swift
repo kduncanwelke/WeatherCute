@@ -26,7 +26,9 @@ struct Networker {
 			}
 			
 			// check for status code to prevent blank loading if something is wrong
-			if httpResponse.statusCode == 200 {
+            if NetworkMonitor.connection == false {
+                completion(.failure(Errors.noNetwork))
+            } else if httpResponse.statusCode == 200 {
 				if let error = error {
 					completion(.failure(error))
 				} else if let data = data {
@@ -34,7 +36,7 @@ struct Networker {
 				}
 			} else if httpResponse.statusCode == 404 {
 				completion(.failure(Errors.noDataError))
-			} else {
+            } else {
 				completion(.failure(Errors.networkError))
 				print("status was not 200")
 			}

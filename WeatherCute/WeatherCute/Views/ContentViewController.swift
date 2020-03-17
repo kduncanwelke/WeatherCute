@@ -33,7 +33,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	@IBOutlet weak var reloadButton: UIButton!
 	@IBOutlet weak var reloadActivityIndicator: UIActivityIndicatorView!
 	
-	
 	// MARK: Variables
 	
 	var itemIndex = PageControllerManager.currentPage
@@ -68,7 +67,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		NotificationCenter.default.addObserver(self, selector: #selector(reloadCurrent), name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(degreeUnitChanged), name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
-		
+        
 		guard let current = weather, let station = current.station, let obs = current.observation else { return }
 		
 		location.text = current.name
@@ -211,7 +210,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	}
 	
 	func getCurrent() {
-		activityIndicator.startAnimating()
+        activityIndicator.startAnimating()
 		DataManager<Current>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
@@ -305,20 +304,24 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
-					self?.currentLoaded = false
+                    self?.activityIndicator.stopAnimating()
+                    
 					switch error {
 					case Errors.networkError:
-						self?.activityIndicator.stopAnimating()
-                        
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
 								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
 							}
 						}
+                    case Errors.noNetwork:
+                        // only show alerts on currently visible content view to prevent confusion
+                        if let bool = self?.isViewLoaded {
+                            if bool && self?.itemIndex == PageControllerManager.currentPage {
+                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
+                            }
+                        }
 					default:
-						self?.activityIndicator.stopAnimating()
-                        
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
@@ -336,7 +339,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	}
 	
 	func getForecast() {
-		collectionViewActivityIndicator.startAnimating()
+        collectionViewActivityIndicator.startAnimating()
 		DataManager<Forecast>.fetch() { [weak self] result in
 			switch result {
 			case .success(let response):
@@ -356,21 +359,25 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 			case .failure(let error):
 				DispatchQueue.main.async {
 					self?.forecastLoaded = false
+                    self?.collectionViewActivityIndicator.stopAnimating()
+                    self?.reloadButton.isHidden = false
+                    
 					switch error {
 					case Errors.networkError:
-						self?.collectionViewActivityIndicator.stopAnimating()
-                        self?.reloadButton.isHidden = false
-                        
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
 								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
 							}
 						}
+                    case Errors.noNetwork:
+                        // only show alerts on currently visible content view to prevent confusion
+                        if let bool = self?.isViewLoaded {
+                            if bool && self?.itemIndex == PageControllerManager.currentPage {
+                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
+                            }
+                        }
 					default:
-						self?.collectionViewActivityIndicator.stopAnimating()
-                        self?.reloadButton.isHidden = false
-                        
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
@@ -404,15 +411,23 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 			case .failure(let error):
 				DispatchQueue.main.async {
 					self?.alertsLoaded = false
+                    self?.activityIndicator.stopAnimating()
+                    
 					switch error {
 					case Errors.networkError:
-						
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {
 							if bool && self?.itemIndex == PageControllerManager.currentPage {
 								NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
 							}
 						}
+                    case Errors.noNetwork:
+                        // only show alerts on currently visible content view to prevent confusion
+                        if let bool = self?.isViewLoaded {
+                            if bool && self?.itemIndex == PageControllerManager.currentPage {
+                                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
+                            }
+                        }
 					default:
 						// only show alerts on currently visible content view to prevent confusion
 						if let bool = self?.isViewLoaded {

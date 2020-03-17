@@ -24,7 +24,7 @@ class PageViewController: UIPageViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(getPrevPage), name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(getNextPage), name: NSNotification.Name(rawValue: "getNextPage"), object: nil)
-
+        
 		dataSource = self
 		delegate = self
 		
@@ -34,7 +34,6 @@ class PageViewController: UIPageViewController {
 	@objc func refresh() {
 		createPageViewController()
 	}
-    
 
     /*
     // MARK: - Navigation

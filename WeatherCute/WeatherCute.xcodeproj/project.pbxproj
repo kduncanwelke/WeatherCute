@@ -27,6 +27,7 @@
 		2D4D4AC3229F2F9C0052C391 /* ForecastSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC2229F2F9C0052C391 /* ForecastSearch.swift */; };
 		2D4D4AC5229F34B70052C391 /* Stations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC4229F34B70052C391 /* Stations.swift */; };
 		2D4D4AC7229F35B80052C391 /* Current.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC6229F35B80052C391 /* Current.swift */; };
+		2D578426241C01A000AD57FF /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D578425241C01A000AD57FF /* NetworkMonitor.swift */; };
 		2D69B6BC22A6D0060073DEAD /* ChangeObservationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D69B6BB22A6D0060073DEAD /* ChangeObservationViewController.swift */; };
 		2D69B6BE22A6D14D0073DEAD /* StationCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D69B6BD22A6D14D0073DEAD /* StationCollectionViewCell.swift */; };
 		2D6E9EB922A19EEC00BEE713 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D6E9EB822A19EEC00BEE713 /* Extensions.swift */; };
@@ -83,6 +84,7 @@
 		2D4D4AC2229F2F9C0052C391 /* ForecastSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastSearch.swift; sourceTree = "<group>"; };
 		2D4D4AC4229F34B70052C391 /* Stations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stations.swift; sourceTree = "<group>"; };
 		2D4D4AC6229F35B80052C391 /* Current.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Current.swift; sourceTree = "<group>"; };
+		2D578425241C01A000AD57FF /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		2D69B6BB22A6D0060073DEAD /* ChangeObservationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeObservationViewController.swift; sourceTree = "<group>"; };
 		2D69B6BD22A6D14D0073DEAD /* StationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationCollectionViewCell.swift; sourceTree = "<group>"; };
 		2D6E9EB822A19EEC00BEE713 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				2D4D4AB1229F1F9C0052C391 /* Result.swift */,
 				2D4D4AAC229F1EE60052C391 /* JSONDecoder.swift */,
 				2D4D4AB5229F1FDE0052C391 /* Endpoint.swift */,
+				2D578425241C01A000AD57FF /* NetworkMonitor.swift */,
 				2D4D4AB7229F21870052C391 /* Errors.swift */,
 			);
 			path = Networking;
@@ -361,6 +364,7 @@
 				2D4D4AB8229F21870052C391 /* Errors.swift in Sources */,
 				2DB9C15F22A073BF00B82FEF /* LocationManager.swift in Sources */,
 				2D6E9EB922A19EEC00BEE713 /* Extensions.swift in Sources */,
+				2D578426241C01A000AD57FF /* NetworkMonitor.swift in Sources */,
 				2D78584E22A81D44009111AA /* Icons.swift in Sources */,
 				2DB9C15722A045A400B82FEF /* PageViewController.swift in Sources */,
 				2D69B6BC22A6D0060073DEAD /* ChangeObservationViewController.swift in Sources */,
@@ -539,7 +543,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kduncan-welke.WeatherCute";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -558,7 +562,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.4;
+				MARKETING_VERSION = 1.4.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kduncan-welke.WeatherCute";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

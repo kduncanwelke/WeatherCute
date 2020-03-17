@@ -9,7 +9,6 @@
 import UIKit
 import MapKit
 import CoreLocation
-import Network
 
 class AddLocationViewController: UIViewController, UITableViewDelegate {
 
@@ -23,8 +22,6 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 	
 	var locationFromMapTap = false
 	var searchController = UISearchController(searchResultsController: nil)
-	let monitor = NWPathMonitor()
-	var connection = true
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -48,9 +45,8 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		searchController = UISearchController(searchResultsController: resultsTableController)
 		searchController.searchResultsUpdater = resultsTableController
 		searchController.searchBar.autocapitalizationType = .none
-        searchController.searchBar.searchTextField.textColor = .black
 		
-		searchController.searchBar.placeholder = "Type to a find location . . ."
+		searchController.searchBar.placeholder = "Type to find location . . ."
 		searchController.delegate = self
 		searchController.searchBar.delegate = self // Monitor when the search button is tapped.
         searchController.hidesNavigationBarDuringPresentation = false
@@ -66,50 +62,41 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		
 		mapView.setRegion(region, animated: false)
 		
-		monitor.pathUpdateHandler = { [weak self] path in
-			if path.status == .satisfied {
-				print("connection successful")
-				self?.connection = true
-			} else {
-				print("no connection")
-				self?.connection = false
-			}
-		}
-		
-		let queue = DispatchQueue(label: "Monitor")
-		monitor.start(queue: queue)
     }
 	
 	// MARK: Custom functions
 	
 	func getLocation() {
-		DataManager<Location>.fetch() { [weak self] result in
-			switch result {
-			case .success(let response):
-				DispatchQueue.main.async {
-					guard let data = response.first else { return }
-					ForecastSearch.gridX = data.properties.gridX
-					ForecastSearch.gridY = data.properties.gridY
-					ForecastSearch.station = data.properties.cwa
-					
-					if ForecastSearch.station != "" {
-						self?.getStation()
-					}
-				}
-			case .failure(let error):
-				DispatchQueue.main.async {
-					switch error {
-					case Errors.noDataError:
-						self?.showAlert(title: "Invalid Selection", message: Errors.noDataError.localizedDescription)
-						self?.clearMap()
-					case Errors.networkError:
-						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
-					default:
-						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
-					}
-				}
-			}
-		}
+        DataManager<Location>.fetch() { [weak self] result in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    guard let data = response.first else { return }
+                    ForecastSearch.gridX = data.properties.gridX
+                    ForecastSearch.gridY = data.properties.gridY
+                    ForecastSearch.station = data.properties.cwa
+                    
+                    if ForecastSearch.station != "" {
+                        self?.getStation()
+                    }
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    switch error {
+                    case Errors.noDataError:
+                        self?.showAlert(title: "Invalid Selection", message: Errors.noDataError.localizedDescription)
+                        self?.clearMap()
+                    case Errors.noNetwork:
+                        self?.showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
+                        self?.clearMap()
+                    case Errors.networkError:
+                        self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+                    default:
+                        self?.showAlert(title: "Unknown Error", message: Errors.otherError.localizedDescription)
+                    }
+                }
+            }
+        }
 	}
 	
 	func clearMap() {
@@ -126,25 +113,27 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 	}
 	
 	func getStation() {
-		DataManager<Stations>.fetch() { [weak self] result in
-			switch result {
-			case .success(let response):
-				DispatchQueue.main.async {
-					guard let data = response.first else { return }
-				
-					ForecastSearch.observationStation = data.features.first?.properties.stationIdentifier ?? ""
-				}
-			case .failure(let error):
-				DispatchQueue.main.async {
-					switch error {
-					case Errors.networkError:
-						self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
-					default:
-						self?.showAlert(title: "Networking Failed", message: Errors.otherError.localizedDescription)
-					}
-				}
-			}
-		}
+        DataManager<Stations>.fetch() { [weak self] result in
+            switch result {
+            case .success(let response):
+                DispatchQueue.main.async {
+                    guard let data = response.first else { return }
+                
+                    ForecastSearch.observationStation = data.features.first?.properties.stationIdentifier ?? ""
+                }
+            case .failure(let error):
+                DispatchQueue.main.async {
+                    switch error {
+                    case Errors.networkError:
+                        self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+                    case Errors.noNetwork:
+                        self?.showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
+                    default:
+                        self?.showAlert(title: "Unknown Error", message: Errors.otherError.localizedDescription)
+                    }
+                }
+            }
+        }
 	}
 	
 	func updateLocation(location: MKPlacemark) {
@@ -246,7 +235,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		
 		let weather = SavedLocation(name: name, latitude: LocationSearch.latitude, longitude: LocationSearch.longitude, xCoord: ForecastSearch.gridX, yCoord: ForecastSearch.gridY, station: ForecastSearch.station, observationStation: ForecastSearch.observationStation)
 	
-		if connection {
+        if NetworkMonitor.connection {
 			saveEntry(location: weather)
 		} else {
 			mapView.removeAnnotations(mapView.annotations)

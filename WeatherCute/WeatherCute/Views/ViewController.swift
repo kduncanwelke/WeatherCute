@@ -36,8 +36,24 @@ class ViewController: UIViewController {
 		NotificationCenter.default.addObserver(self, selector: #selector(updateSectionCount), name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
         
 		NotificationCenter.default.addObserver(self, selector: #selector(alert), name: NSNotification.Name(rawValue: "alert"), object: nil)
-		
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(noNetworkAlert), name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
+        
 		NotificationCenter.default.addObserver(self, selector: #selector(otherAlert), name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
+        
+        NetworkMonitor.monitor.pathUpdateHandler = { path in
+            if path.status == .satisfied {
+                print("connection successful")
+                NetworkMonitor.connection = true
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
+            } else {
+                print("no connection")
+                NetworkMonitor.connection = false
+            }
+        }
+        
+        let queue = DispatchQueue(label: "Monitor")
+        NetworkMonitor.monitor.start(queue: queue)
 	}
 	
 	// MARK: Custom functions
@@ -60,8 +76,12 @@ class ViewController: UIViewController {
 	}
 	
 	@objc func otherAlert() {
-		self.showAlert(title: "Networking Trouble", message: Errors.otherError.localizedDescription)
+		self.showAlert(title: "Unknown Error", message: Errors.otherError.localizedDescription)
 	}
+    
+    @objc func noNetworkAlert() {
+        self.showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
+    }
 	
 	@objc func updateSectionCount() {
 		if WeatherLocations.locations.isEmpty {
