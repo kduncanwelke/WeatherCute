@@ -1,7 +1,25 @@
 # WeatherCute
-Simple app for cute and user-friendly weather
+U.S. Weather - but cute!
 
 This app uses weather data from the [National Weather Service API](https://www.weather.gov/documentation/services-web-api) to track weather and forecasts for a user's selected locations. WeatherCute combines a user-friendly interface and friendly art with current condition and forecast data from the National Weather Service to provide an easy and fun way for users to get their U.S. weather. Features include current conditions, forecasts for both day and night, toggling between Fahrenheit and Celsius measurements, easy addition and deletion of locations, current alerts, and more.
+
+![Screenshot of the app WeatherCute](https://i.ibb.co/SRCy6Mp/Screen-Shot-2020-08-10-at-2-35-26-PM.png)
+
+## Description
+Track weather and forecasts for your favorite U.S. locations! 
+
+With a user-friendly interface, adorable art, and weather data provided by the National Weather Service API, WeatherCute provides all your weather needs in an easy to digest, fun format.
+
+Features include:
+* Current condition information
+* Forecast data (both day and night)
+* Easy addition and deletion of locations
+* Cute and simple art for at-a-glance understanding
+* Location selection from either a map tap or search
+* Observation station selection for current condition reports
+* A red button displayed when alerts are active for a location
+* Detailed alert info direct from the NWS, including advised steps
+* Easy toggling between Fahrenheit and Celsius measurements
 
 ## Features
 The app accesses the NWS API and retrieves and parses JSON (using Codable) to provide current weather condition and forecast information for locations a user has selected. Locations are displayed in a page view controller, and can be swiped through readily. A user adds locations by hitting the plus button in the upper right - this directs to a view with a map of the United States and a search bar. Locations can be selected either by map tap, or searching by city or zipcode. Once confirmed, a selected location is saved in Core Data.
