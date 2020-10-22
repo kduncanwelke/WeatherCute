@@ -21,7 +21,6 @@ class ViewController: UIViewController {
 	@IBOutlet weak var deleteButton: UIButton!
 	@IBOutlet weak var tempSegmentedControl: UISegmentedControl!
 	
-	
 	// MARK: Variables
 	
 	override func viewDidLoad() {
@@ -45,10 +44,13 @@ class ViewController: UIViewController {
             if path.status == .satisfied {
                 print("connection successful")
                 NetworkMonitor.connection = true
+                NetworkMonitor.status = .normal
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
             } else {
                 print("no connection")
                 NetworkMonitor.connection = false
+                NetworkMonitor.status = .lost
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
             }
         }
         
