@@ -38,13 +38,11 @@ class ViewController: UIViewController {
         
         NotificationCenter.default.addObserver(self, selector: #selector(noNetworkAlert), name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
         
-		NotificationCenter.default.addObserver(self, selector: #selector(otherAlert), name: NSNotification.Name(rawValue: "otherAlert"), object: nil)
-        
         NetworkMonitor.monitor.pathUpdateHandler = { path in
             if path.status == .satisfied {
                 print("connection successful")
-                NetworkMonitor.connection = true
                 NetworkMonitor.status = .normal
+                NetworkMonitor.connection = true
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
             } else {
                 print("no connection")
@@ -77,10 +75,6 @@ class ViewController: UIViewController {
 		self.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
 	}
 	
-	@objc func otherAlert() {
-		self.showAlert(title: "Unknown Error", message: Errors.otherError.localizedDescription)
-	}
-    
     @objc func noNetworkAlert() {
         self.showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
     }

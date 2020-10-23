@@ -28,6 +28,8 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 
         // Do any additional setup after loading the view.
 		useThisLocationButton.layer.cornerRadius = 15
+        useThisLocationButton.isEnabled = false
+        useThisLocationButton.alpha = 0.5
 		
 		ForecastSearch.gridX = 0
 		ForecastSearch.gridY = 0
@@ -120,9 +122,17 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                     guard let data = response.first else { return }
                 
                     ForecastSearch.observationStation = data.features.first?.properties.stationIdentifier ?? ""
+                    
+                    if ForecastSearch.observationStation != "" {
+                        self?.useThisLocationButton.isEnabled = true
+                        self?.useThisLocationButton.alpha = 1.0
+                    }
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
+                    self?.useThisLocationButton.isEnabled = false
+                    self?.useThisLocationButton.alpha = 0.5
+                    
                     switch error {
                     case Errors.networkError:
                         self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
@@ -230,6 +240,10 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 			showAlert(title: "No location selected", message: "Please choose a location to add")
 			return
 		}
+        
+        if LocationSearch.latitude == 0 || LocationSearch.longitude == 0 {
+            
+        }
 		
 		guard let name = locationLabel.text else { return }
 		

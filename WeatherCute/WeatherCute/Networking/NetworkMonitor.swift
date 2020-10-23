@@ -16,6 +16,8 @@ struct NetworkMonitor {
     
     static var status: NetworkStatus = .normal
     
+    static var messageShown = false
+    
     static var loadedItems: LoadedItems = .none {
         didSet {
             print(loadedItems)

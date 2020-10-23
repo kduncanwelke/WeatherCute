@@ -74,52 +74,48 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         
         NotificationCenter.default.addObserver(self, selector: #selector(networkRestored), name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(noNetwork), name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
-        
         NotificationCenter.default.addObserver(self, selector: #selector(showNetworkMessage), name: NSNotification.Name(rawValue: "showNetworkMessage"), object: nil)
         
-        NetworkMonitor.loadedItems = .none
+        NotificationCenter.default.addObserver(self, selector: #selector(noNetwork), name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
         
-		guard let current = weather, let station = current.station, let obs = current.observation else { return }
-		
-		location.text = current.name
-		
-		LocationSearch.latitude = current.latitude
-		LocationSearch.longitude = current.longitude
-		
-		ForecastSearch.gridX = Int(current.xCoord)
-		ForecastSearch.gridY = Int(current.yCoord)
-		ForecastSearch.station = station
-		ForecastSearch.observationStation = obs
-		
-		currentFrom.text = "Current conditions from \(obs)"
+        NetworkMonitor.loadedItems = .none
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
-		guard let current = weather, let station = current.station, let obs = current.observation else { return }
-		
-		location.text = current.name
-		
-		LocationSearch.latitude = current.latitude
-		LocationSearch.longitude = current.longitude
-		
-		ForecastSearch.gridX = Int(current.xCoord)
-		ForecastSearch.gridY = Int(current.yCoord)
-		ForecastSearch.station = station
-		ForecastSearch.observationStation = obs
+		setInfo()
         
         loadData()
 	}
 	
 	// MARK: Custom functions
     
+    func setInfo() {
+        guard let current = weather, let station = current.station, let obs = current.observation else { return }
+        print(current)
+        location.text = current.name
+        
+        LocationSearch.latitude = current.latitude
+        LocationSearch.longitude = current.longitude
+        
+        ForecastSearch.gridX = Int(current.xCoord)
+        ForecastSearch.gridY = Int(current.yCoord)
+        ForecastSearch.station = station
+        ForecastSearch.observationStation = obs
+        
+        currentFrom.text = "Current conditions from \(obs)"
+    }
+    
     func loadData() {
-        if currentLoaded && forecastLoaded && alertsLoaded {
-            displayCurrent()
+        if NetworkMonitor.connection {
+            if currentLoaded && forecastLoaded && alertsLoaded {
+                displayCurrent()
+            } else {
+                getCurrent()
+                getAlerts()
+                getForecast()
+            }
         } else {
-            getCurrent()
-            getAlerts()
-            getForecast()
+            noNetwork()
         }
     }
     
@@ -144,6 +140,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
     
     @objc func showNetworkMessage() {
+        print("show network message")
         switch NetworkMonitor.status {
         case .normal:
             print("No problems")
@@ -153,11 +150,21 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             if isViewLoaded && itemIndex == PageControllerManager.currentPage {
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
             }
+            print("network lost")
         case .other:
-            // there is some other networking error
-            // only show alerts on currently visible content view to prevent confusion
-            if isViewLoaded && itemIndex == PageControllerManager.currentPage {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
+            if NetworkMonitor.connection == false {
+                // only show alerts on currently visible content view to prevent confusion
+                if isViewLoaded && itemIndex == PageControllerManager.currentPage {
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
+                }
+                print("other no connection")
+            } else {
+                // there is some other networking error
+                // only show alerts on currently visible content view to prevent confusion
+                if isViewLoaded && itemIndex == PageControllerManager.currentPage {
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
+                }
+                print("other")
             }
         }
     }
@@ -196,13 +203,23 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     @objc func networkRestored() {
         print("network restored")
-        loadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [unowned self] in
+            self.setInfo()
+            self.loadData()
+            NetworkMonitor.messageShown = false
+        }
     }
     
     @objc func noNetwork() {
         // only show alerts on currently visible content view to prevent confusion
-        if isViewLoaded && itemIndex == PageControllerManager.currentPage {
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
+        if NetworkMonitor.messageShown == false {
+            DispatchQueue.main.async {
+                if self.isViewLoaded && self.itemIndex == PageControllerManager.currentPage {
+                    print("no network called")
+                    NetworkMonitor.messageShown = true
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
+                }
+            }
         }
     }
 	
@@ -281,6 +298,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             self.activityIndicator.startAnimating()
         }
 		DataManager<Current>.fetch() { [weak self] result in
+            print("fetch")
 			switch result {
 			case .success(let response):
 				DispatchQueue.main.async {
@@ -288,7 +306,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
                         self?.activityIndicator.stopAnimating()
 						return
 					}
-					
+                    
 					let temp: Int? = {
 						if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 							if let result = data.properties.temperature.value {
@@ -371,8 +389,13 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					self?.currentLoaded = true
 					
 					self?.displayCurrent()
+                    
+                    NetworkMonitor.status = .normal
+                    self?.currentFinished = true
+                    self?.checkLoaded()
 				}
 			case .failure(let error):
+                print("fail")
 				DispatchQueue.main.async {
                     self?.activityIndicator.stopAnimating()
                     
@@ -388,12 +411,11 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
                     self?.currentLoaded = true
                     
                     self?.displayCurrent()
+                    self?.currentFinished = true
+                    self?.checkLoaded()
 				}
 			}
 		}
-        
-        currentFinished = true
-        checkLoaded()
 	}
 	
 	func getForecast() {
@@ -415,6 +437,10 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					self?.collectionViewActivityIndicator.stopAnimating()
 					self?.collectionView.reloadData()
                     self?.reloadButton.isHidden = false
+                    
+                    NetworkMonitor.status = .normal
+                    self?.forecastFinished = true
+                    self?.checkLoaded()
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -430,12 +456,12 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					default:
                         NetworkMonitor.status = .other
 					}
+                    
+                    self?.forecastFinished = true
+                    self?.checkLoaded()
 				}
 			}
 		}
-        
-        forecastFinished = true
-        checkLoaded()
 	}
 	
 	func getAlerts() {
@@ -455,6 +481,10 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					}
 					
 					self?.alertsLoaded = true
+                    
+                    NetworkMonitor.status = .normal
+                    self?.alertsFinished = true
+                    self?.checkLoaded()
 				}
 			case .failure(let error):
 				DispatchQueue.main.async {
@@ -468,12 +498,12 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					default:
                         NetworkMonitor.status = .other
 					}
+                    
+                    self?.alertsFinished = true
+                    self?.checkLoaded()
 				}
 			}
 		}
-        
-        alertsFinished = true
-        checkLoaded()
 	}
 	
 	func getForecastText(icon: String) -> String {

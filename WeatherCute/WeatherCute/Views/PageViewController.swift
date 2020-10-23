@@ -140,13 +140,14 @@ class PageViewController: UIPageViewController {
 	
 	// create content view
 	func getContentViewController(withIndex index: Int) -> ContentViewController? {
+        print("index \(index)")
 		if index < WeatherLocations.locations.count {
 			var contentVC = self.storyboard?.instantiateViewController(withIdentifier: "contentVC") as! ContentViewController
 			contentVC.itemIndex = index
 			contentVC.weather = WeatherLocations.locations[index]
 			
 			return contentVC
-		}
+        }
 		
 		return nil
 	}
