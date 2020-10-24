@@ -17,11 +17,13 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 	@IBOutlet weak var mapView: MKMapView!
 	@IBOutlet weak var locationLabel: UILabel!
 	@IBOutlet weak var useThisLocationButton: UIButton!
-	
+    @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    
 	// MARK: Variables
 	
 	var locationFromMapTap = false
 	var searchController = UISearchController(searchResultsController: nil)
+    var networkMessageShown = false
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -57,6 +59,12 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
 		
+        NotificationCenter.default.addObserver(self, selector: #selector(networkBack), name: NSNotification.Name(rawValue: "networkBack"), object: nil)
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(networkGone), name: NSNotification.Name(rawValue: "networkGone"), object: nil)
+        
+        loadingIndicator.stopAnimating()
+        
 		// center map on geographic center of us
 		let coordinate = CLLocationCoordinate2D(latitude: 39.50, longitude: -98.35)
 		let regionRadius: CLLocationDistance = 3500000
@@ -67,8 +75,64 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
     }
 	
 	// MARK: Custom functions
+    
+    @objc func networkBack() {
+        print("network restored")
+        // use delay to give connection time to establish successfully
+        networkMessageShown = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
+            if let coordinate = self?.mapView.annotations.first?.coordinate {
+                let placemark = MKPlacemark(coordinate: coordinate)
+                LocationSearch.latitude = placemark.coordinate.latitude
+                LocationSearch.longitude = placemark.coordinate.longitude
+                self?.updateLocation(location: placemark)
+            }
+        }
+    }
+    
+    @objc func networkGone() {
+        DispatchQueue.main.async {
+            self.loadingIndicator.stopAnimating()
+            
+            // if data was not retrieved in time, disable add button
+            if ForecastSearch.gridX == 0 || ForecastSearch.gridY == 0 || ForecastSearch.station == "" || ForecastSearch.observationStation == "" {
+                self.useThisLocationButton.isEnabled = false
+                self.useThisLocationButton.alpha = 0.5
+            }
+        }
+    }
+    
+    func networkMessage() {
+        print("show network message")
+            if networkMessageShown == false {
+            switch NetworkMonitor.status {
+            case .normal:
+                print("No problems")
+            case .lost:
+                // the network was lost
+                // only show alerts on currently visible content view to prevent confusion
+                showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
+                networkMessageShown = true
+                print("network lost")
+            case .other:
+                if NetworkMonitor.connection == false {
+                    // only show alerts on currently visible content view to prevent confusion
+                    showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
+                    networkMessageShown = true
+                    print("other no connection")
+                } else {
+                    showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+                    networkMessageShown = true
+                    print("other")
+                }
+            }
+        }
+    }
 	
 	func getLocation() {
+        DispatchQueue.main.async {
+            self.loadingIndicator.startAnimating()
+        }
         DataManager<Location>.fetch() { [weak self] result in
             switch result {
             case .success(let response):
@@ -81,21 +145,29 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                     if ForecastSearch.station != "" {
                         self?.getStation()
                     }
+                    
+                    NetworkMonitor.status = .normal
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
+                    self?.loadingIndicator.stopAnimating()
+                    
                     switch error {
                     case Errors.noDataError:
                         self?.showAlert(title: "Invalid Selection", message: Errors.noDataError.localizedDescription)
+                        // invalid selection is usually out of the country, not indicative of a network error
+                        NetworkMonitor.status = .normal
                         self?.clearMap()
                     case Errors.noNetwork:
-                        self?.showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
+                        NetworkMonitor.status = .lost
                         self?.clearMap()
                     case Errors.networkError:
-                        self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+                        NetworkMonitor.status = .other
                     default:
-                        self?.showAlert(title: "Unknown Error", message: Errors.otherError.localizedDescription)
+                        NetworkMonitor.status = .other
                     }
+                    
+                    self?.networkMessage()
                 }
             }
         }
@@ -104,7 +176,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 	func clearMap() {
 		mapView.removeAnnotations(mapView.annotations)
 		
-		locationLabel.text = "No Selection"
+		locationLabel.text = ""
 		
 		// center map on geographic center of us
 		let coordinate = CLLocationCoordinate2D(latitude: 39.50, longitude: -98.35)
@@ -127,29 +199,43 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                         self?.useThisLocationButton.isEnabled = true
                         self?.useThisLocationButton.alpha = 1.0
                     }
+                    
+                    NetworkMonitor.status = .normal
+                    self?.loadingIndicator.stopAnimating()
                 }
             case .failure(let error):
                 DispatchQueue.main.async {
+                    self?.loadingIndicator.stopAnimating()
                     self?.useThisLocationButton.isEnabled = false
                     self?.useThisLocationButton.alpha = 0.5
                     
                     switch error {
                     case Errors.networkError:
-                        self?.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+                        NetworkMonitor.status = .other
                     case Errors.noNetwork:
-                        self?.showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
+                        NetworkMonitor.status = .lost
                     default:
-                        self?.showAlert(title: "Unknown Error", message: Errors.otherError.localizedDescription)
+                        NetworkMonitor.status = .other
                     }
+                    
+                    self?.networkMessage()
                 }
             }
         }
 	}
 	
 	func updateLocation(location: MKPlacemark) {
-		// wipe annotations if location was updated
-		mapView.removeAnnotations(mapView.annotations)
-		
+        // if there's no network, exit early
+        if NetworkMonitor.connection == false {
+            networkMessage()
+            return
+        }
+        
+        // wipe annotations if location was updated
+        mapView.removeAnnotations(mapView.annotations)
+        
+        getLocation()
+        
 		let coordinate = CLLocationCoordinate2D(latitude: LocationSearch.latitude, longitude: LocationSearch.longitude)
 		
 		let regionRadius: CLLocationDistance = 10000
@@ -168,25 +254,27 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 					guard let firstLocation = placemarks?[0] else { return }
 					annotation.title = LocationManager.parseAddress(selectedItem: firstLocation)
 					self?.locationLabel.text = annotation.title
-				}
-				else {
+				} else {
 					// an error occurred during geocoding
-					self?.showAlert(title: "Network Lost", message: "The location cannot be found - please check your network connection")
+                    // if there had been a connection and it was suddenly lost, show error
+                    // otherwise this error message will be covered by networking error feedback
+                    if NetworkMonitor.connection {
+                        self?.showAlert(title: "Network Lost", message: "The location cannot be found - please check your network connection")
+                    }
 				}
 			})
 		} else {
 			// otherwise use location that was included with location object, which came from a search
 			annotation.title = LocationManager.parseAddress(selectedItem: location)
 		}
-		
-		getLocation()
 			
 		annotation.coordinate = coordinate
+        locationLabel.text = annotation.title
 		mapView.addAnnotation(annotation)
+        useThisLocationButton.isEnabled = false
+        useThisLocationButton.alpha = 0.5
+        
 		mapView.setRegion(region, animated: true)
-		
-		locationLabel.text = annotation.title
-	
 	}
 	
 	func saveEntry(location: SavedLocation) {
@@ -241,21 +329,17 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 			return
 		}
         
-        if LocationSearch.latitude == 0 || LocationSearch.longitude == 0 {
-            
+		if locationLabel.text != "", let name = locationLabel.text {
+            let weather = SavedLocation(name: name, latitude: LocationSearch.latitude, longitude: LocationSearch.longitude, xCoord: ForecastSearch.gridX, yCoord: ForecastSearch.gridY, station: ForecastSearch.station, observationStation: ForecastSearch.observationStation)
+        
+            if NetworkMonitor.connection {
+                saveEntry(location: weather)
+            } else {
+                mapView.removeAnnotations(mapView.annotations)
+                locationLabel.text = ""
+                showAlert(title: "Cannot add location", message: "No network connection is available. Complete data for this location could not be retrieved.")
+            }
         }
-		
-		guard let name = locationLabel.text else { return }
-		
-		let weather = SavedLocation(name: name, latitude: LocationSearch.latitude, longitude: LocationSearch.longitude, xCoord: ForecastSearch.gridX, yCoord: ForecastSearch.gridY, station: ForecastSearch.station, observationStation: ForecastSearch.observationStation)
-	
-        if NetworkMonitor.connection {
-			saveEntry(location: weather)
-		} else {
-			mapView.removeAnnotations(mapView.annotations)
-			locationLabel.text = ""
-			showAlert(title: "Cannot add location", message: "No network connection is available. Complete data for this location could not be retrieved.")
-		}
 	}
 	
 	@IBAction func cancelTapped(_ sender: UIButton) {

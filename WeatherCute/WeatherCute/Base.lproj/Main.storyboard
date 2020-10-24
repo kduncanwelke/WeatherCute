@@ -160,12 +160,17 @@
                                     <action selector="addLocationTapped:" destination="Foy-Bk-JnS" eventType="touchUpInside" id="noX-Vv-nwZ"/>
                                 </connections>
                             </button>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" animating="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="Feo-vi-l6f">
+                                <rect key="frame" x="169" y="421.66666666666669" width="37" height="37"/>
+                                <color key="color" cocoaTouchSystemColor="darkTextColor"/>
+                            </activityIndicatorView>
                         </subviews>
                         <color key="backgroundColor" red="0.14117647058823529" green="0.63921568627450975" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="hB5-9l-lMP" firstAttribute="top" secondItem="946-hD-Yxf" secondAttribute="bottom" constant="25" id="0MY-x0-UEA"/>
                             <constraint firstItem="946-hD-Yxf" firstAttribute="trailing" secondItem="NCf-0N-E0D" secondAttribute="trailing" id="0rm-1v-bip"/>
                             <constraint firstItem="zJQ-qY-Hfi" firstAttribute="centerX" secondItem="guR-iv-W9S" secondAttribute="centerX" id="33l-Lc-xHT"/>
+                            <constraint firstItem="Feo-vi-l6f" firstAttribute="centerY" secondItem="YpS-hP-Tid" secondAttribute="centerY" id="7Kj-o0-t6h"/>
                             <constraint firstItem="k14-tF-F1R" firstAttribute="top" secondItem="hB5-9l-lMP" secondAttribute="bottom" constant="20" id="H1E-IF-Szf"/>
                             <constraint firstItem="NCf-0N-E0D" firstAttribute="bottom" secondItem="zJQ-qY-Hfi" secondAttribute="bottom" constant="20" id="HWR-3H-skb"/>
                             <constraint firstItem="NCf-0N-E0D" firstAttribute="trailing" secondItem="hB5-9l-lMP" secondAttribute="trailing" constant="25" id="JV3-bD-kEW"/>
@@ -174,6 +179,7 @@
                             <constraint firstItem="k14-tF-F1R" firstAttribute="leading" secondItem="NCf-0N-E0D" secondAttribute="leading" constant="50" id="ZfF-j1-a2Y"/>
                             <constraint firstItem="YpS-hP-Tid" firstAttribute="top" secondItem="hB5-9l-lMP" secondAttribute="bottom" constant="70" id="aux-Rh-pjY"/>
                             <constraint firstItem="946-hD-Yxf" firstAttribute="top" secondItem="NCf-0N-E0D" secondAttribute="top" id="hdm-XG-Hmk"/>
+                            <constraint firstItem="Feo-vi-l6f" firstAttribute="centerX" secondItem="YpS-hP-Tid" secondAttribute="centerX" id="hqL-2Z-IE3"/>
                             <constraint firstItem="946-hD-Yxf" firstAttribute="leading" secondItem="NCf-0N-E0D" secondAttribute="leading" id="mBV-J2-hzo"/>
                             <constraint firstItem="946-hD-Yxf" firstAttribute="height" secondItem="guR-iv-W9S" secondAttribute="height" multiplier="0.4" id="pAS-Mp-zLo"/>
                             <constraint firstItem="zJQ-qY-Hfi" firstAttribute="top" relation="greaterThanOrEqual" secondItem="YpS-hP-Tid" secondAttribute="bottom" constant="10" id="pLQ-sv-x2s"/>
@@ -183,6 +189,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Add Weather Location" id="y7n-Iq-d55"/>
                     <connections>
+                        <outlet property="loadingIndicator" destination="Feo-vi-l6f" id="AU1-Qv-Fcz"/>
                         <outlet property="locationLabel" destination="k14-tF-F1R" id="oKz-se-iQY"/>
                         <outlet property="mapView" destination="946-hD-Yxf" id="dC1-BW-EVZ"/>
                         <outlet property="useThisLocationButton" destination="YpS-hP-Tid" id="O2p-m9-X3w"/>
@@ -458,8 +465,8 @@
                                 <rect key="frame" x="0.0" y="44" width="375" height="324.66666666666669"/>
                                 <gestureRecognizers/>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Ut-Qi-CAd">
-                                <rect key="frame" x="145" y="44" width="85" height="26.333333333333329"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="-" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0Ut-Qi-CAd">
+                                <rect key="frame" x="182.66666666666666" y="44" width="10" height="26.333333333333329"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="22"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -602,8 +609,9 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="4IB-kd-ksB">
-                                <rect key="frame" x="177.66666666666666" y="622.33333333333337" width="20" height="20"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="4IB-kd-ksB">
+                                <rect key="frame" x="169" y="613.66666666666663" width="37" height="37"/>
+                                <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="W7R-yF-S9X">
                                 <rect key="frame" x="199.33333333333334" y="272.66666666666669" width="40" height="40"/>
@@ -616,8 +624,9 @@
                                     <action selector="alertButtonPressed:" destination="gD2-sg-PZP" eventType="touchUpInside" id="CSy-4a-ZUK"/>
                                 </connections>
                             </button>
-                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="white" translatesAutoresizingMaskIntoConstraints="NO" id="aug-y8-786">
-                                <rect key="frame" x="177.66666666666666" y="196.33333333333334" width="20" height="20"/>
+                            <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="large" translatesAutoresizingMaskIntoConstraints="NO" id="aug-y8-786">
+                                <rect key="frame" x="169" y="188" width="37" height="37"/>
+                                <color key="color" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </activityIndicatorView>
                             <stackView opaque="NO" contentMode="scaleToFill" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="HZS-cP-nWn">
                                 <rect key="frame" x="83.000000000000014" y="448.66666666666669" width="209.33333333333337" height="28"/>
@@ -671,7 +680,7 @@
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lCZ-hm-rv0">
-                                <rect key="frame" x="238" y="44.666666666666664" width="25" height="24.999999999999993"/>
+                                <rect key="frame" x="200.66666666666666" y="44.666666666666664" width="25" height="24.999999999999993"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="25" id="77t-Y3-mVc"/>
                                     <constraint firstAttribute="width" constant="25" id="ZPa-iq-gDP"/>
@@ -682,7 +691,7 @@
                                 </connections>
                             </button>
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" hidesWhenStopped="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="6ld-4U-T1a">
-                                <rect key="frame" x="240.66666666666666" y="47.333333333333336" width="19.999999999999972" height="20.000000000000007"/>
+                                <rect key="frame" x="203" y="47.333333333333336" width="20" height="20.000000000000007"/>
                                 <color key="color" cocoaTouchSystemColor="darkTextColor"/>
                             </activityIndicatorView>
                         </subviews>

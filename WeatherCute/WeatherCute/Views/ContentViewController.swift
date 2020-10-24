@@ -204,9 +204,9 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     @objc func networkRestored() {
         print("network restored")
         // use delay to give connection time to establish successfully, only reload current page
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [unowned self] in
-            if self.isViewLoaded && self.itemIndex == PageControllerManager.currentPage {
-                self.loadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [weak self] in
+            if self?.isViewLoaded != nil && self?.itemIndex == PageControllerManager.currentPage {
+                self?.loadData()
                 NetworkMonitor.messageShown = false
             }
         }

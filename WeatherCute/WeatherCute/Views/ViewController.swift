@@ -44,11 +44,13 @@ class ViewController: UIViewController {
                 NetworkMonitor.status = .normal
                 NetworkMonitor.connection = true
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkBack"), object: nil)
             } else {
                 print("no connection")
                 NetworkMonitor.connection = false
                 NetworkMonitor.status = .lost
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkGone"), object: nil)
             }
         }
         
