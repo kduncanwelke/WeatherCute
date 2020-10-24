@@ -130,6 +130,7 @@ class PageViewController: UIPageViewController {
 	}
 	
 	func createPageViewController() {
+        print("create")
 		if WeatherLocations.locations.count > 0 {
 			var contentController = getContentViewController(withIndex: PageControllerManager.currentPage)!
 			var contentControllers = [contentController]
@@ -141,10 +142,11 @@ class PageViewController: UIPageViewController {
 	// create content view
 	func getContentViewController(withIndex index: Int) -> ContentViewController? {
         print("index \(index)")
+        print("get content")
 		if index < WeatherLocations.locations.count {
 			var contentVC = self.storyboard?.instantiateViewController(withIdentifier: "contentVC") as! ContentViewController
-			contentVC.itemIndex = index
-			contentVC.weather = WeatherLocations.locations[index]
+            contentVC.itemIndex = index
+            contentVC.weather = WeatherLocations.locations[index]
 			
 			return contentVC
         }
@@ -175,10 +177,12 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 	}
 	
 	func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+        print("will transition to")
 		pendingIndex = (pendingViewControllers.first as! ContentViewController).itemIndex
 	}
 	
 	func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        print("did finish animating")
 		if completed {
 			let currentIndex = pendingIndex
 			if let index = currentIndex {

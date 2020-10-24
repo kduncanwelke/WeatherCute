@@ -111,8 +111,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
                 displayCurrent()
             } else {
                 getCurrent()
-                getAlerts()
                 getForecast()
+                getAlerts()
             }
         } else {
             noNetwork()
@@ -203,10 +203,12 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     @objc func networkRestored() {
         print("network restored")
+        // use delay to give connection time to establish successfully, only reload current page
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) { [unowned self] in
-            self.setInfo()
-            self.loadData()
-            NetworkMonitor.messageShown = false
+            if self.isViewLoaded && self.itemIndex == PageControllerManager.currentPage {
+                self.loadData()
+                NetworkMonitor.messageShown = false
+            }
         }
     }
     
@@ -386,11 +388,11 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					self?.currentIcon = icon
 					self?.activityIndicator.stopAnimating()
 					
-					self?.currentLoaded = true
-					
 					self?.displayCurrent()
                     
                     NetworkMonitor.status = .normal
+                    
+                    self?.currentLoaded = true
                     self?.currentFinished = true
                     self?.checkLoaded()
 				}
@@ -409,8 +411,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					}
                     
                     self?.currentLoaded = true
-                    
                     self?.displayCurrent()
+                    
                     self?.currentFinished = true
                     self?.checkLoaded()
 				}
