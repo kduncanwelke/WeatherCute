@@ -9,6 +9,6 @@
 import Foundation
 
 // protocol for search types, used for generics in data manager
-protocol SearchType: Codable {
+protocol SearchType: Decodable {
 	static var endpoint: Endpoint { get }
 }

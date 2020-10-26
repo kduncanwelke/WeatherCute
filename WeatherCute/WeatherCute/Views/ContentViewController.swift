@@ -23,7 +23,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	@IBOutlet weak var collectionView: UICollectionView!
 	@IBOutlet weak var currentFrom: UILabel!
 	@IBOutlet weak var largeImage: UIImageView!
-	@IBOutlet weak var alertButton: UIButton!
+    @IBOutlet weak var noImageText: UILabel!
+    @IBOutlet weak var alertButton: UIButton!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	@IBOutlet weak var collectionViewActivityIndicator: UIActivityIndicatorView!
 	
@@ -79,11 +80,13 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         NotificationCenter.default.addObserver(self, selector: #selector(noNetwork), name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
         
         NetworkMonitor.loadedItems = .none
+        
+        setInfo()
+        loadData()
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
 		setInfo()
-        
         loadData()
 	}
 	
@@ -91,7 +94,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     func setInfo() {
         guard let current = weather, let station = current.station, let obs = current.observation else { return }
-        print(current)
+       
         location.text = current.name
         
         LocationSearch.latitude = current.latitude
@@ -229,32 +232,32 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		if currentLoaded {
 			if PageControllerManager.currentUnit == TemperatureUnit.fahrenheit {
 				if let current = currentTemp {
-					let newTemp = convertToFahrenheit(value: current)
+                    let newTemp = convertToFahrenheit(value: Double(current))
 					currentTemp = newTemp
 				}
 				
 				if let currentDew = currentDewpoint {
-					let newDew = convertToFahrenheit(value: currentDew)
+                    let newDew = convertToFahrenheit(value: Double(currentDew))
 					currentDewpoint = newDew
 				}
 				
 				if let currentHeatChill = currentHeatOrChill {
-					let newHeatChill = convertToFahrenheit(value: currentHeatChill)
+                    let newHeatChill = convertToFahrenheit(value: Double(currentHeatChill))
 					currentHeatOrChill = newHeatChill
 				}
 			} else if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 				if let current = currentTemp {
-					let newTemp = convertToCelsius(value: current)
+                    let newTemp = convertToCelsius(value: Double(current))
 					currentTemp = newTemp
 				}
 				
 				if let currentDew = currentDewpoint {
-					let newDew = convertToCelsius(value: currentDew)
+                    let newDew = convertToCelsius(value: Double(currentDew))
 					currentDewpoint = newDew
 				}
 				
 				if let currentHeatChill = currentHeatOrChill {
-					let newHeatChill = convertToCelsius(value: currentHeatChill)
+                    let newHeatChill = convertToCelsius(value: Double(currentHeatChill))
 					currentHeatOrChill = newHeatChill
 				}
             }
@@ -264,14 +267,13 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		}
 	}
 	
-	func convertToFahrenheit(value: Int) -> Int {
+	func convertToFahrenheit(value: Double) -> Int {
 		let result = (value * 9/5) + 32
 		return Int(result)
 	}
 	
-	func convertToCelsius(value: Int) -> Int {
-		let double = Double(value)
-		let result = (double - 32) / 1.8
+	func convertToCelsius(value: Double) -> Int {
+		let result = (value - 32) / 1.8
 		return Int(result)
 	}
 	
@@ -309,6 +311,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						return
 					}
                     
+                    print(data)
 					let temp: Int? = {
 						if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 							if let result = data.properties.temperature.value {
@@ -317,7 +320,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 								return nil
 							}
 						} else if let tempy = data.properties.temperature.value {
-							return self?.convertToFahrenheit(value: Int(tempy))
+							return self?.convertToFahrenheit(value: tempy)
 						} else {
 							return nil
 						}
@@ -325,7 +328,11 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					
 					self?.currentTemp = temp
                    
-					self?.currentDescrip = data.properties.textDescription
+                    if data.properties.textDescription != "" {
+                        self?.currentDescrip = data.properties.textDescription
+                    } else {
+                        self?.currentDescrip = "No current reporting"
+                    }
 					
 					let humidity: Int? = {
 						if let result = data.properties.relativeHumidity.value {
@@ -345,7 +352,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 								return nil
 							}
 						} else if let dew = data.properties.dewpoint.value {
-							return self?.convertToFahrenheit(value: Int(dew))
+							return self?.convertToFahrenheit(value: dew)
 						} else {
 							return nil
 						}
@@ -360,7 +367,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 							if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 								return Int(heat)
 							} else {
-								return self?.convertToFahrenheit(value: Int(heat))
+								return self?.convertToFahrenheit(value: heat)
 							}
 						} else if let chill = data.properties.windChill.value {
 							self?.heatIndexLabel.text = "Wind Chill"
@@ -368,24 +375,30 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 							if PageControllerManager.currentUnit == TemperatureUnit.celsius {
 								return Int(chill)
 							} else {
-								return self?.convertToFahrenheit(value: Int(chill))
+								return self?.convertToFahrenheit(value: chill)
 							}
 						} else {
 							return nil
 						}
 					}()
 					
-					let separated = data.properties.icon.components(separatedBy: "/")[6]
-					let dayNight = data.properties.icon.components(separatedBy: "/")[5]
+                    if let weatherIcon = data.properties.icon {
+                        self?.noImageText.isHidden = true
+                        let separated = weatherIcon.components(separatedBy: "/")[6]
+                        let dayNight = weatherIcon.components(separatedBy: "/")[5]
+                        
+                        if dayNight == "day" {
+                            self?.isDay = true
+                        } else if dayNight == "night" {
+                            self?.isDay = false
+                        }
+                        
+                        let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
+                        self?.currentIcon = icon
+                    } else {
+                        self?.noImageText.isHidden = false
+                    }
 					
-					if dayNight == "day" {
-						self?.isDay = true
-					} else if dayNight == "night" {
-						self?.isDay = false
-					}
-					
-					let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
-					self?.currentIcon = icon
 					self?.activityIndicator.stopAnimating()
 					
 					self?.displayCurrent()
@@ -721,7 +734,7 @@ extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDe
 			if PageControllerManager.currentUnit == TemperatureUnit.fahrenheit {
 				cell.cellTemp.text = "\(forecast[indexPath.row].temperature)°"
 			} else if PageControllerManager.currentUnit == TemperatureUnit.celsius {
-				let newTemp = convertToCelsius(value: forecast[indexPath.row].temperature)
+                let newTemp = convertToCelsius(value: Double(forecast[indexPath.row].temperature))
 				cell.cellTemp.text = "\(newTemp)°"
 			}
 			

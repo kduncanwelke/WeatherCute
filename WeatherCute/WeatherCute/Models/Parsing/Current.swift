@@ -13,36 +13,90 @@ struct Current: SearchType {
 	var properties: CurrentCondition
 }
 
-struct CurrentCondition: Codable {
+struct CurrentCondition: Decodable {
 	var textDescription: String
 	var temperature: Temperature
 	var dewpoint: DewPoint
 	var windChill: WindChill
 	var heatIndex: HeatIndex
 	var relativeHumidity: Humidity
-	var icon: String
+	var icon: String?
 }
 
-struct Temperature: Codable {
+struct Temperature: Decodable {
 	var value: Double?
 	var unitCode: String
+    
+    init(value: Double?, unitCode: String) {
+        if let temp = value {
+            self.value = Double(temp)
+        }
+        self.unitCode = unitCode
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case value = "value", unitCode = "unitCode"
+    }
 }
 
-struct DewPoint: Codable {
+struct DewPoint: Decodable {
 	var value: Double?
 	var unitCode: String
+    
+    init(value: Double?, unitCode: String) {
+        if let dewpoint = value {
+            self.value = Double(dewpoint)
+        }
+        self.unitCode = unitCode
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case value = "value", unitCode = "unitCode"
+    }
 }
 
-struct WindChill: Codable {
+struct WindChill: Decodable {
 	var value: Double?
 	var unitCode: String
+    
+    init(value: Double?, unitCode: String) {
+        if let windchill = value {
+            self.value = Double(windchill)
+        }
+        self.unitCode = unitCode
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case value = "value", unitCode = "unitCode"
+    }
 }
 
-struct HeatIndex: Codable {
+struct HeatIndex: Decodable {
 	var value: Double?
 	var unitCode: String
+    
+    init(value: Double?, unitCode: String) {
+        if let heatindex = value {
+            self.value = Double(heatindex)
+        }
+        self.unitCode = unitCode
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case value = "value", unitCode = "unitCode"
+    }
 }
 
-struct Humidity: Codable {
+struct Humidity: Decodable {
 	var value: Double?
+    
+    init(value: Double?) {
+        if let humidity = value {
+            self.value = Double(humidity)
+        }
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case value = "value"
+    }
 }

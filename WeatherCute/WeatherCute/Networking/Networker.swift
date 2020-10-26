@@ -19,12 +19,12 @@ struct Networker {
 		let request = URLRequest(url: url)
 		
 		let task = session.dataTask(with: request) { data, response, error in
-			
+        
 			guard let httpResponse = response as? HTTPURLResponse else {
 				completion(.failure(Errors.networkError))
 				return
 			}
-			
+           
 			// check for status code to prevent blank loading if something is wrong
             if NetworkMonitor.connection == false {
                 completion(.failure(Errors.noNetwork))
@@ -33,7 +33,7 @@ struct Networker {
 					completion(.failure(error))
 				} else if let data = data {
 					completion(.success(data))
-				}
+                }
 			} else if httpResponse.statusCode == 404 {
 				completion(.failure(Errors.noDataError))
             } else {

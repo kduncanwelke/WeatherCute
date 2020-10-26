@@ -78,16 +78,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
     
     @objc func networkBack() {
         print("network restored")
-        // use delay to give connection time to establish successfully
         networkMessageShown = false
-        DispatchQueue.main.asyncAfter(deadline: .now() + 10) { [weak self] in
-            if let coordinate = self?.mapView.annotations.first?.coordinate {
-                let placemark = MKPlacemark(coordinate: coordinate)
-                LocationSearch.latitude = placemark.coordinate.latitude
-                LocationSearch.longitude = placemark.coordinate.longitude
-                self?.updateLocation(location: placemark)
-            }
-        }
     }
     
     @objc func networkGone() {
@@ -195,7 +186,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                 
                     ForecastSearch.observationStation = data.features.first?.properties.stationIdentifier ?? ""
                     
-                    if ForecastSearch.observationStation != "" {
+                    if ForecastSearch.observationStation != "" && ForecastSearch.gridX != 0 && ForecastSearch.gridY != 0 && ForecastSearch.station != "" {
                         self?.useThisLocationButton.isEnabled = true
                         self?.useThisLocationButton.alpha = 1.0
                     }
@@ -337,6 +328,8 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
             } else {
                 mapView.removeAnnotations(mapView.annotations)
                 locationLabel.text = ""
+                useThisLocationButton.isEnabled = false
+                useThisLocationButton.alpha = 0.5
                 showAlert(title: "Cannot add location", message: "No network connection is available. Complete data for this location could not be retrieved.")
             }
         }
