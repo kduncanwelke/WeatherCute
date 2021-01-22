@@ -50,6 +50,7 @@ enum Icons: String {
 	case tropicalStorm = "tropical_storm"
 	
 	case smoke = "smoke"
+    case dust = "dust"
 	
 	case haze = "haze"
 	case fog = "fog"

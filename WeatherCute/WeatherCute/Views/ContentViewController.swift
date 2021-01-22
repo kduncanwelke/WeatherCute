@@ -80,9 +80,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         NotificationCenter.default.addObserver(self, selector: #selector(noNetwork), name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
         
         NetworkMonitor.loadedItems = .none
-        
-        setInfo()
-        loadData()
     }
 	
 	override func viewDidAppear(_ animated: Bool) {
@@ -571,6 +568,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 			return "Tropical Storm"
 		case Icons.smoke.rawValue:
 			return "Smoke"
+        case Icons.dust.rawValue:
+            return "Dust"
 		case Icons.haze.rawValue:
 			return "Haze"
 		case Icons.fog.rawValue:
@@ -613,7 +612,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 				return UIImage(named: "tornado")
 			case Icons.hurricane.rawValue, Icons.tropicalStorm.rawValue:
 				return UIImage(named: "hurricane")
-			case Icons.smoke.rawValue:
+			case Icons.smoke.rawValue, Icons.dust.rawValue:
 				return UIImage(named: "smoke")
 			case Icons.haze.rawValue, Icons.fog.rawValue:
 				return UIImage(named: "haze")
@@ -652,7 +651,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 				return UIImage(named: "nighttornado")
 			case Icons.hurricane.rawValue, Icons.tropicalStorm.rawValue:
 				return UIImage(named: "nighthurricane")
-			case Icons.smoke.rawValue:
+            case Icons.smoke.rawValue, Icons.dust.rawValue:
 				return UIImage(named: "nightsmoke")
 			case Icons.haze.rawValue, Icons.fog.rawValue:
 				return UIImage(named: "nighthaze")
