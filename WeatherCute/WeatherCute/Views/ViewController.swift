@@ -18,60 +18,50 @@ class ViewController: UIViewController {
 	@IBOutlet weak var pageControl: UIPageControl!
 	@IBOutlet weak var noDataLabel: UILabel!
 	@IBOutlet weak var container: UIView!
-	@IBOutlet weak var deleteButton: UIButton!
 	@IBOutlet weak var tempSegmentedControl: UISegmentedControl!
 	
 	// MARK: Variables
+
+    private let viewModel = ViewModel()
 	
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view
-	
-		loadSavedLocations()
-		updateSectionCount()
-		
+
+        NotificationCenter.default.addObserver(self, selector: #selector(retrieveData), name: NSNotification.Name(rawValue: "retrieveData"), object: nil)
+
 		NotificationCenter.default.addObserver(self, selector: #selector(sectionChanged), name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
-		
-		NotificationCenter.default.addObserver(self, selector: #selector(updateSectionCount), name: NSNotification.Name(rawValue: "updateSectionCount"), object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(updatePageControl), name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(updateSegment), name: NSNotification.Name(rawValue: "updateSegment"), object: nil)
+
+        // ??
         
 		NotificationCenter.default.addObserver(self, selector: #selector(alert), name: NSNotification.Name(rawValue: "alert"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(noNetworkAlert), name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
-        
-        NetworkMonitor.monitor.pathUpdateHandler = { path in
-            if path.status == .satisfied {
-                print("connection successful")
-                NetworkMonitor.status = .normal
-                NetworkMonitor.connection = true
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkBack"), object: nil)
-            } else {
-                print("no connection")
-                NetworkMonitor.connection = false
-                NetworkMonitor.status = .lost
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkGone"), object: nil)
-            }
-        }
-        
-        let queue = DispatchQueue(label: "Monitor")
-        NetworkMonitor.monitor.start(queue: queue)
+
+        viewModel.loadLocations()
+        viewModel.loadUnit()
+
+        updatePageControl()
+        viewModel.setUpNetworkMonitor()
 	}
 	
 	// MARK: Custom functions
-	
-	func loadSavedLocations() {
-		var managedContext = CoreDataManager.shared.managedObjectContext
-		var fetchRequest = NSFetchRequest<Saved>(entityName: "Saved")
-		
-		do {
-			WeatherLocations.locations = try managedContext.fetch(fetchRequest)
-			print("locations loaded")
-			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
-		} catch let error as NSError {
-			showAlert(title: "Could not retrieve data", message: "\(error.userInfo)")
-		}
-	}
+
+    @objc func updateSegment() {
+        tempSegmentedControl.selectedSegmentIndex = viewModel.getSegment()
+    }
+
+    @objc func retrieveData() {
+        viewModel.getAll()
+    }
+
+    @objc func updatePageControl() {
+        pageControl.numberOfPages = viewModel.getWeatherLocationTotal()
+    }
 	
 	@objc func alert() {
 		self.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
@@ -80,26 +70,9 @@ class ViewController: UIViewController {
     @objc func noNetworkAlert() {
         self.showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
     }
-	
-	@objc func updateSectionCount() {
-		if WeatherLocations.locations.isEmpty {
-			noDataLabel.isHidden = false
-			deleteButton.isHidden = true
-			container.isHidden = true
-			tempSegmentedControl.isEnabled = false
-			tempSegmentedControl.selectedSegmentIndex = 0
-		} else {
-			noDataLabel.isHidden = true
-			deleteButton.isHidden = false
-			container.isHidden = false
-			tempSegmentedControl.isEnabled = true
-		}
-		
-		pageControl.numberOfPages = WeatherLocations.locations.count
-	}
     
 	@objc func sectionChanged() {
-		pageControl.currentPage = PageControllerManager.currentPage
+        pageControl.currentPage = viewModel.getCurrentPage()
 		print("section changed")
 		print(PageControllerManager.currentPage)
 	}
@@ -107,20 +80,16 @@ class ViewController: UIViewController {
 	@IBAction func addPressed(_ sender: UIButton) {
 		performSegue(withIdentifier: "addLocation", sender: Any?.self)
 	}
-	
-	@IBAction func removePressed(_ sender: UIButton) {
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
-	}
-	
+
 	@IBAction func degreeSegmentChanged(_ sender: UISegmentedControl) {
-        if tempSegmentedControl.selectedSegmentIndex == 0 {
-            PageControllerManager.currentUnit = .fahrenheit
-        } else {
-            PageControllerManager.currentUnit = .celsius
-        }
-        
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
+        viewModel.changeUnit(index: tempSegmentedControl.selectedSegmentIndex)
+
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
 	}
+
+    @IBAction func editPressed(_ sender: UIButton) {
+        performSegue(withIdentifier: "edit", sender: Any?.self)
+    }
 	
 	@IBAction func aboutPressed(_ sender: UIButton) {
 		performSegue(withIdentifier: "showAbout", sender: Any?.self)

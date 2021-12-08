@@ -36,25 +36,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	
 	// MARK: Variables
 	
-	var itemIndex = PageControllerManager.currentPage
-	var weather: Saved?
-	var forecast: [ForecastData] = []
-	var forecastLoaded = false
-	var currentLoaded = false
-	var alertsLoaded = false
-	var alertList: [AlertInfo] = []
-    
-    var currentFinished = false
-    var forecastFinished = false
-    var alertsFinished = false
-	
-	var currentTemp: Int?
-	var currentDescrip: String?
-	var currentHumidity: Int?
-	var currentDewpoint: Int?
-	var currentHeatOrChill: Int?
-	var currentIcon: String?
-	var isDay: Bool?
+	private let contentViewModel = ContentViewModel()
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -63,9 +45,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		detailBackground.layer.cornerRadius = 15
 		detailBackground.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
 		detailBackground.isHidden = true
-		alertButton.isHidden = true
-		reloadButton.isHidden = true
-		
+
 		collectionView.dataSource = self
 		collectionView.delegate = self
 		
@@ -75,126 +55,27 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         
         NotificationCenter.default.addObserver(self, selector: #selector(networkRestored), name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(showNetworkMessage), name: NSNotification.Name(rawValue: "showNetworkMessage"), object: nil)
-        
         NotificationCenter.default.addObserver(self, selector: #selector(noNetwork), name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
         
         NetworkMonitor.loadedItems = .none
+
+        loadUI()
     }
-	
-	override func viewDidAppear(_ animated: Bool) {
-		setInfo()
-        loadData()
-	}
-	
+
 	// MARK: Custom functions
     
-    func setInfo() {
-        guard let current = weather, let station = current.station, let obs = current.observation else { return }
-       
-        location.text = current.name
-        
-        LocationSearch.latitude = current.latitude
-        LocationSearch.longitude = current.longitude
-        
-        ForecastSearch.gridX = Int(current.xCoord)
-        ForecastSearch.gridY = Int(current.yCoord)
-        ForecastSearch.station = station
-        ForecastSearch.observationStation = obs
-        
-        currentFrom.text = "Current conditions from \(obs)"
-    }
-    
-    func loadData() {
-        if NetworkMonitor.connection {
-            if currentLoaded && forecastLoaded && alertsLoaded {
-                displayCurrent()
-            } else {
-                getCurrent()
-                getForecast()
-                getAlerts()
-            }
-        } else {
-            noNetwork()
-        }
-    }
-    
-    func checkLoaded() {
-        if currentFinished && forecastFinished && alertsFinished {
-            NetworkMonitor.loadedItems = .all
-        } else if currentFinished && forecastFinished && alertsFinished == false {
-            NetworkMonitor.loadedItems = .currentAndForecast
-        } else if currentFinished && forecastFinished == false && alertsFinished {
-            NetworkMonitor.loadedItems = .currentAndAlerts
-        } else if currentFinished && forecastFinished == false && alertsFinished == false {
-            NetworkMonitor.loadedItems = .current
-        } else if currentFinished == false && forecastFinished && alertsFinished {
-            NetworkMonitor.loadedItems = .forecastAndAlerts
-        } else if currentFinished == false && forecastFinished && alertsFinished == false {
-            NetworkMonitor.loadedItems = .forecast
-        } else if currentFinished == false && forecastFinished == false && alertsFinished {
-            NetworkMonitor.loadedItems = .alerts
-        } else {
-            NetworkMonitor.loadedItems = .none
-        }
-    }
-    
-    @objc func showNetworkMessage() {
-        print("show network message")
-        switch NetworkMonitor.status {
-        case .normal:
-            print("No problems")
-        case .lost:
-            // the network was lost
-            // only show alerts on currently visible content view to prevent confusion
-            if isViewLoaded && itemIndex == PageControllerManager.currentPage {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
-            }
-            print("network lost")
-        case .other:
-            if NetworkMonitor.connection == false {
-                // only show alerts on currently visible content view to prevent confusion
-                if isViewLoaded && itemIndex == PageControllerManager.currentPage {
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
-                }
-                print("other no connection")
-            } else {
-                // there is some other networking error
-                // only show alerts on currently visible content view to prevent confusion
-                if isViewLoaded && itemIndex == PageControllerManager.currentPage {
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "alert"), object: nil)
-                }
-                print("other")
-            }
-        }
+    func loadUI() {
+        location.text = contentViewModel.getLocationName()
+        currentFrom.text = "Current conditions from \(contentViewModel.getObservationName())"
     }
 
 	func displayCurrent() {
-		if let tempy = currentTemp {
-			temp.text = " \(tempy)°"
-		} else {
-			temp.text = "No data"
-		}
-	
-		descrip.text = currentDescrip
-		
-		if let humid = currentHumidity {
-			humidity.text = "\(humid)%"
-		} else {
-			humidity.text = "No data"
-		}
-		
-		if let dew = currentDewpoint {
-			dewpoint.text = "\(dew)°"
-		} else {
-			dewpoint.text = "No data"
-		}
-		
-		if let heatChill = currentHeatOrChill {
-			heatIndex.text = "\(heatChill)°"
-		} else {
-			heatIndex.text = "N/A"
-		}
+        temp.text = contentViewModel.getCurrentTemp()
+        descrip.text = contentViewModel.getCurrentDescription()
+        humidity.text = contentViewModel.getCurrentHumidity()
+        dewpoint.text = contentViewModel.getCurrentDewpoint()
+        heatIndex.text = contentViewModel.getCurrentHeatChill
+        heatIndexLabel.text = contentViewModel.setHeatChillLabel()
 		
 		if let image = currentIcon, let isDayTime = isDay {
 			largeImage.image = getImage(icon: image, isDaytime: isDayTime)
@@ -310,7 +191,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
                     
                     print(data)
 					let temp: Int? = {
-						if PageControllerManager.currentUnit == TemperatureUnit.celsius {
+						if Temp.currentUnit == TemperatureUnit.celsius {
 							if let result = data.properties.temperature.value {
 								return Int(result)
 							} else {
@@ -342,7 +223,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 					self?.currentHumidity = humidity
 						
 					let dew: Int? = {
-						if PageControllerManager.currentUnit == TemperatureUnit.celsius {
+						if Temp.currentUnit == TemperatureUnit.celsius {
 							if let result = data.properties.dewpoint.value {
 								return Int(result)
 							} else {
@@ -361,7 +242,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						if let heat = data.properties.heatIndex.value {
 							self?.heatIndexLabel.text = "Heat Index"
 							
-							if PageControllerManager.currentUnit == TemperatureUnit.celsius {
+							if Temp.currentUnit == TemperatureUnit.celsius {
 								return Int(heat)
 							} else {
 								return self?.convertToFahrenheit(value: heat)
@@ -369,7 +250,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 						} else if let chill = data.properties.windChill.value {
 							self?.heatIndexLabel.text = "Wind Chill"
 							
-							if PageControllerManager.currentUnit == TemperatureUnit.celsius {
+							if Temp.currentUnit == TemperatureUnit.celsius {
 								return Int(chill)
 							} else {
 								return self?.convertToFahrenheit(value: chill)

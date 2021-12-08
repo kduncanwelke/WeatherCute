@@ -10,4 +10,8 @@ import Foundation
 
 struct WeatherLocations {
 	static var locations: [Saved] = []
+
+    static var currentConditions: [Int: Current] = [:]
+    static var forecasts: [Int: Forecast] = [:]
+    static var alerts: [Int: Alert] = [:]
 }

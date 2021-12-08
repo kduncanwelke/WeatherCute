@@ -9,6 +9,6 @@
 import Foundation
 
 struct PageControllerManager {
-	static var currentPage: Int = 0
-    static var currentUnit: TemperatureUnit = .fahrenheit
+    static var currentPage = 0
+    static var pendingIndex = 0
 }
