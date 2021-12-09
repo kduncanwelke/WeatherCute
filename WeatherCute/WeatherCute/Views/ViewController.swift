@@ -16,7 +16,6 @@ class ViewController: UIViewController {
 	// MARK: IBOutlets
 	
 	@IBOutlet weak var pageControl: UIPageControl!
-	@IBOutlet weak var noDataLabel: UILabel!
 	@IBOutlet weak var container: UIView!
 	@IBOutlet weak var tempSegmentedControl: UISegmentedControl!
 	
@@ -43,7 +42,7 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(noNetworkAlert), name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
 
         viewModel.loadLocations()
-        viewModel.loadUnit()
+        viewModel.getAll()
 
         updatePageControl()
         viewModel.setUpNetworkMonitor()

@@ -12,6 +12,6 @@ struct WeatherLocations {
 	static var locations: [Saved] = []
 
     static var currentConditions: [Int: Current] = [:]
-    static var forecasts: [Int: Forecast] = [:]
-    static var alerts: [Int: Alert] = [:]
+    static var forecasts: [Int: [ForecastData]] = [:]
+    static var alerts: [Int: [AlertInfo]] = [:]
 }

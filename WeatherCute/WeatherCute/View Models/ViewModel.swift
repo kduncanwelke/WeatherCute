@@ -111,8 +111,15 @@ public class ViewModel {
             print("fetch")
             switch result {
             case .success(let response):
-                if let data = response.first {
-                    WeatherLocations.forecasts[index] = data
+                if let data = response.first?.properties.periods {
+                    var forecasts: [ForecastData] = []
+
+                    for forecast in data {
+                        forecasts.append(forecast)
+                        print(forecast)
+                    }
+
+                    WeatherLocations.forecasts[index] = forecasts
                 }
                 
                 print(response)
@@ -127,8 +134,15 @@ public class ViewModel {
             print("fetch")
             switch result {
             case .success(let response):
-                if let data = response.first {
-                    WeatherLocations.alerts[index] = data
+                if let data = response.first?.features {
+                    var alertList: [AlertInfo] = []
+
+                    for alert in data {
+                        alertList.append(alert)
+                        print(alert)
+                    }
+
+                    WeatherLocations.alerts[index] = alertList
                 }
 
                 print(response)

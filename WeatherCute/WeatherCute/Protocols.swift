@@ -11,7 +11,7 @@ import MapKit
 
 // handle updating map location when locale is changed
 protocol MapUpdaterDelegate: class {
-	func updateMapLocation(for: MKPlacemark)
+    func updateMapLocation(index: Int)
 }
 
 protocol CollectionViewTapDelegate: class {

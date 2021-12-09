@@ -7,8 +7,11 @@
 //
 
 import Foundation
+import MapKit
 
 struct LocationSearch {
 	static var latitude: Double = 0
 	static var longitude: Double = 0
+
+    static var searchResults: [MKMapItem] = []
 }

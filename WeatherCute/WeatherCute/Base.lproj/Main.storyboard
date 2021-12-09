@@ -102,7 +102,6 @@
                     </view>
                     <connections>
                         <outlet property="container" destination="IfI-fA-acd" id="GOG-am-Cdy"/>
-                        <outlet property="noDataLabel" destination="gy6-ot-MPt" id="7q4-mo-gKU"/>
                         <outlet property="pageControl" destination="fFQ-TZ-zyU" id="SjF-Ni-v63"/>
                         <outlet property="tempSegmentedControl" destination="gMU-K0-lrx" id="s9q-Mw-9hQ"/>
                         <segue destination="5nn-eC-Me7" kind="presentation" identifier="addLocation" modalPresentationStyle="fullScreen" id="sT2-Px-I7n"/>
