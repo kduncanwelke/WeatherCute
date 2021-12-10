@@ -66,7 +66,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     func loadUI() {
         location.text = contentViewModel.getLocationName()
-        currentFrom.text = "Current conditions from \(contentViewModel.getObservationName())"
+        currentFrom.text = contentViewModel.getObservationName()
     }
 
 	func displayCurrent() {
@@ -105,20 +105,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 
 	
 	@objc func reloadCurrent() {
-		currentFrom.text = "Current conditions from \(contentViewModel.getObservationName())"
-
-		// save changed observation station into core data object
-		var managedContext = CoreDataManager.shared.managedObjectContext
-		
-		//current.observation = ForecastSearch.observationStation
-		
-		do {
-			try managedContext.save()
-			print("resave successful")
-		} catch {
-			// this should never be displayed but is here to cover the possibility
-			showAlert(title: "Save failed", message: "Notice: Data has not successfully been saved.")
-		}
+        currentFrom.text = contentViewModel.getObservationName()
 	}
 
 	// MARK: IBActions

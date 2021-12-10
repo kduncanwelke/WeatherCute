@@ -54,6 +54,17 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		navigationItem.searchController = searchController
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
+
+        if #available(iOS 13.0, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .white
+            navigationController?.navigationBar.tintColor = .white
+            navigationController?.navigationBar.standardAppearance = appearance
+            navigationController?.navigationBar.scrollEdgeAppearance = appearance
+        } else {
+            // Fallback on earlier versions
+        }
 		
         NotificationCenter.default.addObserver(self, selector: #selector(networkBack), name: NSNotification.Name(rawValue: "networkBack"), object: nil)
         
@@ -119,6 +130,9 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 	
 	@IBAction func mapTapped(_ sender: UITapGestureRecognizer) {
 		if sender.state == .ended {
+            // wipe annotations
+            mapView.removeAnnotations(mapView.annotations)
+
 			let tappedLocation = sender.location(in: mapView)
 			let coordinate = mapView.convert(tappedLocation, toCoordinateFrom: mapView)
 			let placemark = MKPlacemark(coordinate: coordinate)
@@ -129,10 +143,10 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                 return
             }
 
-            // wipe annotations if location was updated
-            mapView.removeAnnotations(mapView.annotations)
             let result = searchViewModel.updateLocationFromMapTap(location: placemark)
             mapView.addAnnotation(result.annotation)
+            print("annotation title")
+            print(result.annotation.title)
             locationLabel.text = result.annotation.title ?? ""
             mapView.setRegion(result.region, animated: true)
 
@@ -140,7 +154,6 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
             useThisLocationButton.alpha = 1.0
 		}
 	}
-	
 	
 	@IBAction func addLocationTapped(_ sender: UIButton) {
 		if mapView.annotations.isEmpty {
@@ -150,11 +163,12 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
         
 		if locationLabel.text != "" {
             if NetworkMonitor.connection {
-                searchViewModel.getLocation()
-                if let pin = mapView.annotations.first {
-                    searchViewModel.saveLocation(annotation: pin)
-                    searchViewModel.addSelectedLocation()
-                }
+                searchViewModel.getLocation(completionHandler: {
+                    if let pin = self.mapView.annotations.first {
+                        self.searchViewModel.saveLocation(annotation: pin)
+                        self.searchViewModel.addSelectedLocation()
+                    }
+                })
             } else {
                 mapView.removeAnnotations(mapView.annotations)
                 locationLabel.text = ""
@@ -173,9 +187,15 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 extension AddLocationViewController: MapUpdaterDelegate {
 	// delegate used to pass location from search
     func updateMapLocation(index: Int) {
-        // set annotation from search
-        let annotation = MKPointAnnotation()
-        annotation.title = LocationManager.parseAddress(selectedItem: searchViewModel.getResultItem(index: index))
+        // wipe annotations
+        mapView.removeAnnotations(mapView.annotations)
+
+        var result = searchViewModel.updateLocationFromSearch(location: searchViewModel.getResultItem(index: index))
+
+        mapView.addAnnotation(result.annotation)
+        locationLabel.text = result.annotation.title ?? ""
+        mapView.setRegion(result.region, animated: true)
+
         useThisLocationButton.isEnabled = true
         useThisLocationButton.alpha = 1.0
 	}

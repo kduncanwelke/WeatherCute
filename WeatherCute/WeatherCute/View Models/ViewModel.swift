@@ -96,10 +96,6 @@ public class ViewModel {
                 }
 
                 print(response)
-
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshContent"), object: nil)
-                }
             case .failure(let error):
                 print(error)
             }

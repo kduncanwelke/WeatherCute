@@ -53,7 +53,7 @@ class SearchTableViewController: UITableViewController {
 	
 	override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         searchViewModel.setLatLong(index: indexPath.row)
-		
+
 		// update location on map when back in earth view controller
         delegate?.updateMapLocation(index: indexPath.row)
 		

@@ -106,6 +106,7 @@
                         <outlet property="tempSegmentedControl" destination="gMU-K0-lrx" id="s9q-Mw-9hQ"/>
                         <segue destination="5nn-eC-Me7" kind="presentation" identifier="addLocation" modalPresentationStyle="fullScreen" id="sT2-Px-I7n"/>
                         <segue destination="xPv-QY-QMi" kind="presentation" identifier="showAbout" modalPresentationStyle="fullScreen" id="9qB-y1-YPa"/>
+                        <segue destination="cYt-rb-k9x" kind="show" identifier="edit" id="10e-O5-2oK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -872,7 +873,7 @@
         <!--Edit View Controller-->
         <scene sceneID="RAq-My-ZBe">
             <objects>
-                <viewController id="cYt-rb-k9x" customClass="EditViewController" customModule="WeatherCute" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController modalPresentationStyle="fullScreen" id="cYt-rb-k9x" customClass="EditViewController" customModule="WeatherCute" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="LSy-xw-d5B">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -967,6 +968,7 @@
                             <constraint firstItem="FPx-sP-Bw7" firstAttribute="centerX" secondItem="LSy-xw-d5B" secondAttribute="centerX" id="zvZ-YG-M8S"/>
                         </constraints>
                     </view>
+                    <navigationItem key="navigationItem" id="rfj-sc-d8D"/>
                     <connections>
                         <outlet property="tableView" destination="wVW-7r-DuD" id="mX3-wA-DJN"/>
                     </connections>
@@ -1080,6 +1082,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" translucent="NO" id="Win-8q-BAL">
                         <rect key="frame" x="0.0" y="44" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>

@@ -57,7 +57,7 @@ public class SearchViewModel {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getNextPage"), object: nil)
     }
 
-    func getLocation() {
+    func getLocation(completionHandler: @escaping () -> Void) {
         DataManager<Location>.fetch() { [weak self] result in
             switch result {
             case .success(let response):
@@ -80,7 +80,7 @@ public class SearchViewModel {
     }
 
     func getStation() {
-        DataManager<Stations>.fetch() { [weak self] result in
+        DataManager<Stations>.fetch() { result in
             switch result {
             case .success(let response):
                 guard let data = response.first else { return }
@@ -96,6 +96,36 @@ public class SearchViewModel {
     func updateLocationFromMapTap(location: MKPlacemark) -> (annotation: MKAnnotation, region: MKCoordinateRegion) {
         LocationSearch.latitude = location.coordinate.latitude
         LocationSearch.longitude = location.coordinate.longitude
+
+        let coordinate = CLLocationCoordinate2D(latitude: LocationSearch.latitude, longitude: LocationSearch.longitude)
+        let regionRadius: CLLocationDistance = 10000
+        let region = MKCoordinateRegion(center: coordinate, latitudinalMeters: regionRadius, longitudinalMeters: regionRadius)
+        let annotation = MKPointAnnotation()
+
+        // parse address to assign it to title for pin
+        let locale = CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)
+        let geocoder = CLGeocoder()
+
+        geocoder.reverseGeocodeLocation(locale, completionHandler: { [weak self] (placemarks, error) in
+            if error == nil {
+                guard let firstLocation = placemarks?[0] else { return }
+                annotation.title = LocationManager.parseAddress(selectedItem: firstLocation)
+            } else {
+                // an error occurred during geocoding
+                // if there had been a connection and it was suddenly lost, show error
+                // otherwise this error message will be covered by networking error feedback
+                if NetworkMonitor.connection {
+                    //self?.showAlert(title: "Network Lost", message: "The location cannot be found - please check your network connection")
+                }
+            }
+        })
+
+        annotation.coordinate = coordinate
+
+        return (annotation, region)
+    }
+
+    func updateLocationFromSearch(location: CLPlacemark) -> (annotation: MKAnnotation, region: MKCoordinateRegion) {
 
         let coordinate = CLLocationCoordinate2D(latitude: LocationSearch.latitude, longitude: LocationSearch.longitude)
         let regionRadius: CLLocationDistance = 10000

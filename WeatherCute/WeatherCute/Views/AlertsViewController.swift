@@ -22,15 +22,14 @@ class AlertsViewController: UIViewController {
 	@IBOutlet weak var nextButton: UIButton!
 	
 	// MARK: Variables
-	
-	var currentAlertIndex = 0
-	var alerts: [AlertInfo] = []
+
+    private let alertsViewModel = AlertsViewModel()
 	
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-		currentAlertIndex = 0
+        alertsViewModel.resetIndex()
 		
 		backButton.layer.cornerRadius = 15
 		nextButton.layer.cornerRadius = 15
@@ -42,39 +41,22 @@ class AlertsViewController: UIViewController {
 	// MARK: Custom functions
 	
 	func loadAlert() {
-		print(alerts)
-		if alerts.count != 0 {
-			var currentAlert = alerts[currentAlertIndex]
-			
-			titleLabel.text = currentAlert.properties.event
-			severity.text = currentAlert.properties.severity
-			certainty.text = currentAlert.properties.certainty
-			urgency.text = currentAlert.properties.urgency
-			instruction.text = currentAlert.properties.instruction.replacingOccurrences(of: "\n", with: " ")
-			descriptionLabel.text = currentAlert.properties.headline.replacingOccurrences(of: "\n", with: " ")
-			
-			if currentAlert.properties.instruction == "" {
-				instruction.text = "No instructions at this time"
-			}
-		}
+        titleLabel.text = alertsViewModel.getAlertTitle()
+        severity.text = alertsViewModel.getAlertSeverity()
+        certainty.text = alertsViewModel.getAlertCertainty()
+        urgency.text = alertsViewModel.getAlertUrgency()
+        instruction.text = alertsViewModel.getInstruction()
+        descriptionLabel.text = alertsViewModel.getDescription()
 	}
 	
 	func updateButtons() {
-		if currentAlertIndex == 0 {
-			backButton.isEnabled = false
-			backButton.backgroundColor = UIColor.clear
-		} else {
-			backButton.isEnabled = true
-			backButton.backgroundColor = UIColor.white
-		}
-		
-		if currentAlertIndex == (alerts.count - 1) || alerts.count == 1 {
-			nextButton.isEnabled = false
-			nextButton.backgroundColor = UIColor.clear
-		} else {
-			nextButton.isEnabled = true
-			nextButton.backgroundColor = UIColor.white
-		}
+        var back = alertsViewModel.configureBackButton()
+        backButton.isEnabled = back.enableButton
+        backButton.backgroundColor = back.color
+
+        var next = alertsViewModel.configureNextButton()
+        nextButton.isEnabled = next.enableButton
+        nextButton.backgroundColor = next.color
 	}
 
     /*
@@ -90,18 +72,17 @@ class AlertsViewController: UIViewController {
 	// MARK: IBActions
 	
 	@IBAction func backPressed(_ sender: UIButton) {
-		currentAlertIndex -= 1
+        alertsViewModel.goBack()
 		updateButtons()
 		loadAlert()
 	}
 	
 	@IBAction func nextPressed(_ sender: UIButton) {
-		currentAlertIndex += 1
+        alertsViewModel.goForward()
 		updateButtons()
 		loadAlert()
 	}
-	
-	
+
 	@IBAction func dismissPressed(_ sender: UIButton) {
 		self.dismiss(animated: true, completion: nil)
 	}

@@ -45,7 +45,7 @@ public class ContentViewModel {
     }
 
     func getObservationName() -> String {
-        return WeatherLocations.locations[PageControllerManager.currentPage].observation ?? ""
+        return "Current conditions from \(WeatherLocations.locations[PageControllerManager.currentPage].observation ?? "")"
     }
 
     func getCurrentTemp() -> String {
