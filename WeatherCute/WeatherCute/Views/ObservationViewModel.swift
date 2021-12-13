@@ -23,8 +23,11 @@ public class ObservationViewModel {
                 for stationInfo in data {
                     WeatherLocations.stations.append(stationInfo.properties)
                 }
+
+                completionHandler()
             case .failure(let error):
                 print("fail")
+                completionHandler()
             }
         }
     }

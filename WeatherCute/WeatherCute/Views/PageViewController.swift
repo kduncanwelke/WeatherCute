@@ -37,7 +37,7 @@ class PageViewController: UIPageViewController {
 	
     func createPageViewController() {
         if pageControllerViewModel.getWeatherLocationTotal() > 0 {
-            var contentController = getContentViewController(withIndex: PageControllerManager.currentPage)!
+            var contentController = getContentViewController(withIndex: pageControllerViewModel.getCurrentPage())!
             var contentControllers = [contentController]
 
             self.setViewControllers(contentControllers, direction: UIPageViewController.NavigationDirection.forward, animated: true, completion: nil)

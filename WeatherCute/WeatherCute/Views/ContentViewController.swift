@@ -58,18 +58,43 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         NotificationCenter.default.addObserver(self, selector: #selector(noNetwork), name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
         
         NetworkMonitor.loadedItems = .none
+    }
 
-        loadUI()
+    override func viewWillAppear(_ animated: Bool) {
+        print("view will appear")
+
+        if !contentViewModel.isLoaded() {
+            getData()
+        }
     }
 
 	// MARK: Custom functions
-    
-    func loadUI() {
-        location.text = contentViewModel.getLocationName()
-        currentFrom.text = contentViewModel.getObservationName()
+
+    func getData() {
+        contentViewModel.setSearchParameters()
+
+        contentViewModel.getWeatherData(completion: { [weak self] in
+            DispatchQueue.main.async {
+                self?.displayCurrent()
+            }
+        })
+
+        contentViewModel.getForecastData(completion: { [weak self] in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
+        })
+
+        contentViewModel.getAlerts(completion: { [weak self] in
+            DispatchQueue.main.async {
+                self?.configureAlertButton()
+            }
+        })
     }
 
 	func displayCurrent() {
+        location.text = contentViewModel.getLocationName()
+        currentFrom.text = contentViewModel.getObservationName()
         temp.text = contentViewModel.getCurrentTemp()
         descrip.text = contentViewModel.getCurrentDescription()
         humidity.text = contentViewModel.getCurrentHumidity()
@@ -83,9 +108,11 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         } else {
             noImageText.isHidden = false
         }
-
-        alertButton.isHidden = contentViewModel.hideAlertButton()
 	}
+
+    func configureAlertButton() {
+        alertButton.isHidden = contentViewModel.hideAlertButton()
+    }
     
     @objc func networkRestored() {
         print("network restored")

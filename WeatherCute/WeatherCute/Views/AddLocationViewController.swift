@@ -143,15 +143,19 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                 return
             }
 
-            let result = searchViewModel.updateLocationFromMapTap(location: placemark)
-            mapView.addAnnotation(result.annotation)
-            print("annotation title")
-            print(result.annotation.title)
-            locationLabel.text = result.annotation.title ?? ""
-            mapView.setRegion(result.region, animated: true)
+            searchViewModel.updateLocationFromMapTap(location: placemark, completion: { [weak self] pin in
+                if let newPin = pin {
+                    self?.mapView.addAnnotation(newPin)
+                    self?.locationLabel.text = newPin.title ?? "None"
 
-            useThisLocationButton.isEnabled = true
-            useThisLocationButton.alpha = 1.0
+                    if let region = self?.searchViewModel.getRegion(coordinate: newPin.coordinate) {
+                        self?.mapView.setRegion(region, animated: true)
+                    }
+
+                    self?.useThisLocationButton.isEnabled = true
+                    self?.useThisLocationButton.alpha = 1.0
+                }
+            })
 		}
 	}
 	
@@ -167,6 +171,9 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                     if let pin = self.mapView.annotations.first {
                         self.searchViewModel.saveLocation(annotation: pin)
                         self.searchViewModel.addSelectedLocation()
+                        DispatchQueue.main.async {
+                            self.dismiss(animated: true, completion: nil)
+                        }
                     }
                 })
             } else {
@@ -190,14 +197,19 @@ extension AddLocationViewController: MapUpdaterDelegate {
         // wipe annotations
         mapView.removeAnnotations(mapView.annotations)
 
-        var result = searchViewModel.updateLocationFromSearch(location: searchViewModel.getResultItem(index: index))
+        searchViewModel.updateLocationFromSearch(location: searchViewModel.getResultItem(index: index), completion: { [weak self] pin in
+            if let newPin = pin {
+                self?.mapView.addAnnotation(newPin)
+                self?.locationLabel.text = newPin.title ?? "None"
 
-        mapView.addAnnotation(result.annotation)
-        locationLabel.text = result.annotation.title ?? ""
-        mapView.setRegion(result.region, animated: true)
+                if let region = self?.searchViewModel.getRegion(coordinate: newPin.coordinate) {
+                    self?.mapView.setRegion(region, animated: true)
+                }
 
-        useThisLocationButton.isEnabled = true
-        useThisLocationButton.alpha = 1.0
+                self?.useThisLocationButton.isEnabled = true
+                self?.useThisLocationButton.alpha = 1.0
+            }
+        })
 	}
 }
 

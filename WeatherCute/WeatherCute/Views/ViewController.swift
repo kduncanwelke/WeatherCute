@@ -27,8 +27,6 @@ class ViewController: UIViewController {
 		super.viewDidLoad()
 		// Do any additional setup after loading the view
 
-        NotificationCenter.default.addObserver(self, selector: #selector(retrieveData), name: NSNotification.Name(rawValue: "retrieveData"), object: nil)
-
 		NotificationCenter.default.addObserver(self, selector: #selector(sectionChanged), name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 
         NotificationCenter.default.addObserver(self, selector: #selector(updatePageControl), name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
@@ -42,20 +40,22 @@ class ViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(noNetworkAlert), name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
 
         viewModel.loadLocations()
-        viewModel.getAll()
 
-        updatePageControl()
         viewModel.setUpNetworkMonitor()
+        updatePageControl()
+        addPages()
 	}
 	
 	// MARK: Custom functions
 
-    @objc func updateSegment() {
-        tempSegmentedControl.selectedSegmentIndex = viewModel.getSegment()
+    func addPages() {
+        if viewModel.getWeatherLocationTotal() != 0 {
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "addPage"), object: nil)
+        }
     }
 
-    @objc func retrieveData() {
-        viewModel.getAll()
+    @objc func updateSegment() {
+        tempSegmentedControl.selectedSegmentIndex = viewModel.getSegment()
     }
 
     @objc func updatePageControl() {

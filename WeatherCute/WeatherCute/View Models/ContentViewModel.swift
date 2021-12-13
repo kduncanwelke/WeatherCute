@@ -11,6 +11,96 @@ import UIKit
 
 public class ContentViewModel {
 
+    // data
+
+    func setSearchParameters() {
+        var location = WeatherLocations.locations[PageControllerManager.currentPage]
+        
+        LocationSearch.latitude = location.latitude
+        LocationSearch.longitude = location.longitude
+
+        ForecastSearch.gridX = Int(location.xCoord)
+        ForecastSearch.gridY = Int(location.yCoord)
+        ForecastSearch.station = location.station ?? ""
+        ForecastSearch.observationStation = location.observation ?? ""
+    }
+
+    func getWeatherData(completion: @escaping () -> Void) {
+        DataManager<Current>.fetch() { result in
+            print("fetch")
+            switch result {
+            case .success(let response):
+                if let data = response.first {
+                    WeatherLocations.currentConditions[PageControllerManager.currentPage] = data
+                }
+
+                print(response)
+                completion()
+            case .failure(let error):
+                print(error)
+                completion()
+            }
+        }
+    }
+
+    func getForecastData(completion: @escaping () -> Void) {
+        DataManager<Forecast>.fetch() { result in
+            print("fetch")
+            switch result {
+            case .success(let response):
+                if let data = response.first?.properties.periods {
+                    var forecasts: [ForecastData] = []
+
+                    for forecast in data {
+                        forecasts.append(forecast)
+                        print(forecast)
+                    }
+
+                    WeatherLocations.forecasts[PageControllerManager.currentPage] = forecasts
+                }
+
+                print(response)
+                completion()
+            case .failure(let error):
+                print(error)
+                completion()
+            }
+        }
+    }
+
+    func getAlerts(completion: @escaping () -> Void) {
+        DataManager<Alert>.fetch() { result in
+            print("fetch")
+            switch result {
+            case .success(let response):
+                if let data = response.first?.features {
+                    var alertList: [AlertInfo] = []
+
+                    for alert in data {
+                        alertList.append(alert)
+                        print(alert)
+                    }
+
+                    WeatherLocations.alerts[PageControllerManager.currentPage] = alertList
+                }
+
+                print(response)
+                completion()
+            case .failure(let error):
+                print(error)
+                completion()
+            }
+        }
+    }
+
+    func isLoaded() -> Bool {
+        if WeatherLocations.currentConditions[PageControllerManager.currentPage] != nil && !(WeatherLocations.forecasts[PageControllerManager.currentPage]?.isEmpty ?? true) && !(WeatherLocations.alerts[PageControllerManager.currentPage]?.isEmpty ?? true) {
+            return true
+        } else {
+            return false
+        }
+    }
+
     // helpers
 
     func convertToFahrenheit(value: Double) -> Int {
@@ -54,10 +144,10 @@ public class ContentViewModel {
 
             switch Temp.currentUnit {
             case .fahrenheit:
-                return " \(temp)°"
+                var fahrenheit = Int(convertToFahrenheit(value: temp))
+                return " \(fahrenheit)°"
             case .celsius:
-                var celsius = convertToCelsius(value: temp)
-                return " \(celsius)°"
+                return " \(Int(temp))°"
             }
         } else {
             return "No data"
@@ -74,7 +164,7 @@ public class ContentViewModel {
 
     func getCurrentHumidity() -> String {
         if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
-            let humidity = current.properties.relativeHumidity.value
+            let humidity = Int(current.properties.relativeHumidity.value ?? 0)
             return "\(humidity)%"
         } else {
             return "No data"
@@ -87,10 +177,10 @@ public class ContentViewModel {
 
             switch Temp.currentUnit {
             case .fahrenheit:
-                return "\(dew)°"
+                var fahrenheit = Int(convertToFahrenheit(value: dew))
+                return " \(fahrenheit)°"
             case .celsius:
-                var celsius = convertToCelsius(value: dew)
-                return "\(celsius)°"
+                return " \(Int(dew))°"
             }
         } else {
             return "No data"
@@ -102,18 +192,18 @@ public class ContentViewModel {
             if let heat = current.properties.heatIndex.value {
                 switch Temp.currentUnit {
                 case .fahrenheit:
-                    return "\(heat)°"
+                    var fahrenheit = Int(convertToFahrenheit(value: heat))
+                    return " \(fahrenheit)°"
                 case .celsius:
-                    var celsius = convertToCelsius(value: heat)
-                    return "\(celsius)°"
+                    return " \(Int(heat))°"
                 }
             } else if let chill = current.properties.windChill.value {
                 switch Temp.currentUnit {
                 case .fahrenheit:
-                    return "\(chill)°"
+                    var fahrenheit = Int(convertToFahrenheit(value: chill))
+                    return " \(fahrenheit)°"
                 case .celsius:
-                    var celsius = convertToCelsius(value: chill)
-                    return "\(celsius)°"
+                    return " \(Int(chill))°"
                 }
             } else {
                 return "N/A"

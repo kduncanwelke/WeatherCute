@@ -30,8 +30,10 @@ class ChangeObservationViewController: UIViewController, UICollectionViewDelegat
 
         observationViewModel.removeResult()
 		
-        observationViewModel.getStations(completionHandler: { [unowned self] in
-            self.collectionView.reloadData()
+        observationViewModel.getStations(completionHandler: { [weak self] in
+            DispatchQueue.main.async {
+                self?.collectionView.reloadData()
+            }
         })
     }
 	

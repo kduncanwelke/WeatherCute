@@ -61,98 +61,12 @@ public class ViewModel {
         }
     }
 
-    func setSearchParameters(location: Saved) {
-        LocationSearch.latitude = location.latitude
-        LocationSearch.longitude = location.longitude
-
-        ForecastSearch.gridX = Int(location.xCoord)
-        ForecastSearch.gridY = Int(location.yCoord)
-        ForecastSearch.station = location.station ?? ""
-        ForecastSearch.observationStation = location.observation ?? ""
-    }
-
-    func getAll() {
-        var index = 0
-
-        for location in WeatherLocations.locations {
-            setSearchParameters(location: location)
-            getWeatherData(index: index)
-            getForecastData(index: index)
-            getAlerts(index: index)
-            index += 1
-        }
-
-        // create page controller pages after data load
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "addPage"), object: nil)
-    }
-
-    func getWeatherData(index: Int) {
-        DataManager<Current>.fetch() { result in
-            print("fetch")
-            switch result {
-            case .success(let response):
-                if let data = response.first {
-                    WeatherLocations.currentConditions[index] = data
-                }
-
-                print(response)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-
-    func getForecastData(index: Int) {
-        DataManager<Forecast>.fetch() { result in
-            print("fetch")
-            switch result {
-            case .success(let response):
-                if let data = response.first?.properties.periods {
-                    var forecasts: [ForecastData] = []
-
-                    for forecast in data {
-                        forecasts.append(forecast)
-                        print(forecast)
-                    }
-
-                    WeatherLocations.forecasts[index] = forecasts
-                }
-                
-                print(response)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-
-    func getAlerts(index: Int) {
-        DataManager<Alert>.fetch() { result in
-            print("fetch")
-            switch result {
-            case .success(let response):
-                if let data = response.first?.features {
-                    var alertList: [AlertInfo] = []
-
-                    for alert in data {
-                        alertList.append(alert)
-                        print(alert)
-                    }
-
-                    WeatherLocations.alerts[index] = alertList
-                }
-
-                print(response)
-            case .failure(let error):
-                print(error)
-            }
-        }
-    }
-
     func getCurrentPage() -> Int {
         return PageControllerManager.currentPage
     }
 
     func getWeatherLocationTotal() -> Int {
+        print("total locations \(WeatherLocations.locations.count)")
         return WeatherLocations.locations.count
     }
 
@@ -163,7 +77,6 @@ public class ViewModel {
         do {
             WeatherLocations.locations = try managedContext.fetch(fetchRequest)
             print("locations loaded")
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refresh"), object: nil)
         } catch let error as NSError {
             //showAlert(title: "Could not retrieve data", message: "\(error.userInfo)")
         }
