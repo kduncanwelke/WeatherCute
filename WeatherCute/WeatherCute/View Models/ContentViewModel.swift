@@ -131,7 +131,7 @@ public class ContentViewModel {
     }
 
     func getLocationName() -> String {
-        return WeatherLocations.locations[PageControllerManager.currentPage].name ?? ""
+        return WeatherLocations.locations[PageControllerManager.currentPage].name ?? "No data"
     }
 
     func getObservationName() -> String {

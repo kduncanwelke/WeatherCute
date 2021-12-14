@@ -50,6 +50,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 		collectionView.delegate = self
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(reloadCurrent), name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshContent), name: NSNotification.Name(rawValue: "refreshContent"), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(degreeUnitChanged), name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
         
@@ -58,30 +60,41 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         NotificationCenter.default.addObserver(self, selector: #selector(noNetwork), name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
         
         NetworkMonitor.loadedItems = .none
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        print("view will appear")
 
         if !contentViewModel.isLoaded() {
             getData()
+        } else {
+            displayCurrent()
         }
     }
 
 	// MARK: Custom functions
 
+    @objc func refreshContent() {
+        print("refresh content")
+        if !contentViewModel.isLoaded() {
+            getData()
+        } else {
+            displayCurrent()
+        }
+    }
+
     func getData() {
         contentViewModel.setSearchParameters()
 
+        activityIndicator.startAnimating()
         contentViewModel.getWeatherData(completion: { [weak self] in
             DispatchQueue.main.async {
                 self?.displayCurrent()
+                self?.activityIndicator.stopAnimating()
             }
         })
 
+        collectionViewActivityIndicator.startAnimating()
         contentViewModel.getForecastData(completion: { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
+                self?.collectionViewActivityIndicator.stopAnimating()
             }
         })
 
@@ -129,7 +142,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 
         collectionView.reloadData()
 	}
-
 	
 	@objc func reloadCurrent() {
         currentFrom.text = contentViewModel.getObservationName()

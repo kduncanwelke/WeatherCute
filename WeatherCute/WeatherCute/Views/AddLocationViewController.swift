@@ -167,12 +167,18 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
         
 		if locationLabel.text != "" {
             if NetworkMonitor.connection {
-                searchViewModel.getLocation(completionHandler: {
-                    if let pin = self.mapView.annotations.first {
-                        self.searchViewModel.saveLocation(annotation: pin)
-                        self.searchViewModel.addSelectedLocation()
+                loadingIndicator.startAnimating()
+                // disable button to prevent double tap
+                useThisLocationButton.isEnabled = false
+                useThisLocationButton.alpha = 0.5
+
+                searchViewModel.getLocation(completionHandler: { [weak self] in
+                    if let pin = self?.mapView.annotations.first {
+                        self?.searchViewModel.saveLocation(annotation: pin)
+                        self?.searchViewModel.addSelectedLocation()
                         DispatchQueue.main.async {
-                            self.dismiss(animated: true, completion: nil)
+                            self?.loadingIndicator.stopAnimating()
+                            self?.dismiss(animated: true, completion: nil)
                         }
                     }
                 })

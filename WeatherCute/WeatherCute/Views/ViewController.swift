@@ -93,5 +93,4 @@ class ViewController: UIViewController {
 	@IBAction func aboutPressed(_ sender: UIButton) {
 		performSegue(withIdentifier: "showAbout", sender: Any?.self)
 	}
-	
 }

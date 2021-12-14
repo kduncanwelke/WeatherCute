@@ -121,6 +121,8 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 
             pageControllerViewModel.setPendingPage(page: pageControllerViewModel.getCurrentPage() - 1)
             print("left")
+            print(PageControllerManager.currentPage)
+            print(PageControllerManager.pendingIndex)
             return getContentViewController(withIndex: pageControllerViewModel.getCurrentPage() - 1)
         } else {
             return nil
@@ -132,6 +134,8 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 
             pageControllerViewModel.setPendingPage(page: pageControllerViewModel.getCurrentPage() + 1)
             print("right")
+            print(PageControllerManager.currentPage)
+            print(PageControllerManager.pendingIndex)
             return getContentViewController(withIndex: pageControllerViewModel.getCurrentPage() + 1)
         } else {
             return nil
