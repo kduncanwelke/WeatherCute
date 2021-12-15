@@ -31,14 +31,6 @@ class ViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(updatePageControl), name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(updateSegment), name: NSNotification.Name(rawValue: "updateSegment"), object: nil)
-
-        // ??
-        
-		NotificationCenter.default.addObserver(self, selector: #selector(alert), name: NSNotification.Name(rawValue: "alert"), object: nil)
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(noNetworkAlert), name: NSNotification.Name(rawValue: "noNetworkAlert"), object: nil)
-
         viewModel.loadLocations()
 
         viewModel.setUpNetworkMonitor()
@@ -54,20 +46,8 @@ class ViewController: UIViewController {
         }
     }
 
-    @objc func updateSegment() {
-        tempSegmentedControl.selectedSegmentIndex = viewModel.getSegment()
-    }
-
     @objc func updatePageControl() {
         pageControl.numberOfPages = viewModel.getWeatherLocationTotal()
-    }
-	
-	@objc func alert() {
-		self.showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
-	}
-	
-    @objc func noNetworkAlert() {
-        self.showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
     }
     
 	@objc func sectionChanged() {

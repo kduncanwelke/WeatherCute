@@ -103,6 +103,10 @@ public class ContentViewModel {
 
     // helpers
 
+    func hasNetwork() -> Bool {
+        return NetworkMonitor.connection
+    }
+
     func convertToFahrenheit(value: Double) -> Int {
         let result = (value * 9/5) + 32
         return Int(result)
@@ -112,6 +116,8 @@ public class ContentViewModel {
         let result = (value - 32) / 1.8
         return Int(result)
     }
+
+    // view config
 
     func isDayCurrently() -> Bool?  {
         if let weatherIcon = WeatherLocations.currentConditions[PageControllerManager.currentPage]?.properties.icon {
@@ -140,14 +146,16 @@ public class ContentViewModel {
 
     func getCurrentTemp() -> String {
         if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
-            let temp = current.properties.temperature.value ?? 0
-
-            switch Temp.currentUnit {
-            case .fahrenheit:
-                var fahrenheit = Int(convertToFahrenheit(value: temp))
-                return " \(fahrenheit)°"
-            case .celsius:
-                return " \(Int(temp))°"
+            if let temp = current.properties.temperature.value {
+                switch Temp.currentUnit {
+                case .fahrenheit:
+                    var fahrenheit = Int(convertToFahrenheit(value: temp))
+                    return " \(fahrenheit)°"
+                case .celsius:
+                    return " \(Int(temp))°"
+                }
+            } else {
+                return "No data"
             }
         } else {
             return "No data"
@@ -164,8 +172,11 @@ public class ContentViewModel {
 
     func getCurrentHumidity() -> String {
         if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
-            let humidity = Int(current.properties.relativeHumidity.value ?? 0)
-            return "\(humidity)%"
+            if let humidity = current.properties.relativeHumidity.value {
+                return "\(Int(humidity))%"
+            } else {
+                return "No data"
+            }
         } else {
             return "No data"
         }
@@ -173,14 +184,16 @@ public class ContentViewModel {
 
     func getCurrentDewpoint() -> String {
         if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
-            let dew = current.properties.dewpoint.value ?? 0
-
-            switch Temp.currentUnit {
-            case .fahrenheit:
-                var fahrenheit = Int(convertToFahrenheit(value: dew))
-                return " \(fahrenheit)°"
-            case .celsius:
-                return " \(Int(dew))°"
+            if let dew = current.properties.dewpoint.value {
+                switch Temp.currentUnit {
+                case .fahrenheit:
+                    var fahrenheit = Int(convertToFahrenheit(value: dew))
+                    return " \(fahrenheit)°"
+                case .celsius:
+                    return " \(Int(dew))°"
+                }
+            } else {
+                return "No data"
             }
         } else {
             return "No data"

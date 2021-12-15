@@ -76,18 +76,21 @@ class PageViewController: UIPageViewController {
 	
 	@objc func getPrevPage() {
         if pageControllerViewModel.getCurrentPage() == 0 {
+            print("first")
 			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
 				setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
 			}
 
+            // first item needs reloading
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshContent"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
-        } else if pageControllerViewModel.getCurrentPage() == (pageControllerViewModel.getWeatherLocationTotal() - 1) {
-
+        } else if pageControllerViewModel.getCurrentPage() == pageControllerViewModel.getWeatherLocationTotal() {
+            
             pageControllerViewModel.setCurrentPage(page: pageControllerViewModel.getCurrentPage()-1)
 			
 			// move up a section as this is last page
-			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
+			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerBefore: currentViewController ) {
 				setViewControllers([nextViewController], direction: .reverse, animated: true, completion: nil)
 			}
 

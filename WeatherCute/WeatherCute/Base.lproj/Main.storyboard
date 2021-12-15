@@ -164,11 +164,22 @@
                                 <rect key="frame" x="169" y="421.66666666666669" width="37" height="37"/>
                                 <color key="color" systemColor="darkTextColor"/>
                             </activityIndicatorView>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   No network   " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RYM-8d-HQC">
+                                <rect key="frame" x="129.66666666666666" y="129.66666666666666" width="116" height="30"/>
+                                <color key="backgroundColor" red="0.31372550129999999" green="0.63137257099999999" blue="0.97254908080000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="Jjx-h9-Nru"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="NCf-0N-E0D"/>
                         <color key="backgroundColor" red="0.14117647058823529" green="0.63921568627450975" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="hB5-9l-lMP" firstAttribute="top" secondItem="946-hD-Yxf" secondAttribute="bottom" constant="25" id="0MY-x0-UEA"/>
+                            <constraint firstItem="RYM-8d-HQC" firstAttribute="centerY" secondItem="946-hD-Yxf" secondAttribute="centerY" id="0dA-0c-NUE"/>
                             <constraint firstItem="946-hD-Yxf" firstAttribute="trailing" secondItem="NCf-0N-E0D" secondAttribute="trailing" id="0rm-1v-bip"/>
                             <constraint firstItem="zJQ-qY-Hfi" firstAttribute="centerX" secondItem="guR-iv-W9S" secondAttribute="centerX" id="33l-Lc-xHT"/>
                             <constraint firstItem="Feo-vi-l6f" firstAttribute="centerY" secondItem="YpS-hP-Tid" secondAttribute="centerY" id="7Kj-o0-t6h"/>
@@ -182,6 +193,7 @@
                             <constraint firstItem="946-hD-Yxf" firstAttribute="top" secondItem="NCf-0N-E0D" secondAttribute="top" id="hdm-XG-Hmk"/>
                             <constraint firstItem="Feo-vi-l6f" firstAttribute="centerX" secondItem="YpS-hP-Tid" secondAttribute="centerX" id="hqL-2Z-IE3"/>
                             <constraint firstItem="946-hD-Yxf" firstAttribute="leading" secondItem="NCf-0N-E0D" secondAttribute="leading" id="mBV-J2-hzo"/>
+                            <constraint firstItem="RYM-8d-HQC" firstAttribute="centerX" secondItem="946-hD-Yxf" secondAttribute="centerX" id="nMa-d0-T1y"/>
                             <constraint firstItem="946-hD-Yxf" firstAttribute="height" secondItem="guR-iv-W9S" secondAttribute="height" multiplier="0.4" id="pAS-Mp-zLo"/>
                             <constraint firstItem="zJQ-qY-Hfi" firstAttribute="top" relation="greaterThanOrEqual" secondItem="YpS-hP-Tid" secondAttribute="bottom" constant="10" id="pLQ-sv-x2s"/>
                             <constraint firstItem="hB5-9l-lMP" firstAttribute="leading" secondItem="NCf-0N-E0D" secondAttribute="leading" constant="25" id="qHA-2W-wcs"/>
@@ -189,9 +201,11 @@
                     </view>
                     <navigationItem key="navigationItem" title="Add Weather Location" id="y7n-Iq-d55"/>
                     <connections>
+                        <outlet property="cancel" destination="zJQ-qY-Hfi" id="wqY-gs-mQV"/>
                         <outlet property="loadingIndicator" destination="Feo-vi-l6f" id="AU1-Qv-Fcz"/>
                         <outlet property="locationLabel" destination="k14-tF-F1R" id="oKz-se-iQY"/>
                         <outlet property="mapView" destination="946-hD-Yxf" id="dC1-BW-EVZ"/>
+                        <outlet property="noNetworkLabel" destination="RYM-8d-HQC" id="iAj-0P-oM9"/>
                         <outlet property="useThisLocationButton" destination="YpS-hP-Tid" id="O2p-m9-X3w"/>
                     </connections>
                 </viewController>
@@ -685,6 +699,12 @@
                                     <constraint firstItem="RFI-RK-w5H" firstAttribute="top" secondItem="K5d-dK-q5M" secondAttribute="top" constant="15" id="yft-I8-KpK"/>
                                 </constraints>
                             </view>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No network" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0bU-bm-PYL">
+                                <rect key="frame" x="142.66666666666666" y="196.33333333333334" width="90" height="20.333333333333343"/>
+                                <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <button opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lCZ-hm-rv0">
                                 <rect key="frame" x="200.66666666666666" y="44.666666666666664" width="25" height="24.999999999999993"/>
                                 <constraints>
@@ -706,6 +726,7 @@
                         <constraints>
                             <constraint firstItem="K5d-dK-q5M" firstAttribute="centerY" secondItem="GXE-EV-eik" secondAttribute="centerY" id="19u-36-LUo"/>
                             <constraint firstItem="Pd6-SE-Yac" firstAttribute="centerX" secondItem="GXE-EV-eik" secondAttribute="centerX" id="1yb-Ci-fAA"/>
+                            <constraint firstItem="0bU-bm-PYL" firstAttribute="centerX" secondItem="eBC-Cz-qtL" secondAttribute="centerX" id="3B8-FS-E7Q"/>
                             <constraint firstItem="iMd-Cq-ZCt" firstAttribute="trailing" secondItem="Pd6-SE-Yac" secondAttribute="trailing" constant="15" id="3h8-ka-yj2"/>
                             <constraint firstItem="0Ut-Qi-CAd" firstAttribute="top" secondItem="iMd-Cq-ZCt" secondAttribute="top" id="5DJ-Zo-LNa"/>
                             <constraint firstItem="0Ut-Qi-CAd" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iMd-Cq-ZCt" secondAttribute="leading" constant="38" id="5bp-63-bsc"/>
@@ -729,6 +750,7 @@
                             <constraint firstItem="tcE-U4-yvV" firstAttribute="leading" secondItem="iMd-Cq-ZCt" secondAttribute="leading" constant="60" id="Yhu-Mo-oRa"/>
                             <constraint firstItem="Pd6-SE-Yac" firstAttribute="leading" secondItem="iMd-Cq-ZCt" secondAttribute="leading" constant="15" id="cqS-bC-OVy"/>
                             <constraint firstItem="4f6-GK-wCa" firstAttribute="centerX" secondItem="GXE-EV-eik" secondAttribute="centerX" id="f4C-qj-lMB"/>
+                            <constraint firstItem="0bU-bm-PYL" firstAttribute="centerY" secondItem="eBC-Cz-qtL" secondAttribute="centerY" id="fIT-VR-PbN"/>
                             <constraint firstItem="iMd-Cq-ZCt" firstAttribute="trailing" secondItem="eBC-Cz-qtL" secondAttribute="trailing" id="gOW-oM-BYX"/>
                             <constraint firstItem="in6-6J-wss" firstAttribute="centerX" secondItem="eBC-Cz-qtL" secondAttribute="centerX" id="gUL-AZ-QNS"/>
                             <constraint firstItem="K5d-dK-q5M" firstAttribute="centerX" secondItem="GXE-EV-eik" secondAttribute="centerX" id="gf3-z4-Oih"/>
@@ -766,6 +788,7 @@
                         <outlet property="largeImage" destination="eBC-Cz-qtL" id="Af1-Mr-GC7"/>
                         <outlet property="location" destination="0Ut-Qi-CAd" id="qod-0D-ePE"/>
                         <outlet property="noImageText" destination="in6-6J-wss" id="VAn-ym-Nkg"/>
+                        <outlet property="noNetworkLabel" destination="0bU-bm-PYL" id="ENE-TC-HHn"/>
                         <outlet property="reloadActivityIndicator" destination="6ld-4U-T1a" id="rtJ-Os-4BR"/>
                         <outlet property="reloadButton" destination="lCZ-hm-rv0" id="SCK-7u-Snj"/>
                         <outlet property="temp" destination="4f6-GK-wCa" id="HsH-fK-8z1"/>

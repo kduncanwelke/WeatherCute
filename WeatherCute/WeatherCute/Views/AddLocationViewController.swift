@@ -18,11 +18,13 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 	@IBOutlet weak var locationLabel: UILabel!
 	@IBOutlet weak var useThisLocationButton: UIButton!
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var noNetworkLabel: UILabel!
+    @IBOutlet weak var cancel: UIButton!
+
     
 	// MARK: Variables
 
 	var searchController = UISearchController(searchResultsController: nil)
-    var networkMessageShown = false
 
     private let searchViewModel = SearchViewModel()
 	
@@ -68,7 +70,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		
         NotificationCenter.default.addObserver(self, selector: #selector(networkBack), name: NSNotification.Name(rawValue: "networkBack"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(networkGone), name: NSNotification.Name(rawValue: "networkGone"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(fail), name: NSNotification.Name(rawValue: "fail"), object: nil)
         
         loadingIndicator.stopAnimating()
 
@@ -76,45 +78,20 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
     }
 	
 	// MARK: Custom functions
-    
-    @objc func networkBack() {
-        print("network restored")
-        networkMessageShown = false
-    }
-    
-    @objc func networkGone() {
-        DispatchQueue.main.async {
-            self.loadingIndicator.stopAnimating()
-            
-            // if data was not retrieved in time, disable add button
 
-        }
+    @objc func networkBack() {
+        noNetworkLabel.isHidden = true
     }
     
-    func networkMessage() {
-        print("show network message")
-            if networkMessageShown == false {
-            switch NetworkMonitor.status {
-            case .normal:
-                print("No problems")
-            case .lost:
-                // the network was lost
-                // only show alerts on currently visible content view to prevent confusion
-                showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
-                networkMessageShown = true
-                print("network lost")
-            case .other:
-                if NetworkMonitor.connection == false {
-                    // only show alerts on currently visible content view to prevent confusion
-                    showAlert(title: "No Network", message: Errors.noNetwork.localizedDescription)
-                    networkMessageShown = true
-                    print("other no connection")
-                } else {
-                    showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
-                    networkMessageShown = true
-                    print("other")
-                }
-            }
+    @objc func fail() {
+        DispatchQueue.main.async { [weak self] in
+            self?.noNetworkLabel.isHidden = false
+            self?.loadingIndicator.stopAnimating()
+            
+            // if network was lost, disable add button
+            self?.useThisLocationButton.isEnabled = false
+            self?.useThisLocationButton.alpha = 0.5
+            self?.cancel.isEnabled = true
         }
     }
 	
@@ -139,7 +116,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 
             // if there's no network, exit early
             if NetworkMonitor.connection == false {
-                networkMessage()
+                fail()
                 return
             }
 
@@ -176,8 +153,12 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                     if let pin = self?.mapView.annotations.first {
                         self?.searchViewModel.saveLocation(annotation: pin)
                         self?.searchViewModel.addSelectedLocation()
+
+                        // disable cancel button while loading
+                        self?.cancel.isEnabled = false
                         DispatchQueue.main.async {
                             self?.loadingIndicator.stopAnimating()
+                            self?.cancel.isEnabled = true
                             self?.dismiss(animated: true, completion: nil)
                         }
                     }

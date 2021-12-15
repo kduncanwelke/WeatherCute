@@ -27,11 +27,12 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     @IBOutlet weak var alertButton: UIButton!
 	@IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 	@IBOutlet weak var collectionViewActivityIndicator: UIActivityIndicatorView!
-	
-	@IBOutlet weak var detailForecastDay: UILabel!
+    @IBOutlet weak var noNetworkLabel: UILabel!
+    @IBOutlet weak var detailForecastDay: UILabel!
 	@IBOutlet weak var detailForecastLabel: UILabel!
 	@IBOutlet weak var detailBackground: UIView!
-	@IBOutlet weak var reloadButton: UIButton!
+
+    @IBOutlet weak var reloadButton: UIButton!
 	@IBOutlet weak var reloadActivityIndicator: UIActivityIndicatorView!
 	
 	// MARK: Variables
@@ -57,12 +58,12 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         
         NotificationCenter.default.addObserver(self, selector: #selector(networkRestored), name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(noNetwork), name: NSNotification.Name(rawValue: "noNetwork"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(networkWhoops), name: NSNotification.Name(rawValue: "networkWhoops"), object: nil)
         
         NetworkMonitor.loadedItems = .none
 
         if !contentViewModel.isLoaded() {
-            getData()
+            getData(reload: false)
         } else {
             displayCurrent()
         }
@@ -73,20 +74,24 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     @objc func refreshContent() {
         print("refresh content")
         if !contentViewModel.isLoaded() {
-            getData()
+            getData(reload: false)
         } else {
             displayCurrent()
         }
     }
 
-    func getData() {
+    func getData(reload: Bool) {
         contentViewModel.setSearchParameters()
 
-        activityIndicator.startAnimating()
-        contentViewModel.getWeatherData(completion: { [weak self] in
+        if reload {
+            reloadActivityIndicator.startAnimating()
+            reloadButton.setImage(UIImage(named: "loading"), for: .normal)
+            reloadButton.isEnabled = false
+        }
+
+        contentViewModel.getAlerts(completion: { [weak self] in
             DispatchQueue.main.async {
-                self?.displayCurrent()
-                self?.activityIndicator.stopAnimating()
+                self?.configureAlertButton()
             }
         })
 
@@ -98,9 +103,17 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             }
         })
 
-        contentViewModel.getAlerts(completion: { [weak self] in
+        activityIndicator.startAnimating()
+        contentViewModel.getWeatherData(completion: { [weak self] in
             DispatchQueue.main.async {
-                self?.configureAlertButton()
+                self?.displayCurrent()
+                self?.activityIndicator.stopAnimating()
+
+                if reload {
+                    self?.reloadButton.setImage(UIImage(named: "reload"), for: .normal)
+                    self?.reloadActivityIndicator.stopAnimating()
+                    self?.reloadButton.isEnabled = true
+                }
             }
         })
     }
@@ -114,6 +127,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         dewpoint.text = contentViewModel.getCurrentDewpoint()
         heatIndex.text = contentViewModel.getCurrentHeatChill()
         heatIndexLabel.text = contentViewModel.setHeatChillLabel()
+        collectionView.reloadData()
+        configureAlertButton()
 
         if let weatherImage = contentViewModel.getCurrentConditionImage() {
             largeImage.image = weatherImage
@@ -129,10 +144,15 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     
     @objc func networkRestored() {
         print("network restored")
+        noNetworkLabel.isHidden = true
+        getData(reload: false)
     }
     
-    @objc func noNetwork() {
-
+    @objc func networkWhoops() {
+        noNetworkLabel.isHidden = false
+        activityIndicator.stopAnimating()
+        collectionViewActivityIndicator.stopAnimating()
+        reloadActivityIndicator.stopAnimating()
     }
 	
 	@objc func degreeUnitChanged() {
@@ -158,16 +178,14 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	}
 	
 	@IBAction func reload(_ sender: UIButton) {
-		reloadButton.setImage(UIImage(named: "loading"), for: .normal)
-		reloadActivityIndicator.startAnimating()
-		reloadButton.isEnabled = false
-		print("reload")
-
-		reloadActivityIndicator.stopAnimating()
-		reloadButton.setImage(UIImage(named: "reload"), for: .normal)
-		reloadButton.isEnabled = true
+        if contentViewModel.hasNetwork() {
+            noNetworkLabel.isHidden = true
+            print("load")
+            getData(reload: true)
+        } else {
+            noNetworkLabel.isHidden = false
+        }
 	}
-	
 }
 
 extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDelegate {

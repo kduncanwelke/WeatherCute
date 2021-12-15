@@ -21,8 +21,8 @@ public class ViewModel {
                 if NetworkMonitor.status == .lost {
                     // if so, refresh data
                     DispatchQueue.main.async {
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "retrieveData"), object: nil)
-                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "returned"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
+                        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkBack"), object: nil)
                     }
                 }
 
@@ -33,9 +33,8 @@ public class ViewModel {
                 NetworkMonitor.status = .lost
 
                 DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "fail"), object: nil)
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkWhoops"), object: nil)
-
+                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "fail"), object: nil)
                 }
             }
         }
