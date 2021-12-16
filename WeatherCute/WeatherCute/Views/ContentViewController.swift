@@ -69,6 +69,10 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        clear()
+    }
+
 	// MARK: Custom functions
 
     @objc func refreshContent() {
@@ -80,8 +84,24 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         }
     }
 
+    func clear() {
+        location.text = "-"
+        currentFrom.text = ""
+        temp.text = "-"
+        descrip.text = "..."
+        humidity.text = "-"
+        dewpoint.text = "-"
+        heatIndex.text = "-"
+        heatIndexLabel.text = "Heat Index"
+        collectionView.reloadData()
+        alertButton.isHidden = true
+        largeImage.image = nil
+    }
+
     func getData(reload: Bool) {
         contentViewModel.setSearchParameters()
+        collectionViewActivityIndicator.startAnimating()
+        activityIndicator.startAnimating()
 
         if reload {
             reloadActivityIndicator.startAnimating()
@@ -95,7 +115,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             }
         })
 
-        collectionViewActivityIndicator.startAnimating()
         contentViewModel.getForecastData(completion: { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
@@ -103,7 +122,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             }
         })
 
-        activityIndicator.startAnimating()
         contentViewModel.getWeatherData(completion: { [weak self] in
             DispatchQueue.main.async {
                 self?.displayCurrent()
@@ -119,6 +137,9 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
 
 	func displayCurrent() {
+        collectionViewActivityIndicator.startAnimating()
+        activityIndicator.startAnimating()
+
         location.text = contentViewModel.getLocationName()
         currentFrom.text = contentViewModel.getObservationName()
         temp.text = contentViewModel.getCurrentTemp()
@@ -129,6 +150,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         heatIndexLabel.text = contentViewModel.setHeatChillLabel()
         collectionView.reloadData()
         configureAlertButton()
+        configureNetworkButton()
 
         if let weatherImage = contentViewModel.getCurrentConditionImage() {
             largeImage.image = weatherImage
@@ -136,19 +158,31 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         } else {
             noImageText.isHidden = false
         }
+
+        collectionViewActivityIndicator.stopAnimating()
+        activityIndicator.stopAnimating()
 	}
 
     func configureAlertButton() {
         alertButton.isHidden = contentViewModel.hideAlertButton()
     }
+
+    func configureNetworkButton() {
+        if contentViewModel.hasNetwork() {
+            noNetworkLabel.isHidden = true
+        } else {
+            noNetworkLabel.isHidden = false
+        }
+    }
     
     @objc func networkRestored() {
         print("network restored")
         noNetworkLabel.isHidden = true
-        getData(reload: false)
+        refreshContent()
     }
     
     @objc func networkWhoops() {
+        print("network whoops")
         noNetworkLabel.isHidden = false
         activityIndicator.stopAnimating()
         collectionViewActivityIndicator.stopAnimating()

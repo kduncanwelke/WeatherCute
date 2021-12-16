@@ -81,9 +81,15 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 
     @objc func networkBack() {
         noNetworkLabel.isHidden = true
+
+        if locationLabel.text != "" {
+            useThisLocationButton.isEnabled = true
+            useThisLocationButton.alpha = 1.0
+        }
     }
     
     @objc func fail() {
+        print("fail called")
         DispatchQueue.main.async { [weak self] in
             self?.noNetworkLabel.isHidden = false
             self?.loadingIndicator.stopAnimating()
@@ -114,12 +120,6 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 			let coordinate = mapView.convert(tappedLocation, toCoordinateFrom: mapView)
 			let placemark = MKPlacemark(coordinate: coordinate)
 
-            // if there's no network, exit early
-            if NetworkMonitor.connection == false {
-                fail()
-                return
-            }
-
             searchViewModel.updateLocationFromMapTap(location: placemark, completion: { [weak self] pin in
                 if let newPin = pin {
                     self?.mapView.addAnnotation(newPin)
@@ -143,31 +143,43 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		}
         
 		if locationLabel.text != "" {
-            if NetworkMonitor.connection {
+            if searchViewModel.hasConnection() {
+                print("has connection")
                 loadingIndicator.startAnimating()
+
                 // disable button to prevent double tap
                 useThisLocationButton.isEnabled = false
                 useThisLocationButton.alpha = 0.5
 
-                searchViewModel.getLocation(completionHandler: { [weak self] in
-                    if let pin = self?.mapView.annotations.first {
-                        self?.searchViewModel.saveLocation(annotation: pin)
-                        self?.searchViewModel.addSelectedLocation()
+                // disable cancel button while loading
+                cancel.isEnabled = false
 
-                        // disable cancel button while loading
-                        self?.cancel.isEnabled = false
+                searchViewModel.getLocation(completionHandler: { [weak self] success in
+                    if success {
+                        if let pin = self?.mapView.annotations.first {
+                            self?.searchViewModel.saveLocation(annotation: pin)
+                            self?.searchViewModel.addSelectedLocation()
+
+                            DispatchQueue.main.async {
+                                self?.loadingIndicator.stopAnimating()
+                                self?.cancel.isEnabled = true
+                                self?.searchViewModel.clearSearch()
+                                self?.dismiss(animated: true, completion: nil)
+                            }
+                        }
+                    } else {
                         DispatchQueue.main.async {
                             self?.loadingIndicator.stopAnimating()
                             self?.cancel.isEnabled = true
-                            self?.dismiss(animated: true, completion: nil)
+                            self?.searchViewModel.clearSearch()
+                            self?.clearMap()
+                            self?.showAlert(title: "Cannot add location", message: "Network connection was lost. Please try again when reconnected.")
                         }
                     }
                 })
             } else {
-                mapView.removeAnnotations(mapView.annotations)
-                locationLabel.text = ""
-                useThisLocationButton.isEnabled = false
-                useThisLocationButton.alpha = 0.5
+                searchViewModel.clearSearch()
+                clearMap()
                 showAlert(title: "Cannot add location", message: "No network connection is available. Complete data for this location could not be retrieved.")
             }
         }

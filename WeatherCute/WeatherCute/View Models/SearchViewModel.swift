@@ -14,6 +14,10 @@ public class SearchViewModel {
 
     private let viewModel = ViewModel()
 
+    func hasConnection() -> Bool {
+        return NetworkMonitor.connection
+    }
+
     func centerMapLocation() -> MKCoordinateRegion {
         // center map on geographic center of us
         let coordinate = CLLocationCoordinate2D(latitude: 39.50, longitude: -98.35)
@@ -54,7 +58,7 @@ public class SearchViewModel {
         }
     }
 
-    func getLocation(completionHandler: @escaping () -> Void) {
+    func getLocation(completionHandler: @escaping (Bool) -> Void) {
         DataManager<Location>.fetch() { [weak self] result in
             switch result {
             case .success(let response):
@@ -67,7 +71,7 @@ public class SearchViewModel {
                     if ForecastSearch.station != "" {
                         self?.getStation(completion: { reply in
                             if reply {
-                                completionHandler()
+                                completionHandler(true)
                             }
                         })
                     }
@@ -76,6 +80,7 @@ public class SearchViewModel {
                 }
             case .failure(let error):
                 print("error")
+                completionHandler(false)
             }
         }
     }
@@ -165,6 +170,10 @@ public class SearchViewModel {
         LocationSearch.latitude = 0
         LocationSearch.longitude = 0
         LocationSearch.searchResults.removeAll()
+        ForecastSearch.gridX = 0
+        ForecastSearch.gridY = 0
+        ForecastSearch.station = ""
+        ForecastSearch.observationStation = ""
     }
 
     func saveLocation(annotation: MKAnnotation) {

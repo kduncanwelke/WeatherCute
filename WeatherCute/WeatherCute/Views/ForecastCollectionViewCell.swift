@@ -25,6 +25,14 @@ class ForecastCollectionViewCell: UICollectionViewCell {
 		cellImage.isUserInteractionEnabled = true
 		cellImage.addGestureRecognizer(gesture)
 	}
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        cellTitle.text = "-"
+        cellTemp.text = "-"
+        descrip.text = "..."
+        cellImage.image = nil
+    }
 	
 	@objc func handleTap(recognizer: UILongPressGestureRecognizer) {
 		collectionDelegate?.longPress(sender: self, state: recognizer.state)
