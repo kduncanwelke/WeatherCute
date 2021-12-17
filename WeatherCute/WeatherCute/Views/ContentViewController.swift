@@ -62,20 +62,19 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         
         NetworkMonitor.loadedItems = .none
 
+        clear()
+
         if !contentViewModel.isLoaded() {
             getData(reload: false)
         } else {
             displayCurrent()
         }
     }
-
-    override func viewWillAppear(_ animated: Bool) {
-        clear()
-    }
-
+    
 	// MARK: Custom functions
 
     @objc func refreshContent() {
+        clear()
         print("refresh content")
         if !contentViewModel.isLoaded() {
             getData(reload: false)

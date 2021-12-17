@@ -18,7 +18,8 @@ class ViewController: UIViewController {
 	@IBOutlet weak var pageControl: UIPageControl!
 	@IBOutlet weak var container: UIView!
 	@IBOutlet weak var tempSegmentedControl: UISegmentedControl!
-	
+    @IBOutlet weak var addLocationLabel: UILabel!
+
 	// MARK: Variables
 
     private let viewModel = ViewModel()
@@ -31,11 +32,17 @@ class ViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(updatePageControl), name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
 
+        NotificationCenter.default.addObserver(self, selector: #selector(networkErrorAlert), name: NSNotification.Name(rawValue: "networkErrorAlert"), object: nil)
+
         viewModel.loadLocations()
 
         viewModel.setUpNetworkMonitor()
         updatePageControl()
         addPages()
+
+        if viewModel.getWeatherLocationTotal() != 0 {
+            addLocationLabel.isHidden = true
+        }
 	}
 	
 	// MARK: Custom functions
@@ -46,8 +53,16 @@ class ViewController: UIViewController {
         }
     }
 
+    @objc func networkErrorAlert() {
+        showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
+    }
+
     @objc func updatePageControl() {
         pageControl.numberOfPages = viewModel.getWeatherLocationTotal()
+
+        if viewModel.getWeatherLocationTotal() != 0 {
+            addLocationLabel.isHidden = true
+        }
     }
     
 	@objc func sectionChanged() {

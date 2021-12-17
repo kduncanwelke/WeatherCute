@@ -86,7 +86,7 @@ class PageViewController: UIPageViewController {
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
         } else if pageControllerViewModel.getCurrentPage() == pageControllerViewModel.getWeatherLocationTotal() {
-            
+
             pageControllerViewModel.setCurrentPage(page: pageControllerViewModel.getCurrentPage()-1)
 			
 			// move up a section as this is last page
@@ -98,6 +98,9 @@ class PageViewController: UIPageViewController {
 			NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
 		} else {
             // move down a section since this is not last page
+            print("not last")
+            pageControllerViewModel.setCurrentPage(page: pageControllerViewModel.getCurrentPage()-1)
+
 			if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
 				setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
 			}
@@ -155,9 +158,11 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
             pageControllerViewModel.setCurrentPage(page: pageControllerViewModel.getPendingIndex())
             pageControllerViewModel.setPendingPage(page: oldIndex)
             print("did finish animating")
-            
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
-            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshContent"), object: nil)
+
+            DispatchQueue.main.async {
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshContent"), object: nil)
+                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
+            }
         }
 	}
 }

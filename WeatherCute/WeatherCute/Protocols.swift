@@ -10,10 +10,10 @@ import Foundation
 import MapKit
 
 // handle updating map location when locale is changed
-protocol MapUpdaterDelegate: class {
+protocol MapUpdaterDelegate: AnyObject{
     func updateMapLocation(index: Int)
 }
 
-protocol CollectionViewTapDelegate: class {
+protocol CollectionViewTapDelegate: AnyObject {
 	func longPress(sender: ForecastCollectionViewCell, state: UIGestureRecognizer.State) 
 }

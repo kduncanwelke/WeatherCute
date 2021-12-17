@@ -52,7 +52,8 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		searchController.delegate = self
 		searchController.searchBar.delegate = self // Monitor when the search button is tapped.
         searchController.hidesNavigationBarDuringPresentation = false
-		
+        searchController.searchBar.tintColor = .systemGray
+    
 		navigationItem.searchController = searchController
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
@@ -173,7 +174,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
                             self?.cancel.isEnabled = true
                             self?.searchViewModel.clearSearch()
                             self?.clearMap()
-                            self?.showAlert(title: "Cannot add location", message: "Network connection was lost. Please try again when reconnected.")
+                            self?.showAlert(title: "Cannot add location", message: Errors.noDataError.localizedDescription)
                         }
                     }
                 })

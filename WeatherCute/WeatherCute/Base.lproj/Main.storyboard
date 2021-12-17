@@ -101,6 +101,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="addLocationLabel" destination="gy6-ot-MPt" id="LzL-yp-fmr"/>
                         <outlet property="container" destination="IfI-fA-acd" id="GOG-am-Cdy"/>
                         <outlet property="pageControl" destination="fFQ-TZ-zyU" id="SjF-Ni-v63"/>
                         <outlet property="tempSegmentedControl" destination="gMU-K0-lrx" id="s9q-Mw-9hQ"/>

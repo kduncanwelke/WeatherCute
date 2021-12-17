@@ -94,7 +94,7 @@ public class ContentViewModel {
     }
 
     func isLoaded() -> Bool {
-        if WeatherLocations.currentConditions[PageControllerManager.currentPage] != nil && !(WeatherLocations.forecasts[PageControllerManager.currentPage]?.isEmpty ?? true) && !(WeatherLocations.alerts[PageControllerManager.currentPage]?.isEmpty ?? true) {
+        if WeatherLocations.currentConditions[PageControllerManager.currentPage] != nil && !(WeatherLocations.forecasts[PageControllerManager.currentPage]?.isEmpty ?? true) && WeatherLocations.alerts[PageControllerManager.currentPage] != nil  {
             return true
         } else {
             return false
@@ -137,7 +137,7 @@ public class ContentViewModel {
     }
 
     func getLocationName() -> String {
-        return WeatherLocations.locations[PageControllerManager.currentPage].name ?? "No data"
+        return WeatherLocations.locations[PageControllerManager.currentPage].name ?? "Unknown"
     }
 
     func getObservationName() -> String {
@@ -164,7 +164,11 @@ public class ContentViewModel {
 
     func getCurrentDescription() -> String {
         if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
-            return current.properties.textDescription
+            if current.properties.textDescription == "" {
+                return "No current reporting"
+            } else {
+                return current.properties.textDescription
+            }
         } else {
             return "No current reporting"
         }
