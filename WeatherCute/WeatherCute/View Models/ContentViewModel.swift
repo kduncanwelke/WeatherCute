@@ -27,14 +27,14 @@ public class ContentViewModel {
 
     func getWeatherData(completion: @escaping () -> Void) {
         DataManager<Current>.fetch() { result in
-            print("fetch")
+            print("fetch weather")
             switch result {
             case .success(let response):
                 if let data = response.first {
                     WeatherLocations.currentConditions[PageControllerManager.currentPage] = data
                 }
 
-                print(response)
+                //print(response)
                 completion()
             case .failure(let error):
                 print(error)
@@ -45,7 +45,7 @@ public class ContentViewModel {
 
     func getForecastData(completion: @escaping () -> Void) {
         DataManager<Forecast>.fetch() { result in
-            print("fetch")
+            print("fetch forecast")
             switch result {
             case .success(let response):
                 if let data = response.first?.properties.periods {
@@ -53,13 +53,12 @@ public class ContentViewModel {
 
                     for forecast in data {
                         forecasts.append(forecast)
-                        print(forecast)
                     }
 
                     WeatherLocations.forecasts[PageControllerManager.currentPage] = forecasts
                 }
 
-                print(response)
+                //print(response)
                 completion()
             case .failure(let error):
                 print(error)
@@ -70,7 +69,7 @@ public class ContentViewModel {
 
     func getAlerts(completion: @escaping () -> Void) {
         DataManager<Alert>.fetch() { result in
-            print("fetch")
+            print("fetch alerts")
             switch result {
             case .success(let response):
                 if let data = response.first?.features {
@@ -84,7 +83,7 @@ public class ContentViewModel {
                     WeatherLocations.alerts[PageControllerManager.currentPage] = alertList
                 }
 
-                print(response)
+                //print(response)
                 completion()
             case .failure(let error):
                 print(error)

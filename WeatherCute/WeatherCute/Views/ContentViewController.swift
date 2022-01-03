@@ -108,16 +108,16 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             reloadButton.isEnabled = false
         }
 
-        contentViewModel.getAlerts(completion: { [weak self] in
-            DispatchQueue.main.async {
-                self?.configureAlertButton()
-            }
-        })
-
         contentViewModel.getForecastData(completion: { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
                 self?.collectionViewActivityIndicator.stopAnimating()
+            }
+        })
+
+        contentViewModel.getAlerts(completion: { [weak self] in
+            DispatchQueue.main.async {
+                self?.configureAlertButton()
             }
         })
 

@@ -160,7 +160,8 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
             print("did finish animating")
 
             DispatchQueue.main.async {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshContent"), object: nil)
+                // call viewdidload on visible viewcontroller
+                self.viewControllers?.first?.viewDidLoad()
                 NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
             }
         }
