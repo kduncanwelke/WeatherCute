@@ -11,8 +11,6 @@ import UIKit
 
 public class ContentViewModel {
 
-    // data
-
     func setSearchParameters() {
         var location = WeatherLocations.locations[PageControllerManager.currentPage]
         
@@ -32,6 +30,7 @@ public class ContentViewModel {
             case .success(let response):
                 if let data = response.first {
                     WeatherLocations.currentConditions[PageControllerManager.currentPage] = data
+                    print("for page \(PageControllerManager.currentPage)")
                 }
 
                 //print(response)
@@ -68,7 +67,7 @@ public class ContentViewModel {
     }
 
     func getAlerts(completion: @escaping () -> Void) {
-        DataManager<Alert>.fetch() { result in
+        DataManager<Alert>.fetch() { [weak self] result in
             print("fetch alerts")
             switch result {
             case .success(let response):
@@ -77,7 +76,6 @@ public class ContentViewModel {
 
                     for alert in data {
                         alertList.append(alert)
-                        print(alert)
                     }
 
                     WeatherLocations.alerts[PageControllerManager.currentPage] = alertList

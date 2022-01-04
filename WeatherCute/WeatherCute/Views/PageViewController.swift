@@ -159,11 +159,9 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
             pageControllerViewModel.setPendingPage(page: oldIndex)
             print("did finish animating")
 
-            DispatchQueue.main.async {
-                // call viewdidload on visible viewcontroller
-                self.viewControllers?.first?.viewDidLoad()
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
-            }
+            // call viewdidload on visible viewcontroller
+            self.viewControllers?.first?.viewWillAppear(true)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "sectionChanged"), object: nil)
         }
 	}
 }

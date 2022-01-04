@@ -18,29 +18,9 @@ struct NetworkMonitor {
     
     static var messageShown = false
     
-    static var loadedItems: LoadedItems = .none {
-        didSet {
-            print(loadedItems)
-            if loadedItems == .all {
-                NotificationCenter.default.post(name: NSNotification.Name(rawValue: "showNetworkMessage"), object: nil)
-            }
-        }
-    }
-    
     enum NetworkStatus {
         case normal
         case lost
         case other
-    }
-    
-    enum LoadedItems {
-        case all
-        case current
-        case currentAndForecast
-        case currentAndAlerts
-        case forecast
-        case forecastAndAlerts
-        case alerts
-        case none
     }
 }

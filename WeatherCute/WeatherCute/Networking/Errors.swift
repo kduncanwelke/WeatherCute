@@ -18,7 +18,7 @@ enum Errors: Error {
 	var localizedDescription: String {
 		switch self {
 		case .networkError:
-			return "The NWS API may be experiencing an interruption - please wait and try again."
+			return "The NWS API may be experiencing an interruption - please try again."
         case .noNetwork:
             return "The network is currently unavailable, please check your wifi or data connection."
 		case .otherError:

@@ -59,28 +59,25 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         NotificationCenter.default.addObserver(self, selector: #selector(networkRestored), name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(networkWhoops), name: NSNotification.Name(rawValue: "networkWhoops"), object: nil)
-        
-        NetworkMonitor.loadedItems = .none
+    }
 
+    override func viewWillAppear(_ animated: Bool) {
+        getData()
+    }
+    
+	// MARK: Custom functions
+
+    func getData() {
         clear()
-
         if !contentViewModel.isLoaded() {
             getData(reload: false)
         } else {
             displayCurrent()
         }
     }
-    
-	// MARK: Custom functions
 
     @objc func refreshContent() {
-        clear()
-        print("refresh content")
-        if !contentViewModel.isLoaded() {
-            getData(reload: false)
-        } else {
-            displayCurrent()
-        }
+        getData()
     }
 
     func clear() {
@@ -115,12 +112,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             }
         })
 
-        contentViewModel.getAlerts(completion: { [weak self] in
-            DispatchQueue.main.async {
-                self?.configureAlertButton()
-            }
-        })
-
         contentViewModel.getWeatherData(completion: { [weak self] in
             DispatchQueue.main.async {
                 self?.displayCurrent()
@@ -133,6 +124,13 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
                 }
             }
         })
+
+        contentViewModel.getAlerts(completion: { [weak self] in
+            DispatchQueue.main.async {
+                self?.configureAlertButton()
+            }
+        })
+
     }
 
 	func displayCurrent() {
