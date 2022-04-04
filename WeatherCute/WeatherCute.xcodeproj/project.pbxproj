@@ -35,6 +35,34 @@
 		2D78584E22A81D44009111AA /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D78584D22A81D44009111AA /* Icons.swift */; };
 		2D7D0CEC22A9836100D58CA0 /* TemperatureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D0CEB22A9836100D58CA0 /* TemperatureUnit.swift */; };
 		2D7D0CEE22A9C9E800D58CA0 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D0CED22A9C9E800D58CA0 /* Alert.swift */; };
+		2D7D3B3827FB568300EA8806 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D7D3B3727FB568300EA8806 /* WidgetKit.framework */; };
+		2D7D3B3A27FB568300EA8806 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D7D3B3927FB568300EA8806 /* SwiftUI.framework */; };
+		2D7D3B3D27FB568300EA8806 /* WeatherCute_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D3B3C27FB568300EA8806 /* WeatherCute_Widget.swift */; };
+		2D7D3B3F27FB568300EA8806 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D7D3B3E27FB568300EA8806 /* Assets.xcassets */; };
+		2D7D3B4327FB568300EA8806 /* WeatherCute WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2D7D3B3527FB568300EA8806 /* WeatherCute WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		2D7D3B4927FB5BEA00EA8806 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D3B4827FB5BEA00EA8806 /* WidgetView.swift */; };
+		2D7D3B4C27FB88B600EA8806 /* WeatherLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB9C15822A0489800B82FEF /* WeatherLocations.swift */; };
+		2D7D3B4D27FB88DB00EA8806 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E3766276171E8007FD4B8 /* ContentViewModel.swift */; };
+		2D7D3B4E27FB88FD00EA8806 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D78584D22A81D44009111AA /* Icons.swift */; };
+		2D7D3B4F27FB891500EA8806 /* PageControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB9C15A22A052B600B82FEF /* PageControllerManager.swift */; };
+		2D7D3B5027FB892500EA8806 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E3764276168B0007FD4B8 /* Temp.swift */; };
+		2D7D3B5127FB893900EA8806 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D578425241C01A000AD57FF /* NetworkMonitor.swift */; };
+		2D7D3B5227FB894200EA8806 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB3229F1FAD0052C391 /* DataManager.swift */; };
+		2D7D3B5327FB894C00EA8806 /* ForecastSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC2229F2F9C0052C391 /* ForecastSearch.swift */; };
+		2D7D3B5427FB894E00EA8806 /* LocationSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC0229F2F650052C391 /* LocationSearch.swift */; };
+		2D7D3B5527FB896F00EA8806 /* Current.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC6229F35B80052C391 /* Current.swift */; };
+		2D7D3B5627FB897100EA8806 /* Forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4ABE229F26440052C391 /* Forecast.swift */; };
+		2D7D3B5727FB897900EA8806 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D0CED22A9C9E800D58CA0 /* Alert.swift */; };
+		2D7D3B5827FB8B9500EA8806 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB5229F1FDE0052C391 /* Endpoint.swift */; };
+		2D7D3B5927FB8B9E00EA8806 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB1229F1F9C0052C391 /* Result.swift */; };
+		2D7D3B5A27FB8BA800EA8806 /* SearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB9229F21E20052C391 /* SearchType.swift */; };
+		2D7D3B5B27FB8BBA00EA8806 /* Networker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AAF229F1F7B0052C391 /* Networker.swift */; };
+		2D7D3B5C27FB8BD800EA8806 /* TemperatureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D0CEB22A9836100D58CA0 /* TemperatureUnit.swift */; };
+		2D7D3B5D27FB8BEC00EA8806 /* WeatherLocation.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 2DA7E90222A3275B000B6BFF /* WeatherLocation.xcdatamodeld */; };
+		2D7D3B5E27FB8BFE00EA8806 /* JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AAC229F1EE60052C391 /* JSONDecoder.swift */; };
+		2D7D3B5F27FB8C0100EA8806 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB7229F21870052C391 /* Errors.swift */; };
+		2D7D3B6027FB8C1400EA8806 /* Stations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC4229F34B70052C391 /* Stations.swift */; };
+		2D7D3B6127FB8DCD00EA8806 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D4D4A90229EEE5A0052C391 /* Assets.xcassets */; };
 		2D7E375A27615F50007FD4B8 /* EditViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E375927615F50007FD4B8 /* EditViewController.swift */; };
 		2D7E375C27616029007FD4B8 /* EditTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E375B27616029007FD4B8 /* EditTableViewCell.swift */; };
 		2D7E375F276161DF007FD4B8 /* EditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E375E276161DF007FD4B8 /* EditViewModel.swift */; };
@@ -67,7 +95,28 @@
 			remoteGlobalIDString = 2D4D4A85229EEE590052C391;
 			remoteInfo = WeatherCute;
 		};
+		2D7D3B4127FB568300EA8806 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 2D4D4A7E229EEE590052C391 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 2D7D3B3427FB568300EA8806;
+			remoteInfo = "WeatherCute WidgetExtension";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		2D7D3B4427FB568300EA8806 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				2D7D3B4327FB568300EA8806 /* WeatherCute WidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		2D4D4A86229EEE590052C391 /* WeatherCute.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherCute.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +151,13 @@
 		2D78584D22A81D44009111AA /* Icons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Icons.swift; sourceTree = "<group>"; };
 		2D7D0CEB22A9836100D58CA0 /* TemperatureUnit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemperatureUnit.swift; sourceTree = "<group>"; };
 		2D7D0CED22A9C9E800D58CA0 /* Alert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Alert.swift; sourceTree = "<group>"; };
+		2D7D3B3527FB568300EA8806 /* WeatherCute WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "WeatherCute WidgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2D7D3B3727FB568300EA8806 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		2D7D3B3927FB568300EA8806 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		2D7D3B3C27FB568300EA8806 /* WeatherCute_Widget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCute_Widget.swift; sourceTree = "<group>"; };
+		2D7D3B3E27FB568300EA8806 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		2D7D3B4027FB568300EA8806 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2D7D3B4827FB5BEA00EA8806 /* WidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetView.swift; sourceTree = "<group>"; };
 		2D7E375927615F50007FD4B8 /* EditViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewController.swift; sourceTree = "<group>"; };
 		2D7E375B27616029007FD4B8 /* EditTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditTableViewCell.swift; sourceTree = "<group>"; };
 		2D7E375E276161DF007FD4B8 /* EditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditViewModel.swift; sourceTree = "<group>"; };
@@ -141,6 +197,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2D7D3B3227FB568300EA8806 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D7D3B3A27FB568300EA8806 /* SwiftUI.framework in Frameworks */,
+				2D7D3B3827FB568300EA8806 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -149,6 +214,8 @@
 			children = (
 				2D4D4A88229EEE590052C391 /* WeatherCute */,
 				2D4D4A9D229EEE5A0052C391 /* WeatherCuteTests */,
+				2D7D3B3B27FB568300EA8806 /* WeatherCute Widget */,
+				2D7D3B3627FB568300EA8806 /* Frameworks */,
 				2D4D4A87229EEE590052C391 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -158,6 +225,7 @@
 			children = (
 				2D4D4A86229EEE590052C391 /* WeatherCute.app */,
 				2D4D4A9A229EEE5A0052C391 /* WeatherCuteTests.xctest */,
+				2D7D3B3527FB568300EA8806 /* WeatherCute WidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -253,6 +321,26 @@
 			path = Parsing;
 			sourceTree = "<group>";
 		};
+		2D7D3B3627FB568300EA8806 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2D7D3B3727FB568300EA8806 /* WidgetKit.framework */,
+				2D7D3B3927FB568300EA8806 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2D7D3B3B27FB568300EA8806 /* WeatherCute Widget */ = {
+			isa = PBXGroup;
+			children = (
+				2D7D3B3C27FB568300EA8806 /* WeatherCute_Widget.swift */,
+				2D7D3B4827FB5BEA00EA8806 /* WidgetView.swift */,
+				2D7D3B3E27FB568300EA8806 /* Assets.xcassets */,
+				2D7D3B4027FB568300EA8806 /* Info.plist */,
+			);
+			path = "WeatherCute Widget";
+			sourceTree = "<group>";
+		};
 		2D7E375D276161CD007FD4B8 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -286,10 +374,12 @@
 				2D4D4A82229EEE590052C391 /* Sources */,
 				2D4D4A83229EEE590052C391 /* Frameworks */,
 				2D4D4A84229EEE590052C391 /* Resources */,
+				2D7D3B4427FB568300EA8806 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2D7D3B4227FB568300EA8806 /* PBXTargetDependency */,
 			);
 			name = WeatherCute;
 			productName = WeatherCute;
@@ -314,13 +404,30 @@
 			productReference = 2D4D4A9A229EEE5A0052C391 /* WeatherCuteTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		2D7D3B3427FB568300EA8806 /* WeatherCute WidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2D7D3B4727FB568300EA8806 /* Build configuration list for PBXNativeTarget "WeatherCute WidgetExtension" */;
+			buildPhases = (
+				2D7D3B3127FB568300EA8806 /* Sources */,
+				2D7D3B3227FB568300EA8806 /* Frameworks */,
+				2D7D3B3327FB568300EA8806 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "WeatherCute WidgetExtension";
+			productName = "WeatherCute WidgetExtension";
+			productReference = 2D7D3B3527FB568300EA8806 /* WeatherCute WidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
 		2D4D4A7E229EEE590052C391 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1020;
+				LastSwiftUpdateCheck = 1330;
 				LastUpgradeCheck = 1320;
 				ORGANIZATIONNAME = "Kate Duncan-Welke";
 				TargetAttributes = {
@@ -330,6 +437,9 @@
 					2D4D4A99229EEE5A0052C391 = {
 						CreatedOnToolsVersion = 10.2.1;
 						TestTargetID = 2D4D4A85229EEE590052C391;
+					};
+					2D7D3B3427FB568300EA8806 = {
+						CreatedOnToolsVersion = 13.3;
 					};
 				};
 			};
@@ -348,6 +458,7 @@
 			targets = (
 				2D4D4A85229EEE590052C391 /* WeatherCute */,
 				2D4D4A99229EEE5A0052C391 /* WeatherCuteTests */,
+				2D7D3B3427FB568300EA8806 /* WeatherCute WidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -367,6 +478,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2D7D3B3327FB568300EA8806 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D7D3B6127FB8DCD00EA8806 /* Assets.xcassets in Resources */,
+				2D7D3B3F27FB568300EA8806 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -434,6 +554,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		2D7D3B3127FB568300EA8806 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2D7D3B5027FB892500EA8806 /* Temp.swift in Sources */,
+				2D7D3B5127FB893900EA8806 /* NetworkMonitor.swift in Sources */,
+				2D7D3B6027FB8C1400EA8806 /* Stations.swift in Sources */,
+				2D7D3B4F27FB891500EA8806 /* PageControllerManager.swift in Sources */,
+				2D7D3B5527FB896F00EA8806 /* Current.swift in Sources */,
+				2D7D3B5827FB8B9500EA8806 /* Endpoint.swift in Sources */,
+				2D7D3B5B27FB8BBA00EA8806 /* Networker.swift in Sources */,
+				2D7D3B5E27FB8BFE00EA8806 /* JSONDecoder.swift in Sources */,
+				2D7D3B4D27FB88DB00EA8806 /* ContentViewModel.swift in Sources */,
+				2D7D3B5927FB8B9E00EA8806 /* Result.swift in Sources */,
+				2D7D3B4927FB5BEA00EA8806 /* WidgetView.swift in Sources */,
+				2D7D3B5D27FB8BEC00EA8806 /* WeatherLocation.xcdatamodeld in Sources */,
+				2D7D3B5727FB897900EA8806 /* Alert.swift in Sources */,
+				2D7D3B4C27FB88B600EA8806 /* WeatherLocations.swift in Sources */,
+				2D7D3B5627FB897100EA8806 /* Forecast.swift in Sources */,
+				2D7D3B5C27FB8BD800EA8806 /* TemperatureUnit.swift in Sources */,
+				2D7D3B4E27FB88FD00EA8806 /* Icons.swift in Sources */,
+				2D7D3B5227FB894200EA8806 /* DataManager.swift in Sources */,
+				2D7D3B5427FB894E00EA8806 /* LocationSearch.swift in Sources */,
+				2D7D3B5F27FB8C0100EA8806 /* Errors.swift in Sources */,
+				2D7D3B5A27FB8BA800EA8806 /* SearchType.swift in Sources */,
+				2D7D3B5327FB894C00EA8806 /* ForecastSearch.swift in Sources */,
+				2D7D3B3D27FB568300EA8806 /* WeatherCute_Widget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -441,6 +591,11 @@
 			isa = PBXTargetDependency;
 			target = 2D4D4A85229EEE590052C391 /* WeatherCute */;
 			targetProxy = 2D4D4A9B229EEE5A0052C391 /* PBXContainerItemProxy */;
+		};
+		2D7D3B4227FB568300EA8806 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 2D7D3B3427FB568300EA8806 /* WeatherCute WidgetExtension */;
+			targetProxy = 2D7D3B4127FB568300EA8806 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -585,6 +740,7 @@
 		2D4D4AA4229EEE5A0052C391 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A8R365GJ52;
@@ -593,7 +749,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.0;
+				MARKETING_VERSION = 1.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kduncan-welke.WeatherCute";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -604,6 +760,7 @@
 		2D4D4AA5229EEE5A0052C391 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = A8R365GJ52;
@@ -612,7 +769,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.0;
+				MARKETING_VERSION = 1.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.kduncan-welke.WeatherCute";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -662,6 +819,64 @@
 			};
 			name = Release;
 		};
+		2D7D3B4527FB568300EA8806 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A8R365GJ52;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WeatherCute Widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "WeatherCute Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Kate Duncan-Welke. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kduncan-welke.WeatherCute.WeatherCute-Widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		2D7D3B4627FB568300EA8806 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = A8R365GJ52;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "WeatherCute Widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "WeatherCute Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2022 Kate Duncan-Welke. All rights reserved.";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.4;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.kduncan-welke.WeatherCute.WeatherCute-Widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -688,6 +903,15 @@
 			buildConfigurations = (
 				2D4D4AA7229EEE5A0052C391 /* Debug */,
 				2D4D4AA8229EEE5A0052C391 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2D7D3B4727FB568300EA8806 /* Build configuration list for PBXNativeTarget "WeatherCute WidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2D7D3B4527FB568300EA8806 /* Debug */,
+				2D7D3B4627FB568300EA8806 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
