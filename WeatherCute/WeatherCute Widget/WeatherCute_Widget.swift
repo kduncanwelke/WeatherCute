@@ -10,6 +10,10 @@ import WidgetKit
 import SwiftUI
 
 struct Provider: TimelineProvider {
+
+    private let viewModel = ViewModel()
+    private let contentViewModel = ContentViewModel()
+
     func placeholder(in context: Context) -> SimpleEntry {
         SimpleEntry(date: Date())
     }
@@ -22,16 +26,26 @@ struct Provider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [SimpleEntry] = []
 
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate)
-            entries.append(entry)
-        }
+        viewModel.loadLocations()
+        contentViewModel.setSearchParameters()
 
-        let timeline = Timeline(entries: entries, policy: .atEnd)
-        completion(timeline)
+        contentViewModel.getForecastData(completion: {})
+        contentViewModel.getAlerts(completion: {})
+        
+        contentViewModel.getWeatherData(completion: {
+            // Generate a timeline consisting of five entries an hour apart, starting from the current date.
+            let currentDate = Date()
+            for hourOffset in 0 ..< 5 {
+                let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
+                let entry = SimpleEntry(date: entryDate)
+                entries.append(entry)
+            }
+
+            let timeline = Timeline(entries: entries, policy: .atEnd)
+            completion(timeline)
+
+            WidgetCenter.shared.reloadAllTimelines()
+        })
     }
 }
 
@@ -57,6 +71,7 @@ struct WeatherCute_Widget: Widget {
         }
         .configurationDisplayName("WeatherCute Widget")
         .description("Current conditions widget")
+        .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
     }
 }
 

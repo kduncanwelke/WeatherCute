@@ -12,6 +12,7 @@ import UIKit
 public class ContentViewModel {
 
     func setSearchParameters() {
+        print("set search")
         var location = WeatherLocations.locations[PageControllerManager.currentPage]
         
         LocationSearch.latitude = location.latitude

@@ -76,6 +76,7 @@ public class ViewModel {
         do {
             WeatherLocations.locations = try managedContext.fetch(fetchRequest)
             print("locations loaded")
+            print(WeatherLocations.locations.count)
         } catch let error as NSError {
             //showAlert(title: "Could not retrieve data", message: "\(error.userInfo)")
         }

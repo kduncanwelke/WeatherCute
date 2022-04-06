@@ -20,6 +20,10 @@ class CoreDataManager {
 	
 	private lazy var persistentContainer: NSPersistentContainer = {
 		var container = NSPersistentContainer(name: "WeatherLocation")
+
+        let storeURL = URL.storeURL(for: "group.com.kduncan-welke.WeatherCute", databaseName: "WeatherCuteDatabase")
+        let storeDescription = NSPersistentStoreDescription(url: storeURL)
+        container.persistentStoreDescriptions = [storeDescription]
 		
 		container.loadPersistentStores() { storeDescription, error in
 			if var error = error as NSError? {
@@ -32,4 +36,14 @@ class CoreDataManager {
 		
 		return container
 	}()
+}
+
+public extension URL {
+    static func storeURL(for appGroup: String, databaseName: String) -> URL {
+        guard let fileContainer = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: appGroup) else {
+            fatalError("Shared file container not created")
+        }
+
+        return fileContainer.appendingPathComponent("\(databaseName).sqlite")
+    }
 }
