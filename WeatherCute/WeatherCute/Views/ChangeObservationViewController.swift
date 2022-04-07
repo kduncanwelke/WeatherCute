@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import WidgetKit
 
 class ChangeObservationViewController: UIViewController, UICollectionViewDelegate, UICollectionViewDelegateFlowLayout {
 	
@@ -79,6 +80,13 @@ extension ChangeObservationViewController: UICollectionViewDataSource {
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         observationViewModel.resaveObservation(index: indexPath.row)
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
+
+        if #available(iOS 14.0, *) {
+            WidgetCenter.shared.reloadAllTimelines()
+        } else {
+            // Fallback on earlier versions
+        }
+
 		self.dismiss(animated: true, completion: nil)
 	}
 }

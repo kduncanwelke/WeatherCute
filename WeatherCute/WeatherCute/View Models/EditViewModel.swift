@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreData
+import WidgetKit
 
 public class EditViewModel {
 
@@ -47,12 +48,18 @@ public class EditViewModel {
         }
 
         deleteLocation(index: index)
+
+        // reload widget if first location is changed, as widget uses first
+        if index == 0 {
+            if #available(iOS 14.0, *) {
+                WidgetCenter.shared.reloadAllTimelines()
+            } else {
+                // Fallback on earlier versions
+            }
+        }
     }
 
     func swap(source: Int, destination: Int) {
-        var swapping = WeatherLocations.locations.remove(at: source)
-        WeatherLocations.locations.insert(swapping, at: destination)
-
         // swap dictionary data to the correct order
         let firstCondition = WeatherLocations.currentConditions[source]
         let secondCondition = WeatherLocations.currentConditions[destination]
@@ -69,7 +76,7 @@ public class EditViewModel {
         WeatherLocations.alerts[destination] = firstAlert
         WeatherLocations.alerts[source] = secondAlert
 
-        resaveLocations()
+        resaveLocations(source: source, destination: destination)
     }
 
     func deleteLocation(index: Int) {
@@ -89,10 +96,46 @@ public class EditViewModel {
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
     }
 
-    func resaveLocations() {
+    func resaveLocations(source: Int, destination: Int) {
         var managedContext = CoreDataManager.shared.managedObjectContext
 
         let locationsList = WeatherLocations.locations
+
+        var first = WeatherLocations.locations[source]
+        var second = WeatherLocations.locations[destination]
+
+        // swap values here to ensure they are saved
+        let latitude1 = first.latitude
+        let longitude1 = first.longitude
+        let observation1 = first.observation
+        let station1 = first.station
+        let xCoord1 = first.xCoord
+        let yCoord1 = first.yCoord
+        let name1 = first.name
+
+        let latitude2 = second.latitude
+        let longitude2 = second.longitude
+        let observation2 = second.observation
+        let station2 = second.station
+        let xCoord2 = second.xCoord
+        let yCoord2 = second.yCoord
+        let name2 = second.name
+
+        second.latitude = latitude1
+        second.longitude = longitude1
+        second.observation = observation1
+        second.station = station1
+        second.xCoord = xCoord1
+        second.yCoord = yCoord1
+        second.name = name1
+
+        first.latitude = latitude2
+        first.longitude = longitude2
+        first.observation = observation2
+        first.station = station2
+        first.xCoord = xCoord2
+        first.yCoord = yCoord2
+        first.name = name2
 
         do {
             try managedContext.save()
@@ -100,9 +143,19 @@ public class EditViewModel {
         } catch {
             // this should never be displayed but is here to cover the possibility
             //showAlert(title: "Save failed", message: "Notice: Data has not successfully been saved.")
+            print("not saved")
         }
 
         // re-set up page controller
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "addPage"), object: nil)
+
+        // reload widget if the first location was changed, as widget uses first
+        if source == 0 || destination == 0 {
+            if #available(iOS 14.0, *) {
+                WidgetCenter.shared.reloadAllTimelines()
+            } else {
+                // Fallback on earlier versions
+            }
+        }
     }
 }

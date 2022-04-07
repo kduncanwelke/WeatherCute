@@ -81,5 +81,4 @@ extension SearchTableViewController: UISearchResultsUpdating {
 			self?.tableView.reloadData()
 		}
 	}
-	
 }

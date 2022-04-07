@@ -262,6 +262,19 @@ public class ContentViewModel {
         }
     }
 
+    func getAlertButton() -> String {
+        if let alerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+            if alerts.isEmpty {
+                return "none"
+            } else {
+                return "alert"
+            }
+        } else {
+            return "none"
+        }
+    }
+
+
     // collection view
 
     func getForecastCount() -> Int {
