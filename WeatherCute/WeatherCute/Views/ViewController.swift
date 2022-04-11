@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import WidgetKit
 
 class ViewController: UIViewController {
 	
@@ -77,13 +76,6 @@ class ViewController: UIViewController {
         viewModel.changeUnit(index: tempSegmentedControl.selectedSegmentIndex)
 
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
-
-        if #available(iOS 14.0, *) {
-            print("update widget")
-            WidgetCenter.shared.reloadAllTimelines()
-        } else {
-            // Fallback on earlier versions
-        }
 	}
 
     @IBAction func editPressed(_ sender: UIButton) {

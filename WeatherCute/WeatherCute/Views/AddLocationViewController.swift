@@ -52,19 +52,22 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		searchController.delegate = self
 		searchController.searchBar.delegate = self // Monitor when the search button is tapped.
         searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.tintColor = .systemGray
+        searchController.searchBar.tintColor = .darkGray
     
 		navigationItem.searchController = searchController
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
 
         if #available(iOS 13.0, *) {
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithOpaqueBackground()
-            appearance.backgroundColor = .white
-            navigationController?.navigationBar.tintColor = .white
-            navigationController?.navigationBar.standardAppearance = appearance
-            navigationController?.navigationBar.scrollEdgeAppearance = appearance
+            searchController.searchBar.tintColor = .darkGray
+            searchController.searchBar.searchTextField.attributedPlaceholder =  NSAttributedString.init(string: "Type to find location . . .", attributes: [NSAttributedString.Key.foregroundColor: UIColor.darkGray])
+            searchController.searchBar.tintColor = .darkGray
+
+            if let clearButton = searchController.searchBar.searchTextField.value(forKey: "_clearButton") as? UIButton {
+                   let templateImage = clearButton.imageView?.image?.withRenderingMode(.alwaysTemplate)
+                   clearButton.setImage(templateImage, for: .normal)
+                   clearButton.tintColor = .darkGray
+            }
         } else {
             // Fallback on earlier versions
         }

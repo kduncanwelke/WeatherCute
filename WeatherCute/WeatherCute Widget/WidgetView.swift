@@ -118,6 +118,7 @@ struct MediumWidgetView: View {
 
                 Spacer()
                 Spacer()
+                Spacer()
             }
         }
     }

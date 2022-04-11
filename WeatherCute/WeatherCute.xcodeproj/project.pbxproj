@@ -145,6 +145,7 @@
 		2D4D4AC2229F2F9C0052C391 /* ForecastSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ForecastSearch.swift; sourceTree = "<group>"; };
 		2D4D4AC4229F34B70052C391 /* Stations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stations.swift; sourceTree = "<group>"; };
 		2D4D4AC6229F35B80052C391 /* Current.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Current.swift; sourceTree = "<group>"; };
+		2D55060E2804DBAE005B94C3 /* WeatherCute WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "WeatherCute WidgetExtension.entitlements"; sourceTree = "<group>"; };
 		2D578425241C01A000AD57FF /* NetworkMonitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkMonitor.swift; sourceTree = "<group>"; };
 		2D69B6BB22A6D0060073DEAD /* ChangeObservationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeObservationViewController.swift; sourceTree = "<group>"; };
 		2D69B6BD22A6D14D0073DEAD /* StationCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationCollectionViewCell.swift; sourceTree = "<group>"; };
@@ -215,6 +216,7 @@
 		2D4D4A7D229EEE590052C391 = {
 			isa = PBXGroup;
 			children = (
+				2D55060E2804DBAE005B94C3 /* WeatherCute WidgetExtension.entitlements */,
 				2D4D4A88229EEE590052C391 /* WeatherCute */,
 				2D4D4A9D229EEE5A0052C391 /* WeatherCuteTests */,
 				2D7D3B3B27FB568300EA8806 /* WeatherCute Widget */,
@@ -833,6 +835,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = "WeatherCute WidgetExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = A8R365GJ52;
@@ -862,6 +865,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CODE_SIGN_ENTITLEMENTS = "WeatherCute WidgetExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = A8R365GJ52;
