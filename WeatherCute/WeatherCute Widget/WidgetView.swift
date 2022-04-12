@@ -110,7 +110,7 @@ struct MediumWidgetView: View {
                         .font(.system(size: 16.0))
                         .fontWeight(.medium)
                         .foregroundColor(.white)
-                    Text(viewModel.getForecastText(index: 0))
+                    Text("\(viewModel.getForecastTemp(index: 0)) \(viewModel.getForecastText(index: 0))")
                         .font(.system(size: 15.0))
                         .foregroundColor(.white)
                         .padding(.bottom, 12)
@@ -137,7 +137,7 @@ struct LargeWidgetView: View {
                     .font(.system(size: 16.0))
                     .fontWeight(.medium)
                     .foregroundColor(.white)
-                    .padding(.top, 10)
+                    .padding(.top, 15)
                 Image(viewModel.getAlertButton())
                     .resizable()
                     .frame(width: 40, height: 40)
@@ -202,10 +202,10 @@ struct LargeWidgetView: View {
                     .font(.system(size: 16.0))
                     .fontWeight(.medium)
                     .foregroundColor(.white)
-                Text(viewModel.getForecastText(index: 0))
+                Text("\(viewModel.getForecastTemp(index: 0)) \(viewModel.getForecastText(index: 0))")
                     .font(.system(size: 15.0))
                     .foregroundColor(.white)
-                    .padding(.bottom, 18)
+                    .padding(.bottom, 20)
             }
 
             .background(

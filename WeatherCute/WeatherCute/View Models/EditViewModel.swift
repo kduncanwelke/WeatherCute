@@ -147,11 +147,12 @@ public class EditViewModel {
         }
 
         // re-set up page controller
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "addPage"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "refreshContent"), object: nil)
 
         // reload widget if the first location was changed, as widget uses first
         if source == 0 || destination == 0 {
             if #available(iOS 14.0, *) {
+                print("reload widget")
                 WidgetCenter.shared.reloadAllTimelines()
             } else {
                 // Fallback on earlier versions

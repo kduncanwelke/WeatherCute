@@ -973,6 +973,7 @@
                                                 <constraint firstItem="2Si-Tf-7J9" firstAttribute="centerY" secondItem="jRX-nc-cX4" secondAttribute="centerY" id="zvj-om-SvB"/>
                                             </constraints>
                                         </tableViewCellContentView>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <connections>
                                             <outlet property="location" destination="2Si-Tf-7J9" id="xi8-BX-o7Q"/>
                                         </connections>
