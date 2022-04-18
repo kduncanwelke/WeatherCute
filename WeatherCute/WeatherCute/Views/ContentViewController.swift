@@ -67,6 +67,11 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 	// MARK: Custom functions
 
     func getData() {
+        if contentViewModel.getLocationsCount() == 0 {
+            clear()
+            return
+        }
+
         clear()
         if !contentViewModel.isLoaded() {
             getData(reload: false)

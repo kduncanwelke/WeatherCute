@@ -12,17 +12,21 @@ import WidgetKit
 struct WidgetView: View {
     @Environment(\.widgetFamily) var family: WidgetFamily
 
+    let useStub: Bool
+
     @ViewBuilder
     var body: some View {
+
+
         switch family {
         case .systemSmall:
-            SmallWidgetView()
+            SmallWidgetView(useStub: useStub)
         case .systemMedium:
-            MediumWidgetView()
+            MediumWidgetView(useStub: useStub)
         case .systemLarge:
-            LargeWidgetView()
+            LargeWidgetView(useStub: useStub)
         case .systemExtraLarge:
-            ExtraLargeWidgetView()
+            ExtraLargeWidgetView(useStub: useStub)
         @unknown default:
             EmptyView()
         }
@@ -32,42 +36,56 @@ struct WidgetView: View {
 struct SmallWidgetView: View {
 
     private let viewModel = ContentViewModel()
+    let useStub: Bool
 
     var body: some View {
         ZStack {
             Color(UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
 
-            VStack {
-                Text(viewModel.getLocationName())
+            VStack(spacing: 0) {
+                Text(viewModel.getLocationName(useStub: useStub))
                     .font(.system(size: 16.0))
                     .fontWeight(.medium)
                     .foregroundColor(.white)
                     .padding(.top, 10)
-                Image(viewModel.getAlertButton())
-                    .resizable()
-                    .frame(width: 30, height: 30)
-                    .padding(.trailing, 120)
-                    .padding(.bottom, 20)
+                    .padding(.leading, 5)
+                    .padding(.trailing, 5)
+                    .lineLimit(1)
                 Image("none")
                     .resizable()
                     .scaledToFit()
-                Text(viewModel.getCurrentTemp())
+                Text(viewModel.getCurrentTemp(useStub: useStub))
                     .font(.system(size: 22.0))
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
-                Text(viewModel.getCurrentDescription())
+                Text(viewModel.getCurrentDescription(useStub: useStub))
                     .font(.system(size: 15.0))
                     .fontWeight(.medium)
                     .foregroundColor(.white)
                     .padding(.bottom, 12)
+                    .padding(.leading, 5)
+                    .padding(.trailing, 5)
+                    .lineLimit(1)
             }
 
+            .frame(maxWidth: .infinity)
             .background(
-                Image(uiImage: viewModel.getCurrentConditionImage() ?? #imageLiteral(resourceName: "none.png"))
-                    .resizable()
-                    .frame(width: 156.0, height: 110.0)
-                    .padding(.bottom, 20)
+                GeometryReader { geo in
+                    Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geo.size.width * 0.95)
+                        .frame(width: geo.size.width, height: geo.size.height * 0.90)
+                }
             )
+
+            GeometryReader { geo in
+                Image(viewModel.getAlertButton(useStub: useStub))
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                    .scaledToFit()
+                    .frame(width: geo.size.width * 0.32, height: geo.size.height * 0.62)
+            }
         }
     }
 }
@@ -75,50 +93,59 @@ struct SmallWidgetView: View {
 struct MediumWidgetView: View {
 
     private let viewModel = ContentViewModel()
+    let useStub: Bool
 
     var body: some View {
         ZStack {
             Color(UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
 
-            Image(viewModel.getAlertButton())
-                .resizable()
-                .frame(width: 30, height: 30)
-                .padding(.trailing, 285)
-                .padding(.bottom, 105)
-
             HStack {
-                Image(uiImage: viewModel.getCurrentConditionImage() ?? #imageLiteral(resourceName: "none.png"))
-                    .resizable()
-                    .scaledToFit()
+                GeometryReader { geo in
+                    Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geo.size.width * 0.95)
+                        .frame(width: geo.size.width, height: geo.size.height)
+                }
 
-                VStack {
-                    Text(viewModel.getLocationName())
+                VStack(spacing: 0) {
+                    Text(viewModel.getLocationName(useStub: useStub))
                         .font(.system(size: 16.0))
                         .fontWeight(.medium)
                         .foregroundColor(.white)
                         .padding(.top, 10)
-                    Text(viewModel.getCurrentTemp())
+                        .multilineTextAlignment(.center)
+                    Text(viewModel.getCurrentTemp(useStub: useStub))
                         .font(.system(size: 22.0))
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
-                    Text(viewModel.getCurrentDescription())
+                    Text(viewModel.getCurrentDescription(useStub: useStub))
                         .font(.system(size: 15.0))
                         .fontWeight(.medium)
                         .foregroundColor(.white)
                         .padding(.bottom, 12)
-                    Text(viewModel.getForecastName(index: 0))
+                    Text(viewModel.getForecastName(index: 0, useStub: useStub))
                         .font(.system(size: 16.0))
                         .fontWeight(.medium)
                         .foregroundColor(.white)
-                    Text("\(viewModel.getForecastTemp(index: 0)) \(viewModel.getForecastText(index: 0))")
+                    Text("\(viewModel.getForecastTemp(index: 0, useStub: useStub)) \(viewModel.getForecastText(index: 0, useStub: useStub))")
                         .font(.system(size: 15.0))
                         .foregroundColor(.white)
                         .padding(.bottom, 12)
+                        .multilineTextAlignment(.center)
                 }
 
                 Spacer()
                 Spacer()
                 Spacer()
+            }
+
+            GeometryReader { geo in
+                Image(viewModel.getAlertButton(useStub: useStub))
+                    .resizable()
+                    .frame(width: 30, height: 30)
+                    .scaledToFit()
+                    .frame(width: geo.size.width * 0.2, height: geo.size.height * 0.4)
             }
         }
     }
@@ -127,33 +154,32 @@ struct MediumWidgetView: View {
 struct LargeWidgetView: View {
 
     private let viewModel = ContentViewModel()
+    let useStub: Bool
 
     var body: some View {
         ZStack {
             Color(UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
 
-            VStack {
-                Text(viewModel.getLocationName())
+            VStack(spacing: 0) {
+                Text(viewModel.getLocationName(useStub: useStub))
                     .font(.system(size: 16.0))
                     .fontWeight(.medium)
                     .foregroundColor(.white)
                     .padding(.top, 15)
-                Image(viewModel.getAlertButton())
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                    .padding(.trailing, 250)
+                    .multilineTextAlignment(.center)
                 Image("none")
                     .resizable()
                     .scaledToFit()
-                Text(viewModel.getCurrentTemp())
+                Text(viewModel.getCurrentTemp(useStub: useStub))
                     .font(.system(size: 22.0))
                     .fontWeight(.semibold)
                     .foregroundColor(.white)
-                Text(viewModel.getCurrentDescription())
+                Text(viewModel.getCurrentDescription(useStub: useStub))
                     .font(.system(size: 15.0))
                     .fontWeight(.medium)
                     .foregroundColor(.white)
                     .padding(.bottom, 5)
+                    .multilineTextAlignment(.center)
 
                 HStack {
                     Spacer()
@@ -162,7 +188,7 @@ struct LargeWidgetView: View {
                         Text("Humidity")
                             .font(.system(size: 16.0))
                             .foregroundColor(.white)
-                        Text(viewModel.getCurrentHumidity())
+                        Text(viewModel.getCurrentHumidity(useStub: useStub))
                             .font(.system(size: 17.0))
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -174,7 +200,7 @@ struct LargeWidgetView: View {
                         Text("Dewpoint")
                             .font(.system(size: 16.0))
                             .foregroundColor(.white)
-                        Text(viewModel.getCurrentDewpoint())
+                        Text(viewModel.getCurrentDewpoint(useStub: useStub))
                             .font(.system(size: 17.0))
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -183,10 +209,10 @@ struct LargeWidgetView: View {
                     Spacer()
 
                     VStack {
-                        Text(viewModel.setHeatChillLabel())
+                        Text(viewModel.setHeatChillLabel(useStub: useStub))
                             .font(.system(size: 16.0))
                             .foregroundColor(.white)
-                        Text(viewModel.getCurrentHeatChill())
+                        Text(viewModel.getCurrentHeatChill(useStub: useStub))
                             .font(.system(size: 17.0))
                             .fontWeight(.semibold)
                             .foregroundColor(.white)
@@ -198,21 +224,33 @@ struct LargeWidgetView: View {
                 Spacer()
                 Spacer()
 
-                Text(viewModel.getForecastName(index: 0))
+                Text(viewModel.getForecastName(index: 0, useStub: useStub))
                     .font(.system(size: 16.0))
                     .fontWeight(.medium)
                     .foregroundColor(.white)
-                Text("\(viewModel.getForecastTemp(index: 0)) \(viewModel.getForecastText(index: 0))")
+                Text("\(viewModel.getForecastTemp(index: 0, useStub: useStub)) \(viewModel.getForecastText(index: 0, useStub: useStub))")
                     .font(.system(size: 15.0))
                     .foregroundColor(.white)
                     .padding(.bottom, 20)
+                    .multilineTextAlignment(.center)
+            }
+
+            GeometryReader { geo in
+                Image(viewModel.getAlertButton(useStub: useStub))
+                    .resizable()
+                    .frame(width: 40, height: 40)
+                    .scaledToFit()
+                    .frame(width: geo.size.width * 0.2, height: geo.size.height * 0.4)
             }
 
             .background(
-                Image(uiImage: viewModel.getCurrentConditionImage() ?? #imageLiteral(resourceName: "none.png"))
-                    .resizable()
-                    .frame(width: 312.0, height: 220.0)
-                    .padding(.bottom, 110)
+                GeometryReader { geo in
+                    Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geo.size.width * 0.95)
+                        .frame(width: geo.size.width, height: geo.size.height * 0.70)
+                }
             )
         }
     }
@@ -221,6 +259,7 @@ struct LargeWidgetView: View {
 struct ExtraLargeWidgetView: View {
 
     private let viewModel = ContentViewModel()
+    let useStub: Bool
 
     var body: some View {
         ZStack {
@@ -230,23 +269,19 @@ struct ExtraLargeWidgetView: View {
                 VStack {
                     Spacer()
 
-                    Text(viewModel.getLocationName())
+                    Text(viewModel.getLocationName(useStub: useStub))
                         .font(.system(size: 16.0))
                         .fontWeight(.medium)
                         .foregroundColor(.white)
                         .padding(.top, 10)
-                    Image(viewModel.getAlertButton())
-                        .resizable()
-                        .frame(width: 40, height: 40)
-                        .padding(.trailing, 250)
                     Image("none")
                         .resizable()
                         .scaledToFit()
-                    Text(viewModel.getCurrentTemp())
+                    Text(viewModel.getCurrentTemp(useStub: useStub))
                         .font(.system(size: 22.0))
                         .fontWeight(.semibold)
                         .foregroundColor(.white)
-                    Text(viewModel.getCurrentDescription())
+                    Text(viewModel.getCurrentDescription(useStub: useStub))
                         .font(.system(size: 15.0))
                         .fontWeight(.medium)
                         .foregroundColor(.white)
@@ -259,7 +294,7 @@ struct ExtraLargeWidgetView: View {
                             Text("Humidity")
                                 .font(.system(size: 16.0))
                                 .foregroundColor(.white)
-                            Text(viewModel.getCurrentHumidity())
+                            Text(viewModel.getCurrentHumidity(useStub: useStub))
                                 .font(.system(size: 17.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
@@ -271,7 +306,7 @@ struct ExtraLargeWidgetView: View {
                             Text("Dewpoint")
                                 .font(.system(size: 16.0))
                                 .foregroundColor(.white)
-                            Text(viewModel.getCurrentDewpoint())
+                            Text(viewModel.getCurrentDewpoint(useStub: useStub))
                                 .font(.system(size: 17.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
@@ -280,10 +315,10 @@ struct ExtraLargeWidgetView: View {
                         Spacer()
 
                         VStack {
-                            Text(viewModel.setHeatChillLabel())
+                            Text(viewModel.setHeatChillLabel(useStub: useStub))
                                 .font(.system(size: 16.0))
                                 .foregroundColor(.white)
-                            Text(viewModel.getCurrentHeatChill())
+                            Text(viewModel.getCurrentHeatChill(useStub: useStub))
                                 .font(.system(size: 17.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
@@ -295,13 +330,6 @@ struct ExtraLargeWidgetView: View {
                     Spacer()
                     Spacer()
                 }
-
-                .background(
-                    Image(uiImage: viewModel.getCurrentConditionImage() ?? #imageLiteral(resourceName: "none.png"))
-                        .resizable()
-                        .frame(width: 312.0, height: 220.0)
-                        .padding(.bottom, 80)
-                )
 
                 HStack {
                     Spacer()
@@ -311,52 +339,60 @@ struct ExtraLargeWidgetView: View {
                         Spacer()
 
                         VStack {
-                            Text(viewModel.getForecastName(index: 0))
+                            Text(viewModel.getForecastName(index: 0, useStub: useStub))
                                 .font(.system(size: 16.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
                             Image("none")
                                 .resizable()
                                 .scaledToFit()
-                            Text(viewModel.getForecastTemp(index: 0))
+                            Text(viewModel.getForecastTemp(index: 0, useStub: useStub))
                                 .font(.system(size: 18.0))
                                 .foregroundColor(.white)
-                            Text(viewModel.getForecastText(index: 0))
+                            Text(viewModel.getForecastText(index: 0, useStub: useStub))
                                 .font(.system(size: 15.0))
                                 .foregroundColor(.white)
-
-                            .background(
-                                Image(uiImage: viewModel.getForecastIcon(index: 0) ?? #imageLiteral(resourceName: "none.png"))
-                                    .resizable()
-                                    .frame(width: 156.0, height: 110.0)
-                                    .padding(.bottom, 160)
-                            )
                         }
+
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            GeometryReader { geo in
+                                Image(uiImage: viewModel.getForecastIcon(index: 0, useStub: useStub) ?? #imageLiteral(resourceName: "none.png"))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geo.size.width * 0.95)
+                                    .frame(width: geo.size.width, height: geo.size.height * 0.85)
+                            }
+                        )
 
                         Spacer()
 
                         VStack {
-                            Text(viewModel.getForecastName(index: 2))
+                            Text(viewModel.getForecastName(index: 2, useStub: useStub))
                                 .font(.system(size: 16.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
                             Image("none")
                                 .resizable()
                                 .scaledToFit()
-                            Text(viewModel.getForecastTemp(index: 2))
+                            Text(viewModel.getForecastTemp(index: 2, useStub: useStub))
                                 .font(.system(size: 18.0))
                                 .foregroundColor(.white)
-                            Text(viewModel.getForecastText(index: 2))
+                            Text(viewModel.getForecastText(index: 2, useStub: useStub))
                                 .font(.system(size: 15.0))
                                 .foregroundColor(.white)
-
-                            .background(
-                                Image(uiImage: viewModel.getForecastIcon(index: 2) ?? #imageLiteral(resourceName: "none.png"))
-                                    .resizable()
-                                    .frame(width: 156.0, height: 110.0)
-                                    .padding(.bottom, 160)
-                            )
                         }
+
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            GeometryReader { geo in
+                                Image(uiImage: viewModel.getForecastIcon(index: 2, useStub: useStub) ?? #imageLiteral(resourceName: "none.png"))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geo.size.width * 0.95)
+                                    .frame(width: geo.size.width, height: geo.size.height * 0.85)
+                            }
+                        )
 
                         Spacer()
                         Spacer()
@@ -370,52 +406,60 @@ struct ExtraLargeWidgetView: View {
                         Spacer()
 
                         VStack {
-                            Text(viewModel.getForecastName(index: 1))
+                            Text(viewModel.getForecastName(index: 1, useStub: useStub))
                                 .font(.system(size: 16.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
                             Image("none")
                                 .resizable()
                                 .scaledToFit()
-                            Text(viewModel.getForecastTemp(index: 1))
+                            Text(viewModel.getForecastTemp(index: 1, useStub: useStub))
                                 .font(.system(size: 18.0))
                                 .foregroundColor(.white)
-                            Text(viewModel.getForecastText(index: 1))
+                            Text(viewModel.getForecastText(index: 1, useStub: useStub))
                                 .font(.system(size: 15.0))
                                 .foregroundColor(.white)
-
-                            .background(
-                                Image(uiImage: viewModel.getForecastIcon(index: 1) ?? #imageLiteral(resourceName: "none.png"))
-                                    .resizable()
-                                    .frame(width: 156.0, height: 110.0)
-                                    .padding(.bottom, 160)
-                            )
                         }
+
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            GeometryReader { geo in
+                                Image(uiImage: viewModel.getForecastIcon(index: 1, useStub: useStub) ?? #imageLiteral(resourceName: "none.png"))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geo.size.width * 0.95)
+                                    .frame(width: geo.size.width, height: geo.size.height * 0.85)
+                            }
+                        )
 
                         Spacer()
 
                         VStack {
-                            Text(viewModel.getForecastName(index: 3))
+                            Text(viewModel.getForecastName(index: 3, useStub: useStub))
                                 .font(.system(size: 16.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(.white)
                             Image("none")
                                 .resizable()
                                 .scaledToFit()
-                            Text(viewModel.getForecastTemp(index: 3))
+                            Text(viewModel.getForecastTemp(index: 3, useStub: useStub))
                                 .font(.system(size: 18.0))
                                 .foregroundColor(.white)
-                            Text(viewModel.getForecastText(index: 3))
+                            Text(viewModel.getForecastText(index: 3, useStub: useStub))
                                 .font(.system(size: 15.0))
                                 .foregroundColor(.white)
-
-                            .background(
-                                Image(uiImage: viewModel.getForecastIcon(index: 3) ?? #imageLiteral(resourceName: "none.png"))
-                                    .resizable()
-                                    .frame(width: 156.0, height: 110.0)
-                                    .padding(.bottom, 160)
-                            )
                         }
+
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            GeometryReader { geo in
+                                Image(uiImage: viewModel.getForecastIcon(index: 3, useStub: useStub) ?? #imageLiteral(resourceName: "none.png"))
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: geo.size.width * 0.95)
+                                    .frame(width: geo.size.width, height: geo.size.height * 0.85)
+                            }
+                        )
 
                         Spacer()
                         Spacer()
@@ -425,6 +469,25 @@ struct ExtraLargeWidgetView: View {
                     Spacer()
                 }
             }
+
+            GeometryReader { geo in
+                Image(viewModel.getAlertButton(useStub: useStub))
+                    .resizable()
+                    .frame(width: 40, height: 40)
+                    .scaledToFit()
+                    .frame(width: geo.size.width * 0.1, height: geo.size.height * 0.4)
+            }
+
+            .background(
+                GeometryReader { geo in
+                    Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: geo.size.width * 0.5)
+                        .frame(width: geo.size.width * 0.5, height: geo.size.height * 0.75)
+                }
+            )
+
         }
     }
 }

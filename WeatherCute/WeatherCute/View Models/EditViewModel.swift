@@ -83,7 +83,6 @@ public class EditViewModel {
         var managedContext = CoreDataManager.shared.managedObjectContext
 
         managedContext.delete(WeatherLocations.locations[index])
-        WeatherLocations.locations.remove(at: index)
 
         do {
             try managedContext.save()
@@ -92,8 +91,13 @@ public class EditViewModel {
             print("Failed to save")
         }
 
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
+        WeatherLocations.locations.remove(at: index)
+        WeatherLocations.alerts.removeValue(forKey: index)
+        WeatherLocations.currentConditions.removeValue(forKey: index)
+        WeatherLocations.forecasts.removeValue(forKey: index)
+
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
     }
 
     func resaveLocations(source: Int, destination: Int) {

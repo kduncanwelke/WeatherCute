@@ -9,6 +9,7 @@
 import Foundation
 import CoreData
 import MapKit
+import WidgetKit
 
 public class SearchViewModel {
 
@@ -188,6 +189,15 @@ public class SearchViewModel {
         newLocation.station = ForecastSearch.station
         newLocation.xCoord = Int16(ForecastSearch.gridX)
         newLocation.yCoord = Int16(ForecastSearch.gridY)
+
+        if WeatherLocations.locations.isEmpty {
+            if #available(iOS 14.0, *) {
+                print("reload widget")
+                WidgetCenter.shared.reloadAllTimelines()
+            } else {
+                // Fallback on earlier versions
+            }
+        }
 
         WeatherLocations.locations.append(newLocation)
 

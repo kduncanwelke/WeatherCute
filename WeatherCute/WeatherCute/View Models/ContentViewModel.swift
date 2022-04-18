@@ -11,8 +11,13 @@ import UIKit
 
 public class ContentViewModel {
 
+    func getLocationsCount() -> Int {
+        return WeatherLocations.locations.count
+    }
+
     func setSearchParameters() {
         print("set search")
+        print(PageControllerManager.currentPage)
         var location = WeatherLocations.locations[PageControllerManager.currentPage]
         
         LocationSearch.latitude = location.latitude
@@ -138,6 +143,15 @@ public class ContentViewModel {
         return WeatherLocations.locations[PageControllerManager.currentPage].name ?? "Unknown"
     }
 
+    // widget version
+    func getLocationName(useStub: Bool) -> String {
+        if useStub {
+            return "Your Location"
+        } else {
+            return WeatherLocations.locations[PageControllerManager.currentPage].name ?? "Unknown"
+        }
+    }
+
     func getObservationName() -> String {
         return "Current conditions from \(WeatherLocations.locations[PageControllerManager.currentPage].observation ?? "")"
     }
@@ -160,6 +174,29 @@ public class ContentViewModel {
         }
     }
 
+    // widget version
+    func getCurrentTemp(useStub: Bool) -> String {
+        if useStub {
+            return " 75°"
+        } else {
+            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+                if let temp = current.properties.temperature.value {
+                    switch Temp.currentUnit {
+                    case .fahrenheit:
+                        var fahrenheit = Int(convertToFahrenheit(value: temp))
+                        return " \(fahrenheit)°"
+                    case .celsius:
+                        return " \(Int(temp))°"
+                    }
+                } else {
+                    return "No data"
+                }
+            } else {
+                return "No data"
+            }
+        }
+    }
+
     func getCurrentDescription() -> String {
         if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
             if current.properties.textDescription == "" {
@@ -172,6 +209,23 @@ public class ContentViewModel {
         }
     }
 
+    // widget version
+    func getCurrentDescription(useStub: Bool) -> String {
+        if useStub {
+            return "Partly Cloudy"
+        } else {
+            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+                if current.properties.textDescription == "" {
+                    return "No current reporting"
+                } else {
+                    return current.properties.textDescription
+                }
+            } else {
+                return "No current reporting"
+            }
+        }
+    }
+
     func getCurrentHumidity() -> String {
         if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
             if let humidity = current.properties.relativeHumidity.value {
@@ -181,6 +235,23 @@ public class ContentViewModel {
             }
         } else {
             return "No data"
+        }
+    }
+
+    // widget version
+    func getCurrentHumidity(useStub: Bool) -> String {
+        if useStub {
+            return "50%"
+        } else {
+            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+                if let humidity = current.properties.relativeHumidity.value {
+                    return "\(Int(humidity))%"
+                } else {
+                    return "No data"
+                }
+            } else {
+                return "No data"
+            }
         }
     }
 
@@ -199,6 +270,29 @@ public class ContentViewModel {
             }
         } else {
             return "No data"
+        }
+    }
+
+    // widget version
+    func getCurrentDewpoint(useStub: Bool) -> String {
+        if useStub {
+            return " 60°"
+        } else {
+            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+                if let dew = current.properties.dewpoint.value {
+                    switch Temp.currentUnit {
+                    case .fahrenheit:
+                        var fahrenheit = Int(convertToFahrenheit(value: dew))
+                        return " \(fahrenheit)°"
+                    case .celsius:
+                        return " \(Int(dew))°"
+                    }
+                } else {
+                    return "No data"
+                }
+            } else {
+                return "No data"
+            }
         }
     }
 
@@ -228,6 +322,37 @@ public class ContentViewModel {
         }
     }
 
+    // widget version
+    func getCurrentHeatChill(useStub: Bool) -> String {
+        if useStub {
+            return " 79°"
+        } else {
+            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+                if let heat = current.properties.heatIndex.value {
+                    switch Temp.currentUnit {
+                    case .fahrenheit:
+                        var fahrenheit = Int(convertToFahrenheit(value: heat))
+                        return " \(fahrenheit)°"
+                    case .celsius:
+                        return " \(Int(heat))°"
+                    }
+                } else if let chill = current.properties.windChill.value {
+                    switch Temp.currentUnit {
+                    case .fahrenheit:
+                        var fahrenheit = Int(convertToFahrenheit(value: chill))
+                        return " \(fahrenheit)°"
+                    case .celsius:
+                        return " \(Int(chill))°"
+                    }
+                } else {
+                    return "N/A"
+                }
+            } else {
+                return "No data"
+            }
+        }
+    }
+
     func setHeatChillLabel() -> String {
         if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
             if let heat = current.properties.heatIndex.value {
@@ -242,11 +367,44 @@ public class ContentViewModel {
         }
     }
 
+    // widget version
+    func setHeatChillLabel(useStub: Bool) -> String {
+        if useStub {
+            return "Heat Index"
+        } else {
+            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+                if let heat = current.properties.heatIndex.value {
+                    return "Heat Index"
+                } else if let chill = current.properties.windChill.value {
+                    return "Wind Chill"
+                } else {
+                    return "Heat Index"
+                }
+            } else {
+                return "Heat Index"
+            }
+        }
+    }
+
+
     func getCurrentConditionImage() -> UIImage? {
         if let isDay = isDayCurrently(), let iconString = getIcon() {
             return getImage(icon: iconString, isDaytime: isDay)
         } else {
             return nil
+        }
+    }
+
+    // widget version
+    func getCurrentConditionImage(useStub: Bool) -> UIImage? {
+        if useStub {
+            return UIImage(named: "partlycloudy")
+        } else {
+            if let isDay = isDayCurrently(), let iconString = getIcon() {
+                return getImage(icon: iconString, isDaytime: isDay)
+            } else {
+                return nil
+            }
         }
     }
 
@@ -274,6 +432,22 @@ public class ContentViewModel {
         }
     }
 
+    // widget version
+    func getAlertButton(useStub: Bool) -> String {
+        if useStub {
+            return "none"
+        } else {
+            if let alerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+                if alerts.isEmpty {
+                    return "none"
+                } else {
+                    return "alert"
+                }
+            } else {
+                return "none"
+            }
+        }
+    }
 
     // collection view
 
@@ -293,6 +467,19 @@ public class ContentViewModel {
         }
     }
 
+    // widget version
+    func getForecastName(index: Int, useStub: Bool) -> String {
+        if useStub {
+            return "Day Name"
+        } else {
+            if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+                return forecasts[index].name
+            } else {
+                return "-"
+            }
+        }
+    }
+
     func getForecastTemp(index: Int) -> String {
         if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
             let temp = forecasts[index].temperature
@@ -306,6 +493,27 @@ public class ContentViewModel {
             }
         } else {
             return ""
+        }
+    }
+
+    // widget version
+    func getForecastTemp(index: Int, useStub: Bool) -> String {
+        if useStub {
+            return " 72°"
+        } else {
+            if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+                let temp = forecasts[index].temperature
+
+                switch Temp.currentUnit {
+                case .fahrenheit:
+                    return " \(temp)°"
+                case .celsius:
+                    var celsius = convertToCelsius(value: Double(temp))
+                    return " \(celsius)°"
+                }
+            } else {
+                return ""
+            }
         }
     }
 
@@ -334,6 +542,20 @@ public class ContentViewModel {
             return getImage(icon: iconText, isDaytime: forecasts[index].isDaytime)
         } else {
             return nil
+        }
+    }
+
+    // widget version
+    func getForecastIcon(index: Int, useStub: Bool) -> UIImage? {
+        if useStub {
+            return UIImage(named: "sunny")
+        } else {
+            if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+                var iconText = getIconText(index: index)
+                return getImage(icon: iconText, isDaytime: forecasts[index].isDaytime)
+            } else {
+                return nil
+            }
         }
     }
 
@@ -415,6 +637,80 @@ public class ContentViewModel {
             return "Blizzard"
         default:
             return "No data"
+        }
+    }
+
+    // widget version
+    func getForecastText(index: Int, useStub: Bool) -> String {
+        if useStub {
+            return "Sunny"
+        } else {
+            var icon = getIconText(index: index)
+
+            switch icon {
+            case Icons.clear.rawValue:
+                return "Clear"
+            case Icons.fewClouds.rawValue:
+                return "Few Clouds"
+            case Icons.partlyCloudy.rawValue:
+                return "Partly Cloudy"
+            case Icons.mostlyCloudy.rawValue:
+                return "Mostly Cloudy"
+            case Icons.overcast.rawValue:
+                return "Overcast"
+            case Icons.clearWind.rawValue:
+                return "Clear and Windy"
+            case  Icons.windFew.rawValue:
+                return "Few Clouds, Windy"
+            case Icons.partCloudWindy.rawValue:
+                return "Partly Cloudy, Windy"
+            case Icons.mostCloudyWind.rawValue:
+                return "Mostly Cloudy, Windy"
+            case Icons.windOvercast.rawValue:
+                return "Windy and Overcast"
+            case Icons.snow.rawValue:
+                return "Snow"
+            case Icons.rainSnow.rawValue:
+                return "Rain/Snow"
+            case Icons.rainSleet.rawValue, Icons.snowSleet.rawValue:
+                return "Rain/Sleet"
+            case Icons.freezingRain.rawValue:
+                return "Freezing Rain"
+            case Icons.rainFreezing.rawValue:
+                return "Rain/Freezing Rain"
+            case Icons.snowFreezing.rawValue:
+                return "Freezing Rain/Snow"
+            case Icons.sleet.rawValue:
+                return "Sleet"
+            case Icons.rain.rawValue:
+                return "Rain"
+            case Icons.rainshowers.rawValue, Icons.rainshowersHi.rawValue:
+                return "Rain Showers"
+            case Icons.thunderstorm.rawValue, Icons.thunderstormScattered.rawValue, Icons.thunderstormHi.rawValue:
+                return "Thunderstorms"
+            case Icons.tornado.rawValue:
+                return "Tornado"
+            case Icons.hurricane.rawValue:
+                return "Hurricane"
+            case Icons.tropicalStorm.rawValue:
+                return "Tropical Storm"
+            case Icons.smoke.rawValue:
+                return "Smoke"
+            case Icons.dust.rawValue:
+                return "Dust"
+            case Icons.haze.rawValue:
+                return "Haze"
+            case Icons.fog.rawValue:
+                return "Fog"
+            case Icons.hot.rawValue:
+                return "Hot"
+            case Icons.cold.rawValue:
+                return "Cold"
+            case Icons.blizzard.rawValue:
+                return "Blizzard"
+            default:
+                return "No data"
+            }
         }
     }
 

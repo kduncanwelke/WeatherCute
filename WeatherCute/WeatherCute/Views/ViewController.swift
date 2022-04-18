@@ -55,6 +55,7 @@ class ViewController: UIViewController {
     }
 
     @objc func updatePageControl() {
+        print("update page control")
         pageControl.numberOfPages = viewModel.getWeatherLocationTotal()
 
         if viewModel.getWeatherLocationTotal() != 0 {
