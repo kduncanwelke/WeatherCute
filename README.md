@@ -30,6 +30,8 @@ Current conditions show basic information such as temperature and a brief descri
 
 The current condition reporting location is by default the first item returned by the API. The user can choose a preferred reporting location if they wish, however, by selecting the 'change?' button. A control at the top of the view allows toggling between fahrenheit and celsius measurements.
 
+The app now includes a widget capability, using WidgetKit and SwiftUI to display various sizes of widget, which show weather for the user's first selected weather location. Different sizes of widget display differing degrees of information, and all are set to update on an hourly basis.
+
 ## Art
 Unique art for every weather condition specified by the NWS API (and for both day and nighttime conditions) is included as an integral part of this app, to allow at-a-glance understanding. This art was created by myself (the developer) and belongs to no one else. The art displayed is set based off the icons returned by the API, however, these icons themselves are not used within the app.
 
