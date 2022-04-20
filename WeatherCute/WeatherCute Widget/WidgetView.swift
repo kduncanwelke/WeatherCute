@@ -235,14 +235,6 @@ struct LargeWidgetView: View {
                     .multilineTextAlignment(.center)
             }
 
-            GeometryReader { geo in
-                Image(viewModel.getAlertButton(useStub: useStub))
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                    .scaledToFit()
-                    .frame(width: geo.size.width * 0.2, height: geo.size.height * 0.4)
-            }
-
             .background(
                 GeometryReader { geo in
                     Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
@@ -252,6 +244,14 @@ struct LargeWidgetView: View {
                         .frame(width: geo.size.width, height: geo.size.height * 0.70)
                 }
             )
+
+            GeometryReader { geo in
+                Image(viewModel.getAlertButton(useStub: useStub))
+                    .resizable()
+                    .frame(width: 40, height: 40)
+                    .scaledToFit()
+                    .frame(width: geo.size.width * 0.2, height: geo.size.height * 0.4)
+            }
         }
     }
 }
@@ -470,14 +470,6 @@ struct ExtraLargeWidgetView: View {
                 }
             }
 
-            GeometryReader { geo in
-                Image(viewModel.getAlertButton(useStub: useStub))
-                    .resizable()
-                    .frame(width: 40, height: 40)
-                    .scaledToFit()
-                    .frame(width: geo.size.width * 0.1, height: geo.size.height * 0.4)
-            }
-
             .background(
                 GeometryReader { geo in
                     Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
@@ -488,6 +480,13 @@ struct ExtraLargeWidgetView: View {
                 }
             )
 
+            GeometryReader { geo in
+                Image(viewModel.getAlertButton(useStub: useStub))
+                    .resizable()
+                    .frame(width: 40, height: 40)
+                    .scaledToFit()
+                    .frame(width: geo.size.width * 0.1, height: geo.size.height * 0.4)
+            }
         }
     }
 }
