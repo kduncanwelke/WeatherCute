@@ -37,7 +37,11 @@ public class SearchViewModel {
     }
 
     func getLocationName(index: Int) -> String {
-        return LocationSearch.searchResults[index].placemark.name ?? ""
+        if !LocationSearch.searchResults.isEmpty {
+            return LocationSearch.searchResults[index].placemark.name ?? ""
+        } else {
+            return ""
+        }
     }
 
     func getAddress(index: Int) -> String {
