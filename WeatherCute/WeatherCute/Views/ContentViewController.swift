@@ -109,7 +109,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             reloadButton.isEnabled = false
         }
 
-        contentViewModel.getForecastData(completion: { [weak self] in
+        contentViewModel.getForecastData(retried: false, completion: { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
                 self?.collectionViewActivityIndicator.stopAnimating()
@@ -264,4 +264,3 @@ extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDe
 		return UIEdgeInsets(top: 0, left: edgeInsets, bottom: 20, right: edgeInsets)
 	}
 }
-

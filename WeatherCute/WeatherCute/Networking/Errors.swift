@@ -14,9 +14,12 @@ enum Errors: Error {
 	case otherError
 	case noDataError
     case noNetwork
+    case unexpectedProblem
 	
 	var localizedDescription: String {
 		switch self {
+        case .unexpectedProblem:
+            return "Unexpected problem; 500 error delivered from server."
 		case .networkError:
 			return "The NWS API may be experiencing an interruption - please try again."
         case .noNetwork:

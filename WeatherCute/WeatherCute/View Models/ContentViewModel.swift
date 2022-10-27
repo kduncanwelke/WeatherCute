@@ -48,8 +48,8 @@ public class ContentViewModel {
         }
     }
 
-    func getForecastData(completion: @escaping () -> Void) {
-        DataManager<Forecast>.fetch() { result in
+    func getForecastData(retried: Bool, completion: @escaping () -> Void) {
+        DataManager<Forecast>.fetch() { [weak self] result in
             print("fetch forecast")
             switch result {
             case .success(let response):
@@ -67,6 +67,16 @@ public class ContentViewModel {
                 completion()
             case .failure(let error):
                 print(error)
+                if retried == false {
+                    if error as? Errors == Errors.unexpectedProblem {
+                        print("retry")
+                        // retry 500 error request; per NOAA ServiceNow support 500 errors can typically be fixed with a second request (use 5 second wait to avoid rate limit)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                            self?.getForecastData(retried: true, completion: completion)
+                        }
+                    }
+                }
+
                 completion()
             }
         }

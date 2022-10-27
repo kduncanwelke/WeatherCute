@@ -38,7 +38,7 @@ struct Provider: TimelineProvider {
         viewModel.loadLocations()
         contentViewModel.setSearchParameters()
 
-        contentViewModel.getForecastData(completion: {})
+        contentViewModel.getForecastData(retried: false, completion: {})
         contentViewModel.getWeatherData(completion: {})
 
         contentViewModel.getAlerts(completion: {

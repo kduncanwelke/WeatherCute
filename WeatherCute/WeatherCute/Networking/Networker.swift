@@ -9,14 +9,14 @@
 import Foundation
 
 struct Networker {
-	private static let session = URLSession(configuration: .default)
+    private static let session = URLSession(configuration: .default)
 	
 	static func getURL(endpoint: URL, completion: @escaping (Result<Data>) -> Void) {
 		fetchData(url: endpoint, completion: completion)
 	}
 	
 	static func fetchData(url: URL, completion: @escaping (Result<Data>) -> Void) {
-		let request = URLRequest(url: url)
+        let request = URLRequest(url: url)
 		
 		let task = session.dataTask(with: request) { data, response, error in
         
@@ -36,15 +36,17 @@ struct Networker {
                 }
 			} else if httpResponse.statusCode == 404 {
 				completion(.failure(Errors.noDataError))
+            } else if httpResponse.statusCode == 500 {
+                completion(.failure(Errors.unexpectedProblem))
             } else {
-				completion(.failure(Errors.networkError))
-				print("status was not 200")
+                completion(.failure(Errors.networkError))
+                print("status was not 200")
                 print(httpResponse.statusCode)
 
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkErrorAlert"), object: nil)
                 }
-			}
+            }
 		}
 		task.resume()
 	}
