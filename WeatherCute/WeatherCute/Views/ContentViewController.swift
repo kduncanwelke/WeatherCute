@@ -48,6 +48,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 
 		collectionView.dataSource = self
 		collectionView.delegate = self
+
+        contentViewModel.delegate = self
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(reloadCurrent), name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
 
@@ -112,6 +114,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         contentViewModel.getForecastData(retried: false, completion: { [weak self] in
             DispatchQueue.main.async {
                 self?.collectionView.reloadData()
+                print("forecast data stopped")
                 self?.collectionViewActivityIndicator.stopAnimating()
             }
         })
@@ -138,8 +141,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
 
 	func displayCurrent() {
-        collectionViewActivityIndicator.startAnimating()
-        activityIndicator.startAnimating()
+        //collectionViewActivityIndicator.startAnimating()
+        //activityIndicator.startAnimating()
 
         location.text = contentViewModel.getLocationName()
         currentFrom.text = contentViewModel.getObservationName()
@@ -159,9 +162,9 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         } else {
             noImageText.isHidden = false
         }
-
-        collectionViewActivityIndicator.stopAnimating()
-        activityIndicator.stopAnimating()
+        //print("display current stopped")
+        //collectionViewActivityIndicator.stopAnimating()
+        //activityIndicator.stopAnimating()
 	}
 
     func configureAlertButton() {
@@ -186,6 +189,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         print("network whoops")
         noNetworkLabel.isHidden = false
         activityIndicator.stopAnimating()
+        print("network whoops stopped")
         collectionViewActivityIndicator.stopAnimating()
         reloadActivityIndicator.stopAnimating()
     }
@@ -263,4 +267,20 @@ extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDe
 		
 		return UIEdgeInsets(top: 0, left: edgeInsets, bottom: 20, right: edgeInsets)
 	}
+}
+
+extension ContentViewController: RetryDelegate {
+    func showActivityIndicator(display: Bool) {
+        if display {
+            DispatchQueue.main.async { [weak self] in
+                print("delegate start")
+                self?.collectionViewActivityIndicator.startAnimating()
+            }
+        } else {
+            DispatchQueue.main.async { [weak self] in
+                print("delegate stop")
+                self?.collectionViewActivityIndicator.stopAnimating()
+            }
+        }
+    }
 }

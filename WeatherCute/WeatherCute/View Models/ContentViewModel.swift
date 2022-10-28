@@ -11,6 +11,8 @@ import UIKit
 
 public class ContentViewModel {
 
+    weak var delegate: RetryDelegate?
+
     func getLocationsCount() -> Int {
         return WeatherLocations.locations.count
     }
@@ -63,21 +65,25 @@ public class ContentViewModel {
                     WeatherLocations.forecasts[PageControllerManager.currentPage] = forecasts
                 }
 
+                if retried {
+                    self?.delegate?.showActivityIndicator(display: false)
+                }
                 //print(response)
                 completion()
             case .failure(let error):
                 print(error)
+                completion()
+
                 if retried == false {
                     if error as? Errors == Errors.unexpectedProblem {
                         print("retry")
-                        // retry 500 error request; per NOAA ServiceNow support 500 errors can typically be fixed with a second request (use 5 second wait to avoid rate limit)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 5.0) {
+                        // retry 500 error request; per NOAA ServiceNow support 500 errors can typically be fixed with a second request (use brief wait to avoid rate limit)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                            self?.delegate?.showActivityIndicator(display: true)
                             self?.getForecastData(retried: true, completion: completion)
                         }
                     }
                 }
-
-                completion()
             }
         }
     }

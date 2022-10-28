@@ -13,3 +13,7 @@ enum Result<Value> {
 	case success(Value)
 	case failure(Error)
 }
+
+protocol RetryDelegate: AnyObject {
+    func showActivityIndicator(display: Bool)
+}
