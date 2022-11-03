@@ -77,9 +77,9 @@ public class ContentViewModel {
                 if retried == false {
                     if error as? Errors == Errors.unexpectedProblem {
                         print("retry")
+                        self?.delegate?.showActivityIndicator(display: true)
                         // retry 500 error request; per NOAA ServiceNow support 500 errors can typically be fixed with a second request (use brief wait to avoid rate limit)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                            self?.delegate?.showActivityIndicator(display: true)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
                             self?.getForecastData(retried: true, completion: completion)
                         }
                     }

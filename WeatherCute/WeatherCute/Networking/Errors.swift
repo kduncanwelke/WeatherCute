@@ -21,7 +21,7 @@ enum Errors: Error {
         case .unexpectedProblem:
             return "Unexpected problem; 500 error delivered from server."
 		case .networkError:
-			return "The NWS API may be experiencing an interruption - please try again."
+			return "The National Weather Service API is not currently able to retrieve data - please try again later."
         case .noNetwork:
             return "The network is currently unavailable, please check your wifi or data connection."
 		case .otherError:

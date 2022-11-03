@@ -141,9 +141,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
 
 	func displayCurrent() {
-        //collectionViewActivityIndicator.startAnimating()
-        //activityIndicator.startAnimating()
-
         location.text = contentViewModel.getLocationName()
         currentFrom.text = contentViewModel.getObservationName()
         temp.text = contentViewModel.getCurrentTemp()
@@ -162,10 +159,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         } else {
             noImageText.isHidden = false
         }
-        //print("display current stopped")
-        //collectionViewActivityIndicator.stopAnimating()
-        //activityIndicator.stopAnimating()
-	}
+    }
 
     func configureAlertButton() {
         alertButton.isHidden = contentViewModel.hideAlertButton()
@@ -189,7 +183,6 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         print("network whoops")
         noNetworkLabel.isHidden = false
         activityIndicator.stopAnimating()
-        print("network whoops stopped")
         collectionViewActivityIndicator.stopAnimating()
         reloadActivityIndicator.stopAnimating()
     }
