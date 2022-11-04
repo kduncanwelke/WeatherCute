@@ -179,7 +179,9 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
 
     @objc func networkErrorAlert() {
-        dataUnavailableLabel.isHidden = false
+        if !contentViewModel.isLoaded() {
+            dataUnavailableLabel.isHidden = false
+        }
     }
     
     @objc func networkRestored() {

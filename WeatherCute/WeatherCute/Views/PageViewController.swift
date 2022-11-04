@@ -123,11 +123,14 @@ class PageViewController: UIPageViewController {
 extension PageViewController: UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         if pageControllerViewModel.getCurrentPage() > 0 {
+            
+            pageControllerViewModel.setScrollDirection(direction: .left)
 
             pageControllerViewModel.setPendingPage(page: pageControllerViewModel.getCurrentPage() - 1)
             print("left")
             print(PageControllerManager.currentPage)
             print(PageControllerManager.pendingIndex)
+
             return getContentViewController(withIndex: pageControllerViewModel.getCurrentPage() - 1)
         } else {
             return nil
@@ -136,12 +139,14 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 	
 	func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         if pageControllerViewModel.getCurrentPage() + 1 < pageControllerViewModel.getWeatherLocationTotal() {
+            
+            pageControllerViewModel.setScrollDirection(direction: .right)
 
             pageControllerViewModel.setPendingPage(page: pageControllerViewModel.getCurrentPage() + 1)
             print("right")
             print(PageControllerManager.currentPage)
             print(PageControllerManager.pendingIndex)
-            
+
             return getContentViewController(withIndex: pageControllerViewModel.getCurrentPage() + 1)
         } else {
             return nil
@@ -149,6 +154,9 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 	}
 	
 	func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+        if pageControllerViewModel.getScrollDirection() == .left {
+            return
+        }
 	}
 	
 	func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
@@ -161,6 +169,7 @@ extension PageViewController: UIPageViewControllerDataSource, UIPageViewControll
 
             pageControllerViewModel.setCurrentPage(page: pageControllerViewModel.getPendingIndex())
             pageControllerViewModel.setPendingPage(page: oldIndex)
+            
             print("did finish animating")
 
             // call viewdidload on visible viewcontroller

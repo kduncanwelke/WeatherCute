@@ -11,4 +11,10 @@ import Foundation
 struct PageControllerManager {
     static var currentPage = 0
     static var pendingIndex = 0
+    static var direction: ScrollDirection = .right
+}
+
+enum ScrollDirection {
+    case left
+    case right
 }

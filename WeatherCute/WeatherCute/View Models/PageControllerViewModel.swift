@@ -29,4 +29,12 @@ public class PageControllerViewModel {
     func setCurrentPage(page: Int) {
         PageControllerManager.currentPage = page
     }
+
+    func setScrollDirection(direction: ScrollDirection) {
+        PageControllerManager.direction = direction
+    }
+
+    func getScrollDirection() -> ScrollDirection {
+        return PageControllerManager.direction
+    }
 }
