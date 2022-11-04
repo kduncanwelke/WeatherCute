@@ -29,8 +29,6 @@ class ViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(updatePageControl), name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
 
-        NotificationCenter.default.addObserver(self, selector: #selector(networkErrorAlert), name: NSNotification.Name(rawValue: "networkErrorAlert"), object: nil)
-
         viewModel.loadLocations()
 
         viewModel.setUpNetworkMonitor()
@@ -48,10 +46,6 @@ class ViewController: UIViewController {
         if viewModel.getWeatherLocationTotal() != 0 {
             NotificationCenter.default.post(name: NSNotification.Name(rawValue: "addPage"), object: nil)
         }
-    }
-
-    @objc func networkErrorAlert() {
-        showAlert(title: "Network Error", message: Errors.networkError.localizedDescription)
     }
 
     @objc func updatePageControl() {

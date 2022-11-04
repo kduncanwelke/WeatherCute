@@ -33,7 +33,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
 
     @IBOutlet weak var reloadButton: UIButton!
 	@IBOutlet weak var reloadActivityIndicator: UIActivityIndicatorView!
-	
+    @IBOutlet weak var dataUnavailableLabel: UILabel!
+
 	// MARK: Variables
 	
 	private let contentViewModel = ContentViewModel()
@@ -56,6 +57,8 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         NotificationCenter.default.addObserver(self, selector: #selector(refreshContent), name: NSNotification.Name(rawValue: "refreshContent"), object: nil)
 		
 		NotificationCenter.default.addObserver(self, selector: #selector(degreeUnitChanged), name: NSNotification.Name(rawValue: "degreeUnitChanged"), object: nil)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(networkErrorAlert), name: NSNotification.Name(rawValue: "networkErrorAlert"), object: nil)
         
         NotificationCenter.default.addObserver(self, selector: #selector(networkRestored), name: NSNotification.Name(rawValue: "networkRestored"), object: nil)
         
@@ -98,12 +101,14 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         collectionView.reloadData()
         alertButton.isHidden = true
         largeImage.image = nil
+        dataUnavailableLabel.isHidden = true
     }
 
     func getData(reload: Bool) {
         contentViewModel.setSearchParameters()
         collectionViewActivityIndicator.startAnimating()
         activityIndicator.startAnimating()
+        dataUnavailableLabel.isHidden = true
 
         if reload {
             reloadActivityIndicator.startAnimating()
@@ -171,6 +176,10 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
         } else {
             noNetworkLabel.isHidden = false
         }
+    }
+
+    @objc func networkErrorAlert() {
+        dataUnavailableLabel.isHidden = false
     }
     
     @objc func networkRestored() {
