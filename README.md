@@ -24,7 +24,7 @@ Features include:
 ## Features
 The app accesses the NWS API and retrieves and parses JSON (using Codable) to provide current weather condition and forecast information for locations a user has selected. Locations are displayed in a page view controller, and can be swiped through readily. A user adds locations by hitting the plus button in the upper right - this directs to a view with a map of the United States and a search bar. Locations can be selected either by map tap, or searching by city or zipcode. Once confirmed, a selected location is saved in Core Data.
 
-The main view for any selected weather location featues an area for current conditions and forecast data. Three API calls are made for each location - one for current conditions, one for forecast data, and lastly one for current alerts. Once all of this data has loaded, a refresh button is enabled. This allows the user to refresh the data as desired.
+The main view for any selected weather location features an area for current conditions and forecast data. Three API calls are made for each location - one for current conditions, one for forecast data, and lastly one for current alerts. Once all of this data has loaded, a refresh button is enabled. This allows the user to refresh the data as desired.
 
 Current conditions show basic information such as temperature and a brief description, along with a user-friendly image created for the app. Forecast data is displayed in a collection view. Long pressing on a forecast image will bring up a detailed text view. If alerts are present, a red ! button is displayed next to the current temperature. This leads to an alert area which provides details and suggested steps, as per the NWS.
 
