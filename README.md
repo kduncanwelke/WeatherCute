@@ -3,7 +3,7 @@ U.S. Weather - but cute!
 
 This app uses weather data from the [National Weather Service API](https://www.weather.gov/documentation/services-web-api) to track weather and forecasts for a user's selected locations. WeatherCute combines a user-friendly interface and friendly art with current condition and forecast data from the National Weather Service to provide an easy and fun way for users to get their U.S. weather. Features include current conditions, forecasts for both day and night, toggling between Fahrenheit and Celsius measurements, easy addition and deletion of locations, current alerts, and more.
 
-![Screenshot of the app WeatherCute](https://i.ibb.co/SRCy6Mp/Screen-Shot-2020-08-10-at-2-35-26-PM.png)
+![Screenshot of the app WeatherCute](https://kduncanwelkecom.ipage.com/WeatherCute%20Preview.png)
 
 ## Description
 Track weather and forecasts for your favorite U.S. locations! 
