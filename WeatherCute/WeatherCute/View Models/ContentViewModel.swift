@@ -543,7 +543,7 @@ public class ContentViewModel {
 
     func getIconText(index: Int) -> String {
         if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
-            let separated = forecasts[index].icon.components(separatedBy: "/")[6]
+            let separated = forecasts[index].icon.components(separatedBy: "/")[4]
             let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
 
             return icon

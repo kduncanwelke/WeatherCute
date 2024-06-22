@@ -58,7 +58,7 @@ class PageViewController: UIPageViewController {
 	@objc func getNextPage() {
         print("get next")
 		if let currentViewController = self.viewControllers?.first, let nextViewController = dataSource?.pageViewController( self, viewControllerAfter: currentViewController ) {
-			setViewControllers([nextViewController], direction: .forward, animated: true, completion: nil)
+			setViewControllers([nextViewController], direction: .forward, animated: false, completion: nil)
 		}
 
 		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
