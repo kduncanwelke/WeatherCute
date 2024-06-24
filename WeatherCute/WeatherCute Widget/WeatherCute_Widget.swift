@@ -83,6 +83,7 @@ struct WeatherCute_Widget: Widget {
         .configurationDisplayName("WeatherCute Widget")
         .description("Current conditions widget")
         .supportedFamilies([.systemSmall, .systemMedium, .systemLarge, .systemExtraLarge])
+        .contentMarginsDisabled()
     }
 }
 
