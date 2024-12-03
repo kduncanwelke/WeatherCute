@@ -28,14 +28,14 @@ class ChangeObservationViewController: UIViewController, UICollectionViewDelegat
         // Do any additional setup after loading the view.
 		collectionView.dataSource = self
 		collectionView.delegate = self
-
-        observationViewModel.removeResult()
 		
-        observationViewModel.getStations(completionHandler: { [weak self] in
-            DispatchQueue.main.async {
-                self?.collectionView.reloadData()
-            }
-        })
+        if observationViewModel.getStationCount() == 0 {
+            observationViewModel.getStations(completionHandler: { [weak self] in
+                DispatchQueue.main.async {
+                    self?.collectionView.reloadData()
+                }
+            })
+        }
     }
 	
     /*

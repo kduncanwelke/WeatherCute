@@ -10,19 +10,21 @@ import Foundation
 
 public class ObservationViewModel {
 
-    func removeResult() {
-        WeatherLocations.stations.removeAll()
-    }
-
     func getStations(completionHandler: @escaping () -> Void) {
         DataManager<Stations>.fetch() { result in
             switch result {
             case .success(let response):
                 guard let data = response.first?.features else { return }
+                print(data)
+                print(PageControllerManager.currentPage)
 
+                var result: [Identifier] = []
+                
                 for stationInfo in data {
-                    WeatherLocations.stations.append(stationInfo.properties)
+                    result.append(stationInfo.properties)
                 }
+                
+                WeatherLocations.stations[PageControllerManager.currentPage] = result
 
                 completionHandler()
             case .failure(let error):
@@ -33,15 +35,27 @@ public class ObservationViewModel {
     }
 
     func getStationCount() -> Int {
-        return WeatherLocations.stations.count
+        if let stationCount = WeatherLocations.stations[PageControllerManager.currentPage]?.count {
+            return stationCount
+        } else {
+            return 0
+        }
     }
 
     func getLabel(index: Int) -> String {
-        return WeatherLocations.stations[index].stationIdentifier
+        if let identifierName = WeatherLocations.stations[PageControllerManager.currentPage]?[index].stationIdentifier {
+            return identifierName
+        } else {
+            return "Unknown"
+        }
     }
 
     func getName(index: Int) -> String {
-        return WeatherLocations.stations[index].name
+        if let stationName =  WeatherLocations.stations[PageControllerManager.currentPage]?[index].name {
+            return stationName
+        } else {
+            return "Unknown"
+        }
     }
 
     func resaveObservation(index: Int) {
@@ -50,7 +64,11 @@ public class ObservationViewModel {
 
         let current = WeatherLocations.locations[PageControllerManager.currentPage]
 
-        current.observation = WeatherLocations.stations[index].stationIdentifier
+        if let stationIdentifier = WeatherLocations.stations[PageControllerManager.currentPage]?[index].stationIdentifier {
+            current.observation = stationIdentifier
+        } else {
+            return
+        }
 
         do {
             try managedContext.save()

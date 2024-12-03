@@ -17,4 +17,3 @@ protocol MapUpdaterDelegate: AnyObject {
 protocol CollectionViewTapDelegate: AnyObject {
 	func longPress(sender: ForecastCollectionViewCell, state: UIGestureRecognizer.State) 
 }
-

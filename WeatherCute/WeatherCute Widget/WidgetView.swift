@@ -16,8 +16,8 @@ struct WidgetView: View {
 
     @ViewBuilder
     var body: some View {
-
-
+        
+        
         switch family {
         case .systemSmall:
             SmallWidgetView(useStub: useStub)
@@ -34,7 +34,7 @@ struct WidgetView: View {
 }
 
 struct SmallWidgetView: View {
-
+    
     private let viewModel = ContentViewModel()
     let useStub: Bool
 
