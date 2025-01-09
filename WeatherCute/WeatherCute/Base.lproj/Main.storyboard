@@ -5,6 +5,7 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23506"/>
         <capability name="Image references" minToolsVersion="12.0"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -18,7 +19,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please add a location to see weather" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gy6-ot-MPt">
-                                <rect key="frame" x="59" y="427" width="284.33333333333337" height="20.333333333333314"/>
+                                <rect key="frame" x="59" y="427" width="284.33333333333331" height="20.333333333333314"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
@@ -78,7 +79,7 @@
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
-                        <color key="backgroundColor" red="0.14117647058823529" green="0.63921568627450975" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                         <constraints>
                             <constraint firstItem="gMU-K0-lrx" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="8" id="19v-mp-T8m"/>
                             <constraint firstItem="fFQ-TZ-zyU" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6rz-Fb-fRW"/>
@@ -155,7 +156,7 @@
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="15"/>
                                 <state key="normal" title="   Use This Location   ">
-                                    <color key="titleColor" red="0.14313618410000001" green="0.63863428010000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="titleColor" name="Custom Text Color"/>
                                 </state>
                                 <connections>
                                     <action selector="addLocationTapped:" destination="Foy-Bk-JnS" eventType="touchUpInside" id="noX-Vv-nwZ"/>
@@ -177,7 +178,7 @@
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="NCf-0N-E0D"/>
-                        <color key="backgroundColor" red="0.14117647058823529" green="0.63921568627450975" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                         <constraints>
                             <constraint firstItem="hB5-9l-lMP" firstAttribute="top" secondItem="946-hD-Yxf" secondAttribute="bottom" constant="25" id="0MY-x0-UEA"/>
                             <constraint firstItem="RYM-8d-HQC" firstAttribute="centerY" secondItem="946-hD-Yxf" secondAttribute="centerY" id="0dA-0c-NUE"/>
@@ -226,7 +227,7 @@
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" sectionFooterHeight="28" id="qMZ-V0-t04">
                         <rect key="frame" x="0.0" y="0.0" width="402" height="874"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                         <prototypes>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="searchCell" textLabel="KJ1-JV-62g" detailTextLabel="10T-35-WGv" rowHeight="70" style="IBUITableViewCellStyleSubtitle" id="Mr3-DY-QR2">
                                 <rect key="frame" x="0.0" y="50" width="402" height="70"/>
@@ -251,6 +252,7 @@
                                         </label>
                                     </subviews>
                                 </tableViewCellContentView>
+                                <color key="backgroundColor" name="Custom Background Color"/>
                             </tableViewCell>
                         </prototypes>
                         <connections>
@@ -367,7 +369,7 @@
                                         <rect key="frame" x="0.0" y="0.0" width="146" height="30"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Back">
-                                            <color key="titleColor" red="0.14117647059999999" green="0.63921568630000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" name="Custom Text Color"/>
                                         </state>
                                         <connections>
                                             <action selector="backPressed:" destination="50L-87-vTY" eventType="touchUpInside" id="rhw-N5-LWg"/>
@@ -377,7 +379,7 @@
                                         <rect key="frame" x="196" y="0.0" width="146" height="30"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <state key="normal" title="Next">
-                                            <color key="titleColor" red="0.14117647059999999" green="0.63921568630000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" name="Custom Text Color"/>
                                         </state>
                                         <connections>
                                             <action selector="nextPressed:" destination="50L-87-vTY" eventType="touchUpInside" id="b4I-mf-cX6"/>
@@ -420,7 +422,7 @@
                             </imageView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="24H-q8-zzB"/>
-                        <color key="backgroundColor" red="0.14117647059999999" green="0.63921568630000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                         <constraints>
                             <constraint firstItem="24H-q8-zzB" firstAttribute="trailing" secondItem="jjc-Xn-vGk" secondAttribute="trailing" constant="30" id="0KL-gc-RNa"/>
                             <constraint firstItem="24H-q8-zzB" firstAttribute="trailing" secondItem="pUs-vQ-Iek" secondAttribute="trailing" constant="20" id="1n6-9j-CMf"/>
@@ -662,7 +664,7 @@
                                         <rect key="frame" x="154.33333333333331" y="0.0" width="55" height="28"/>
                                         <fontDescription key="fontDescription" type="system" weight="medium" pointSize="13"/>
                                         <state key="normal" title="Change?">
-                                            <color key="titleColor" red="0.0077650447220799657" green="0.16416186616891501" blue="0.85871093749999994" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" name="Custom Button Color"/>
                                         </state>
                                         <connections>
                                             <action selector="changeButtonPressed:" destination="gD2-sg-PZP" eventType="touchUpInside" id="jlB-g0-6OX"/>
@@ -679,13 +681,13 @@
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Day" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tZT-Vq-G7e">
                                                 <rect key="frame" x="0.0" y="0.0" width="342" height="20.333333333333332"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                                <color key="textColor" red="0.1254956424" green="0.57364231349999995" blue="0.89759153130000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" name="Custom Text Color"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="uCV-Jo-Hvl">
                                                 <rect key="frame" x="0.0" y="20.333333333333371" width="342" height="19.333333333333329"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                                <color key="textColor" red="0.1254956424" green="0.57364231349999995" blue="0.89759153130000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <color key="textColor" name="Custom Text Color"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                         </subviews>
@@ -702,7 +704,7 @@
                             </view>
                             <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="   No network   " textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0bU-bm-PYL">
                                 <rect key="frame" x="143.33333333333334" y="221.66666666666666" width="115.33333333333334" height="30"/>
-                                <color key="backgroundColor" red="0.31372550129999999" green="0.63137257099999999" blue="0.97254908080000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="backgroundColor" name="Custom Background Color"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="4UR-d4-eHQ"/>
                                 </constraints>
@@ -733,7 +735,7 @@
                             </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="iMd-Cq-ZCt"/>
-                        <color key="backgroundColor" red="0.31372550129999999" green="0.63137257099999999" blue="0.97254908080000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                         <constraints>
                             <constraint firstItem="K5d-dK-q5M" firstAttribute="centerY" secondItem="GXE-EV-eik" secondAttribute="centerY" id="19u-36-LUo"/>
                             <constraint firstItem="Pd6-SE-Yac" firstAttribute="centerX" secondItem="GXE-EV-eik" secondAttribute="centerX" id="1yb-Ci-fAA"/>
@@ -823,14 +825,14 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Select a preferred observation station" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="v1h-jq-dy9">
-                                <rect key="frame" x="54" y="20" width="294.33333333333337" height="20.333333333333329"/>
+                                <rect key="frame" x="54" y="20" width="294.33333333333331" height="20.333333333333329"/>
                                 <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" prefetchingEnabled="NO" translatesAutoresizingMaskIntoConstraints="NO" id="C9Q-yw-czh">
                                 <rect key="frame" x="16" y="68.333333333333314" width="370" height="750.66666666666674"/>
-                                <color key="backgroundColor" red="0.14117647059999999" green="0.63921568630000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" name="Custom Background Color"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="0.0" id="QRm-1n-Puo">
                                     <size key="itemSize" width="145" height="130"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
@@ -848,13 +850,13 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s2G-yU-FTR">
                                                     <rect key="frame" x="45" y="13.000000000000002" width="55" height="26.666666666666671"/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="22"/>
-                                                    <color key="textColor" red="0.11572302132844925" green="0.51159626245498657" blue="0.80231946706771851" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" name="Custom Text Color"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Name" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tjf-C6-9Qw">
                                                     <rect key="frame" x="13" y="44.666666666666664" width="119" height="18"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
-                                                    <color key="textColor" red="0.12549564242362976" green="0.5736423134803772" blue="0.89759153127670288" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                    <color key="textColor" name="Custom Text Color"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -887,7 +889,7 @@
                             </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="7tc-Je-aXs"/>
-                        <color key="backgroundColor" red="0.14117647059999999" green="0.63921568630000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                         <constraints>
                             <constraint firstItem="v1h-jq-dy9" firstAttribute="top" secondItem="7tc-Je-aXs" secondAttribute="top" constant="20" id="21m-ok-8SC"/>
                             <constraint firstItem="Kx8-AY-7Sd" firstAttribute="bottom" secondItem="7tc-Je-aXs" secondAttribute="bottom" constant="-10" id="5CH-7a-hz5"/>
@@ -938,7 +940,7 @@
                             </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="70" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" springLoaded="YES" translatesAutoresizingMaskIntoConstraints="NO" id="wVW-7r-DuD">
                                 <rect key="frame" x="0.0" y="124.33333333333331" width="402" height="674.66666666666674"/>
-                                <color key="backgroundColor" red="0.31372550129999999" green="0.63137257099999999" blue="0.97254908080000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <color key="backgroundColor" name="Custom Background Color"/>
                                 <inset key="separatorInset" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="editCell" rowHeight="70" id="7Ba-yh-sUy" customClass="EditTableViewCell" customModule="WeatherCute" customModuleProvider="target">
@@ -951,12 +953,12 @@
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Location" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="2Si-Tf-7J9">
                                                     <rect key="frame" x="20" y="25" width="307" height="20.333333333333329"/>
                                                     <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
-                                                    <color key="textColor" red="0.1176470588" green="0.57254901960000004" blue="0.8980392157" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                    <color key="textColor" name="Custom Text Color"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Jhy-8w-E9e">
                                                     <rect key="frame" x="0.0" y="68" width="402" height="2"/>
-                                                    <color key="backgroundColor" red="0.0" green="0.58431375029999999" blue="0.92549026010000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                    <color key="backgroundColor" name="Custom Background Color"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="2" id="uX6-s5-ayu"/>
                                                     </constraints>
@@ -991,7 +993,7 @@
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="RLU-qy-wE3"/>
-                        <color key="backgroundColor" red="0.31372550129999999" green="0.63137257099999999" blue="0.97254908080000002" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                         <constraints>
                             <constraint firstItem="Zgd-Jy-2XF" firstAttribute="centerX" secondItem="LSy-xw-d5B" secondAttribute="centerX" id="7S3-fp-XTf"/>
                             <constraint firstItem="wVW-7r-DuD" firstAttribute="top" secondItem="u7c-wZ-ZEG" secondAttribute="bottom" constant="25" id="Gdo-CL-qpw"/>
@@ -1072,7 +1074,7 @@
                                         <rect key="frame" x="69" y="295" width="224" height="30"/>
                                         <color key="backgroundColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <state key="normal" title="   National Weather Service API   ">
-                                            <color key="titleColor" red="0.14117647059999999" green="0.63921568630000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" name="Custom Text Color"/>
                                         </state>
                                         <connections>
                                             <action selector="apiButtonPressed:" destination="xPv-QY-QMi" eventType="touchUpInside" id="qCB-jk-5r8"/>
@@ -1082,7 +1084,7 @@
                                         <rect key="frame" x="74.666666666666686" y="350" width="213" height="30"/>
                                         <color key="backgroundColor" red="0.93725490570000003" green="0.93725490570000003" blue="0.95686274770000002" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <state key="normal" title="   WeatherCute Privacy Policy   ">
-                                            <color key="titleColor" red="0.14117647059999999" green="0.63921568630000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <color key="titleColor" name="Custom Text Color"/>
                                         </state>
                                         <connections>
                                             <action selector="privacyPolicyButtonPressed:" destination="xPv-QY-QMi" eventType="touchUpInside" id="tNr-qK-I9d"/>
@@ -1092,7 +1094,7 @@
                             </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="0F2-mF-p74"/>
-                        <color key="backgroundColor" red="0.14117647059999999" green="0.63921568630000003" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="1mU-6W-bD1" secondAttribute="trailing" constant="20" id="3uK-pD-WzG"/>
                             <constraint firstItem="0F2-mF-p74" firstAttribute="bottom" secondItem="ap6-le-oOW" secondAttribute="bottom" constant="20" id="5XX-ze-rdy"/>
@@ -1120,7 +1122,7 @@
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="Win-8q-BAL">
                         <rect key="frame" x="0.0" y="0.0" width="402" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
-                        <color key="backgroundColor" red="0.14117647058823529" green="0.63921568627450975" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="Custom Background Color"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
                     <connections>
@@ -1135,8 +1137,17 @@
     <resources>
         <image name="alert" width="100" height="100"/>
         <image name="info" width="300" height="300"/>
-        <image name="reload" width="100" height="100"/>
+        <image name="reload" width="300" height="300"/>
         <image name="updown" width="430" height="430"/>
+        <namedColor name="Custom Background Color">
+            <color red="0.14117647058823529" green="0.63921568627450975" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Custom Button Color">
+            <color red="0.0078431372549019607" green="0.16470588235294117" blue="0.85882352941176465" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Custom Text Color">
+            <color red="0.12549019607843137" green="0.5725490196078431" blue="0.89803921568627454" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
         <systemColor name="darkTextColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

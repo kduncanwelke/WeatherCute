@@ -26,7 +26,7 @@ class SearchTableViewController: UITableViewController {
         
 		// set up table view qualities
 		tableView.register(UITableViewCell.self, forCellReuseIdentifier: "searchCell")
-		tableView.backgroundColor = UIColor(red:0.14, green:0.64, blue:1.00, alpha:1.0)
+        tableView.backgroundColor = UIColor(named: "Custom Background Color")
 		tableView.rowHeight = 70.0
 	}
 	
@@ -38,7 +38,7 @@ class SearchTableViewController: UITableViewController {
 		var cell = tableView.dequeueReusableCell(withIdentifier: "searchCell", for: indexPath)
 		cell = UITableViewCell.init(style: .subtitle, reuseIdentifier: "searchCell")
 		
-		cell.backgroundColor = UIColor(red:0.14, green:0.64, blue:1.00, alpha:1.0)
+		cell.backgroundColor = UIColor(named: "Custom Background Color")
 
         cell.textLabel?.text = searchViewModel.getLocationName(index: indexPath.row)
 		cell.textLabel?.font = UIFont.systemFont(ofSize: 20.0)

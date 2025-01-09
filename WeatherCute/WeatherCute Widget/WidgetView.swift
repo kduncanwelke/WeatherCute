@@ -40,7 +40,7 @@ struct SmallWidgetView: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
+            Color(UIColor(named: "Custom Background Color") ?? UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
 
             VStack(spacing: 0) {
                 Text(viewModel.getLocationName(useStub: useStub))
@@ -97,7 +97,7 @@ struct MediumWidgetView: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
+            Color(UIColor(named: "Custom Background Color") ?? UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
 
             HStack {
                 GeometryReader { geo in
@@ -158,8 +158,8 @@ struct LargeWidgetView: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
-
+            Color(UIColor(named: "Custom Background Color") ?? UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
+            
             VStack(spacing: 0) {
                 Text(viewModel.getLocationName(useStub: useStub))
                     .font(.system(size: 16.0))
@@ -263,7 +263,7 @@ struct ExtraLargeWidgetView: View {
 
     var body: some View {
         ZStack {
-            Color(UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
+            Color(UIColor(named: "Custom Background Color") ?? UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
 
             HStack {
                 VStack {
