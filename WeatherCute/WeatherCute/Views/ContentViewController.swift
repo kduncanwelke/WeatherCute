@@ -266,9 +266,8 @@ extension ContentViewController: UICollectionViewDataSource, CollectionViewTapDe
 	func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
 		let cellWidth : CGFloat = 145.0
 		
-		let numberOfCells = floor(self.view.frame.size.width / cellWidth)
+		let numberOfCells = floor(self.view.frame.size.width / (cellWidth + 4))
 		let edgeInsets = (self.view.frame.size.width - (numberOfCells * cellWidth)) / (numberOfCells + 1)
-		
 		return UIEdgeInsets(top: 0, left: edgeInsets, bottom: 20, right: edgeInsets)
 	}
 }

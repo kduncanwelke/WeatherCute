@@ -15,7 +15,7 @@ public class ObservationViewModel {
             switch result {
             case .success(let response):
                 guard let data = response.first?.features else { return }
-                print(data)
+                //print(data)
                 print(PageControllerManager.currentPage)
 
                 var result: [Identifier] = []

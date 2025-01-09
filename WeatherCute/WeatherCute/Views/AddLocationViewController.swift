@@ -20,7 +20,6 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
     @IBOutlet weak var loadingIndicator: UIActivityIndicatorView!
     @IBOutlet weak var noNetworkLabel: UILabel!
     @IBOutlet weak var cancel: UIButton!
-
     
 	// MARK: Variables
 
@@ -42,7 +41,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		let resultsTableController = SearchTableViewController()
 		resultsTableController.mapView = mapView
 		resultsTableController.delegate = self
-		
+        
 		// set up search controller for map search
 		searchController = UISearchController(searchResultsController: resultsTableController)
 		searchController.searchResultsUpdater = resultsTableController
@@ -52,24 +51,28 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		searchController.delegate = self
 		searchController.searchBar.delegate = self // Monitor when the search button is tapped.
         searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.tintColor = .white
+        searchController.searchBar.tintColor = UIColor(named: "Custom Search Color")
     
 		navigationItem.searchController = searchController
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
 
         if #available(iOS 13.0, *) {
-            searchController.searchBar.tintColor = .white
-            searchController.searchBar.searchTextField.attributedPlaceholder =  NSAttributedString.init(string: "Type to find location . . .", attributes: [NSAttributedString.Key.foregroundColor: UIColor.white])
-            searchController.searchBar.tintColor = .white
+            navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+            searchController.searchBar.tintColor = UIColor(named: "Custom Search Color")
+            searchController.searchBar.searchTextField.attributedPlaceholder =  NSAttributedString.init(string: "Type to find location . . .", attributes: [NSAttributedString.Key.foregroundColor: UIColor(named: "Custom Search Color") ?? .white])
+            searchController.searchBar.searchTextField.textColor = UIColor(named: "Custom Search Color")
+            searchController.searchBar.tintColor = UIColor(named: "Custom Search Color")
+            searchController.searchBar.searchTextField.leftView?.tintColor = UIColor(named: "Custom Search Color")
 
             if let clearButton = searchController.searchBar.searchTextField.value(forKey: "_clearButton") as? UIButton {
                    let templateImage = clearButton.imageView?.image?.withRenderingMode(.alwaysTemplate)
                    clearButton.setImage(templateImage, for: .normal)
-                clearButton.tintColor = .white
+                clearButton.tintColor = UIColor(named: "Custom Search Color")
             }
         } else {
             // Fallback on earlier versions
+            navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         }
 		
         NotificationCenter.default.addObserver(self, selector: #selector(networkBack), name: NSNotification.Name(rawValue: "networkBack"), object: nil)
