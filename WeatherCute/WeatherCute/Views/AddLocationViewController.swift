@@ -58,9 +58,9 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		definesPresentationContext = true
 
         if #available(iOS 13.0, *) {
-            navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+            navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.foregroundColor: UIColor(named: "Custom Text Color") ?? UIColor.gray]
             searchController.searchBar.tintColor = UIColor(named: "Custom Search Color")
-            searchController.searchBar.searchTextField.attributedPlaceholder =  NSAttributedString.init(string: "Type to find location . . .", attributes: [NSAttributedString.Key.foregroundColor: UIColor(named: "Custom Search Color") ?? .white])
+            searchController.searchBar.searchTextField.attributedPlaceholder =  NSAttributedString.init(string: "Type to find location . . .", attributes: [NSAttributedString.Key.foregroundColor: UIColor(named: "Custom Search Color") ?? .gray])
             searchController.searchBar.searchTextField.textColor = UIColor(named: "Custom Search Color")
             searchController.searchBar.tintColor = UIColor(named: "Custom Search Color")
             searchController.searchBar.searchTextField.leftView?.tintColor = UIColor(named: "Custom Search Color")
@@ -72,7 +72,7 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
             }
         } else {
             // Fallback on earlier versions
-            navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
+            navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor(named: "Custom Text Color") ?? UIColor.gray]
         }
 		
         NotificationCenter.default.addObserver(self, selector: #selector(networkBack), name: NSNotification.Name(rawValue: "networkBack"), object: nil)

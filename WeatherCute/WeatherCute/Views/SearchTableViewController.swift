@@ -42,11 +42,11 @@ class SearchTableViewController: UITableViewController {
 
         cell.textLabel?.text = searchViewModel.getLocationName(index: indexPath.row)
 		cell.textLabel?.font = UIFont.systemFont(ofSize: 20.0)
-		cell.textLabel?.textColor = UIColor.white
+        cell.textLabel?.textColor = UIColor(named: "Custom Text Color")
 		
 		// parse address to show in cell
 		cell.detailTextLabel?.font = UIFont.systemFont(ofSize: 15.0)
-		cell.detailTextLabel?.textColor = UIColor.white
+		cell.detailTextLabel?.textColor = UIColor(named: "Custom Text Color")
         cell.detailTextLabel?.text = searchViewModel.getAddress(index: indexPath.row)
 		return cell
 	}
