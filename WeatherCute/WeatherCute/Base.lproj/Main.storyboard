@@ -58,11 +58,12 @@
                             </button>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="gMU-K0-lrx">
                                 <rect key="frame" x="150.66666666666666" y="70" width="101" height="29"/>
+                                <color key="backgroundColor" name="Custom Segment Background"/>
                                 <segments>
                                     <segment title="°F" width="50"/>
                                     <segment title="°C" width="50"/>
                                 </segments>
-                                <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="selectedSegmentTintColor" name="Custom Segment Color"/>
                                 <connections>
                                     <action selector="degreeSegmentChanged:" destination="BYZ-38-t0r" eventType="valueChanged" id="gix-TQ-nyN"/>
                                 </connections>
@@ -142,7 +143,7 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="k14-tF-F1R">
                                 <rect key="frame" x="50" y="479.33333333333331" width="302" height="0.0"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <color key="textColor" name="Custom Text Color"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zJQ-qY-Hfi">
@@ -1156,6 +1157,12 @@
         </namedColor>
         <namedColor name="Custom Next Back Color">
             <color red="0.0" green="0.071000002324581146" blue="0.12200000137090683" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Custom Segment Background">
+            <color red="0.99999994039535522" green="1" blue="1" alpha="0.49562810430463577" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <namedColor name="Custom Segment Color">
+            <color red="0.99999994039535522" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <namedColor name="Custom Text Color">
             <color red="0.0" green="0.071000002324581146" blue="0.12200000137090683" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
