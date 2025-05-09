@@ -51,28 +51,28 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
 		searchController.delegate = self
 		searchController.searchBar.delegate = self // Monitor when the search button is tapped.
         searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.tintColor = UIColor(named: "Custom Search Color")
+        searchController.searchBar.tintColor = UIColor.white
     
 		navigationItem.searchController = searchController
 		navigationItem.hidesSearchBarWhenScrolling = false
 		definesPresentationContext = true
 
         if #available(iOS 13.0, *) {
-            navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.foregroundColor: UIColor(named: "Custom Text Color") ?? UIColor.gray]
-            searchController.searchBar.tintColor = UIColor(named: "Custom Search Color")
+            navigationController?.navigationBar.standardAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+            searchController.searchBar.tintColor = UIColor.white
             searchController.searchBar.searchTextField.attributedPlaceholder =  NSAttributedString.init(string: "Type to find location . . .", attributes: [NSAttributedString.Key.foregroundColor: UIColor(named: "Custom Search Color") ?? .gray])
-            searchController.searchBar.searchTextField.textColor = UIColor(named: "Custom Search Color")
-            searchController.searchBar.tintColor = UIColor(named: "Custom Search Color")
-            searchController.searchBar.searchTextField.leftView?.tintColor = UIColor(named: "Custom Search Color")
+            searchController.searchBar.searchTextField.textColor = UIColor.white
+            searchController.searchBar.tintColor = UIColor.white
+            searchController.searchBar.searchTextField.leftView?.tintColor = UIColor.white
 
             if let clearButton = searchController.searchBar.searchTextField.value(forKey: "_clearButton") as? UIButton {
                    let templateImage = clearButton.imageView?.image?.withRenderingMode(.alwaysTemplate)
                    clearButton.setImage(templateImage, for: .normal)
-                clearButton.tintColor = UIColor(named: "Custom Search Color")
+                clearButton.tintColor = UIColor.white
             }
         } else {
             // Fallback on earlier versions
-            navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor(named: "Custom Text Color") ?? UIColor.gray]
+            navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         }
 		
         NotificationCenter.default.addObserver(self, selector: #selector(networkBack), name: NSNotification.Name(rawValue: "networkBack"), object: nil)
@@ -153,41 +153,39 @@ class AddLocationViewController: UIViewController, UITableViewDelegate {
             if searchViewModel.hasConnection() {
                 print("has connection")
                 loadingIndicator.startAnimating()
-
+                
                 // disable button to prevent double tap
                 useThisLocationButton.isEnabled = false
                 useThisLocationButton.alpha = 0.5
-
+                
                 // disable cancel button while loading
                 cancel.isEnabled = false
-
-                searchViewModel.getLocation(completionHandler: { [weak self] success in
-                    if success {
-                        if let pin = self?.mapView.annotations.first {
-                            self?.searchViewModel.saveLocation(annotation: pin)
-                            self?.searchViewModel.addSelectedLocation()
-
-                            DispatchQueue.main.async {
-                                self?.loadingIndicator.stopAnimating()
-                                self?.cancel.isEnabled = true
-                                self?.searchViewModel.clearSearch()
-                                self?.dismiss(animated: true, completion: nil)
-                            }
+                
+                Task {
+                    do {
+                        try await searchViewModel.getLocation()
+                        
+                        if let pin = mapView.annotations.first {
+                            searchViewModel.saveLocation(annotation: pin)
+                            searchViewModel.addSelectedLocation()
+                            
+                            loadingIndicator.stopAnimating()
+                            cancel.isEnabled = true
+                            searchViewModel.clearSearch()
+                            dismiss(animated: true, completion: nil)
+                        } else {
+                            loadingIndicator.stopAnimating()
+                            cancel.isEnabled = true
+                            searchViewModel.clearSearch()
+                            clearMap()
+                            showAlert(title: "Cannot add location", message: Errors.noDataError.localizedDescription)
                         }
-                    } else {
-                        DispatchQueue.main.async {
-                            self?.loadingIndicator.stopAnimating()
-                            self?.cancel.isEnabled = true
-                            self?.searchViewModel.clearSearch()
-                            self?.clearMap()
-                            self?.showAlert(title: "Cannot add location", message: Errors.noDataError.localizedDescription)
-                        }
+                    } catch {
+                        searchViewModel.clearSearch()
+                        clearMap()
+                        showAlert(title: "Cannot add location", message: "No network connection is available. Complete data for this location could not be retrieved.")
                     }
-                })
-            } else {
-                searchViewModel.clearSearch()
-                clearMap()
-                showAlert(title: "Cannot add location", message: "No network connection is available. Complete data for this location could not be retrieved.")
+                }
             }
         }
 	}

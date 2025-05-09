@@ -30,11 +30,16 @@ class ChangeObservationViewController: UIViewController, UICollectionViewDelegat
 		collectionView.delegate = self
 		
         if observationViewModel.getStationCount() == 0 {
-            observationViewModel.getStations(completionHandler: { [weak self] in
-                DispatchQueue.main.async {
-                    self?.collectionView.reloadData()
+            Task {
+                do {
+                    try await observationViewModel.getStations()
+                    collectionView.reloadData()
+                } catch {
+                    
                 }
-            })
+            }
+        } else {
+            collectionView.reloadData()
         }
     }
 	

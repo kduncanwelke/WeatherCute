@@ -31,84 +31,61 @@ public class ContentViewModel {
         ForecastSearch.observationStation = location.observation ?? ""
     }
 
-    func getWeatherData(completion: @escaping () -> Void) {
-        DataManager<Current>.fetch() { result in
-            print("fetch weather")
-            switch result {
-            case .success(let response):
-                if let data = response.first {
-                    WeatherLocations.currentConditions[PageControllerManager.currentPage] = data
-                    print("for page \(PageControllerManager.currentPage)")
-                }
-
-                //print(response)
-                completion()
-            case .failure(let error):
-                print(error)
-                completion()
-            }
+    func getWeatherData() async throws {
+        do {
+            let response = try await Networker<Current>.fetch()
+        
+            WeatherLocations.currentConditions[PageControllerManager.currentPage] = response
+            print("for page \(PageControllerManager.currentPage)")
+        } catch {
+            // handle error
         }
     }
 
-    func getForecastData(retried: Bool, completion: @escaping () -> Void) {
-        DataManager<Forecast>.fetch() { [weak self] result in
-            print("fetch forecast")
-            switch result {
-            case .success(let response):
-                if let data = response.first?.properties.periods {
-                    var forecasts: [ForecastData] = []
+    func getForecastData(retried: Bool) async throws {
+        do {
+            let response = try await Networker<Forecast>.fetch()
+            
+            let data = response.properties.periods
+            var forecasts: [ForecastData] = []
 
-                    for forecast in data {
-                        forecasts.append(forecast)
-                    }
+            for forecast in data {
+                forecasts.append(forecast)
+            }
 
-                    WeatherLocations.forecasts[PageControllerManager.currentPage] = forecasts
-                }
-
-                if retried {
-                    self?.delegate?.showActivityIndicator(display: false)
-                }
-                //print(response)
-                completion()
-            case .failure(let error):
-                print(error)
-                completion()
-
-                if retried == false {
-                    if error as? Errors == Errors.unexpectedProblem {
-                        print("retry")
-                        self?.delegate?.showActivityIndicator(display: true)
-                        // retry 500 error request; per NOAA ServiceNow support 500 errors can typically be fixed with a second request (use brief wait to avoid rate limit)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-                            self?.getForecastData(retried: true, completion: completion)
-                        }
-                    }
+            WeatherLocations.forecasts[PageControllerManager.currentPage] = forecasts
+            if retried {
+                delegate?.showActivityIndicator(display: false)
+            }
+        } catch {
+            // handle error
+            if retried == false {
+                if error as? Errors == Errors.unexpectedProblem {
+                    print("retry")
+                    delegate?.showActivityIndicator(display: true)
+                    // retry 500 error request; per NOAA ServiceNow support 500 errors can typically be fixed with a second request (use brief wait to avoid rate limit)
+                    try await Task.sleep(nanoseconds: 5_000_000_000)
+                    try await getForecastData(retried: true)
                 }
             }
         }
     }
 
-    func getAlerts(completion: @escaping () -> Void) {
-        DataManager<Alert>.fetch() { [weak self] result in
+    func getAlerts() async throws {
+        do {
+            let response = try await Networker<Alert>.fetch()
             print("fetch alerts")
-            switch result {
-            case .success(let response):
-                if let data = response.first?.features {
-                    var alertList: [AlertInfo] = []
-
-                    for alert in data {
-                        alertList.append(alert)
-                    }
-
-                    WeatherLocations.alerts[PageControllerManager.currentPage] = alertList
-                }
-
-                //print(response)
-                completion()
-            case .failure(let error):
-                print(error)
-                completion()
+            
+            let data = response.features
+                var alertList: [AlertInfo] = []
+                
+            for alert in data {
+            alertList.append(alert)
             }
+            
+            WeatherLocations.alerts[PageControllerManager.currentPage] = alertList
+        } catch {
+            // handle error
         }
     }
 

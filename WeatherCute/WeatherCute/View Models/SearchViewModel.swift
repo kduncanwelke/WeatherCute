@@ -63,46 +63,30 @@ public class SearchViewModel {
         }
     }
 
-    func getLocation(completionHandler: @escaping (Bool) -> Void) {
-        DataManager<Location>.fetch() { [weak self] result in
-            switch result {
-            case .success(let response):
-                DispatchQueue.main.async {
-                    guard let data = response.first else { return }
-                    ForecastSearch.gridX = data.properties.gridX
-                    ForecastSearch.gridY = data.properties.gridY
-                    ForecastSearch.station = data.properties.cwa
+    func getLocation() async throws {
+        do {
+            let response = try await Networker<Location>.fetch()
+            
+            ForecastSearch.gridX = response.properties.gridX
+            ForecastSearch.gridY = response.properties.gridY
+            ForecastSearch.station = response.properties.cwa
 
-                    if ForecastSearch.station != "" {
-                        self?.getStation(completion: { reply in
-                            if reply {
-                                completionHandler(true)
-                            }
-                        })
-                    }
-
-                    NetworkMonitor.status = .normal
-                }
-            case .failure(let error):
-                print("error")
-                completionHandler(false)
+            if ForecastSearch.station != "" {
+                try await self.getStation()
             }
+
+            // NetworkMonitor.status = .normal
+        } catch {
+            // handle error
         }
     }
 
-    func getStation(completion: @escaping (Bool) -> Void) {
-        DataManager<Stations>.fetch() { result in
-            switch result {
-            case .success(let response):
-                guard let data = response.first else { return }
-
-                ForecastSearch.observationStation = data.features.first?.properties.stationIdentifier ?? ""
-
-                completion(true)
-            case .failure(let error):
-                print("fail")
-                completion(false)
-            }
+    func getStation() async throws {
+        do {
+            let response = try await Networker<Stations>.fetch()
+            ForecastSearch.observationStation = response.features.first?.properties.stationIdentifier ?? ""
+        } catch {
+            // handle error
         }
     }
 

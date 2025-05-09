@@ -10,27 +10,21 @@ import Foundation
 
 public class ObservationViewModel {
 
-    func getStations(completionHandler: @escaping () -> Void) {
-        DataManager<Stations>.fetch() { result in
-            switch result {
-            case .success(let response):
-                guard let data = response.first?.features else { return }
-                //print(data)
-                print(PageControllerManager.currentPage)
+    func getStations() async throws {
+        do {
+            let response = try await Networker<Stations>.fetch()
+            
+            print(PageControllerManager.currentPage)
 
-                var result: [Identifier] = []
-                
-                for stationInfo in data {
-                    result.append(stationInfo.properties)
-                }
-                
-                WeatherLocations.stations[PageControllerManager.currentPage] = result
-
-                completionHandler()
-            case .failure(let error):
-                print("fail")
-                completionHandler()
+            var result: [Identifier] = []
+            
+            for stationInfo in response.features {
+                result.append(stationInfo.properties)
             }
+            
+            WeatherLocations.stations[PageControllerManager.currentPage] = result
+        } catch {
+            // handle error
         }
     }
 

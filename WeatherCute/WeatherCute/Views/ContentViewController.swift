@@ -116,33 +116,36 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
             reloadButton.isEnabled = false
         }
 
-        contentViewModel.getForecastData(retried: false, completion: { [weak self] in
-            DispatchQueue.main.async {
-                self?.collectionView.reloadData()
-                print("forecast data stopped")
-                self?.collectionViewActivityIndicator.stopAnimating()
+        Task {
+            do {
+                try await contentViewModel.getForecastData(retried: false)
+                collectionView.reloadData()
+                collectionViewActivityIndicator.stopAnimating()
+            } catch {
+                
             }
-        })
-
-        contentViewModel.getWeatherData(completion: { [weak self] in
-            DispatchQueue.main.async {
-                self?.displayCurrent()
-                self?.activityIndicator.stopAnimating()
-
+            
+            do {
+                try await contentViewModel.getWeatherData()
+                displayCurrent()
+                
+                activityIndicator.stopAnimating()
                 if reload {
-                    self?.reloadButton.setImage(UIImage(named: "reload"), for: .normal)
-                    self?.reloadActivityIndicator.stopAnimating()
-                    self?.reloadButton.isEnabled = true
+                    reloadButton.setImage(UIImage(named: "reload"), for: .normal)
+                    reloadActivityIndicator.stopAnimating()
+                    reloadButton.isEnabled = true
                 }
+            } catch {
+                
             }
-        })
-
-        contentViewModel.getAlerts(completion: { [weak self] in
-            DispatchQueue.main.async {
-                self?.configureAlertButton()
+            
+            do {
+                try await contentViewModel.getAlerts()
+                configureAlertButton()
+            } catch {
+                
             }
-        })
-
+        }
     }
 
 	func displayCurrent() {

@@ -8,46 +8,30 @@
 
 import Foundation
 
-struct Networker {
-    private static let session = URLSession(configuration: .default)
-	
-	static func getURL(endpoint: URL, completion: @escaping (Result<Data>) -> Void) {
-		fetchData(url: endpoint, completion: completion)
-	}
-	
-	static func fetchData(url: URL, completion: @escaping (Result<Data>) -> Void) {
-        let request = URLRequest(url: url)
-		
-		let task = session.dataTask(with: request) { data, response, error in
+struct Networker<T: SearchType> {
+    static func fetch() async throws -> T {
+        let url = T.endpoint.url()
         
-			guard let httpResponse = response as? HTTPURLResponse else {
-				completion(.failure(Errors.networkError))
-				return
-			}
-           
-			// check for status code to prevent blank loading if something is wrong
-            if NetworkMonitor.connection == false {
-                completion(.failure(Errors.noNetwork))
-            } else if httpResponse.statusCode == 200 {
-				if let error = error {
-					completion(.failure(error))
-				} else if let data = data {
-					completion(.success(data))
-                }
-			} else if httpResponse.statusCode == 404 {
-				completion(.failure(Errors.noDataError))
+        guard let response: (data: Data, response: URLResponse) = try? await URLSession.shared.data(from: url) else {
+            throw Errors.networkError
+        }
+        
+        if let httpResponse = response.response as? HTTPURLResponse {
+            if httpResponse.statusCode == 404 {
+                throw Errors.noDataError
             } else if httpResponse.statusCode == 500 {
-                completion(.failure(Errors.unexpectedProblem))
-            } else {
-                completion(.failure(Errors.networkError))
+                throw Errors.unexpectedProblem
+            } else if httpResponse.statusCode != 200 {
                 print("status was not 200")
                 print(httpResponse.statusCode)
-
-                DispatchQueue.main.async {
-                    NotificationCenter.default.post(name: NSNotification.Name(rawValue: "networkErrorAlert"), object: nil)
-                }
+                throw Errors.networkError
             }
-		}
-		task.resume()
-	}
+        }
+        
+        guard let decoded = try? JSONDecoder.nwsApiDecoder.decode(T.self, from: response.data) else {
+            throw Errors.noDataError
+        }
+           
+        return decoded
+    }
 }

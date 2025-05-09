@@ -37,21 +37,29 @@ struct Provider: TimelineProvider {
 
         viewModel.loadLocations()
         contentViewModel.setSearchParameters()
-
-        contentViewModel.getForecastData(retried: false, completion: {})
-        contentViewModel.getWeatherData(completion: {})
-
-        contentViewModel.getAlerts(completion: {
-            let currentDate = Date()
-
-            let entryDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
-
-            let entry = MyTimelineEntry(date: entryDate, useStub: false)
-            entries.append(entry)
-
-            let timeline = Timeline(entries: entries, policy: .after(entryDate))
-            completion(timeline)
-        })
+        
+        Task {
+            do {
+                try await contentViewModel.getForecastData(retried: false)
+            } catch {}
+            
+            do {
+                try await contentViewModel.getWeatherData()
+            } catch {}
+            
+            do {
+                try await contentViewModel.getAlerts()
+                let currentDate = Date()
+                
+                let entryDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
+                
+                let entry = MyTimelineEntry(date: entryDate, useStub: false)
+                entries.append(entry)
+                
+                let timeline = Timeline(entries: entries, policy: .after(entryDate))
+                completion(timeline)
+            } catch {}
+        }
     }
 }
 

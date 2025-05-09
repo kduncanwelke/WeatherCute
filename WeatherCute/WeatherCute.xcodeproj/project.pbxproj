@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,8 +16,7 @@
 		2D4D4AAA229EFBD80052C391 /* ContentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AA9229EFBD80052C391 /* ContentViewController.swift */; };
 		2D4D4AAD229F1EE60052C391 /* JSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AAC229F1EE60052C391 /* JSONDecoder.swift */; };
 		2D4D4AB0229F1F7B0052C391 /* Networker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AAF229F1F7B0052C391 /* Networker.swift */; };
-		2D4D4AB2229F1F9C0052C391 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB1229F1F9C0052C391 /* Result.swift */; };
-		2D4D4AB4229F1FAD0052C391 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB3229F1FAD0052C391 /* DataManager.swift */; };
+		2D4D4AB2229F1F9C0052C391 /* RetryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB1229F1F9C0052C391 /* RetryDelegate.swift */; };
 		2D4D4AB6229F1FDE0052C391 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB5229F1FDE0052C391 /* Endpoint.swift */; };
 		2D4D4AB8229F21870052C391 /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB7229F21870052C391 /* Errors.swift */; };
 		2D4D4ABA229F21E20052C391 /* SearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB9229F21E20052C391 /* SearchType.swift */; };
@@ -41,7 +40,7 @@
 		2D7D3B3A27FB568300EA8806 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D7D3B3927FB568300EA8806 /* SwiftUI.framework */; };
 		2D7D3B3D27FB568300EA8806 /* WeatherCute_Widget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D3B3C27FB568300EA8806 /* WeatherCute_Widget.swift */; };
 		2D7D3B3F27FB568300EA8806 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D7D3B3E27FB568300EA8806 /* Assets.xcassets */; };
-		2D7D3B4327FB568300EA8806 /* WeatherCute WidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 2D7D3B3527FB568300EA8806 /* WeatherCute WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		2D7D3B4327FB568300EA8806 /* WeatherCute WidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 2D7D3B3527FB568300EA8806 /* WeatherCute WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		2D7D3B4927FB5BEA00EA8806 /* WidgetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D3B4827FB5BEA00EA8806 /* WidgetView.swift */; };
 		2D7D3B4C27FB88B600EA8806 /* WeatherLocations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB9C15822A0489800B82FEF /* WeatherLocations.swift */; };
 		2D7D3B4D27FB88DB00EA8806 /* ContentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E3766276171E8007FD4B8 /* ContentViewModel.swift */; };
@@ -49,14 +48,13 @@
 		2D7D3B4F27FB891500EA8806 /* PageControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2DB9C15A22A052B600B82FEF /* PageControllerManager.swift */; };
 		2D7D3B5027FB892500EA8806 /* Temp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7E3764276168B0007FD4B8 /* Temp.swift */; };
 		2D7D3B5127FB893900EA8806 /* NetworkMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D578425241C01A000AD57FF /* NetworkMonitor.swift */; };
-		2D7D3B5227FB894200EA8806 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB3229F1FAD0052C391 /* DataManager.swift */; };
 		2D7D3B5327FB894C00EA8806 /* ForecastSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC2229F2F9C0052C391 /* ForecastSearch.swift */; };
 		2D7D3B5427FB894E00EA8806 /* LocationSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC0229F2F650052C391 /* LocationSearch.swift */; };
 		2D7D3B5527FB896F00EA8806 /* Current.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AC6229F35B80052C391 /* Current.swift */; };
 		2D7D3B5627FB897100EA8806 /* Forecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4ABE229F26440052C391 /* Forecast.swift */; };
 		2D7D3B5727FB897900EA8806 /* Alert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D0CED22A9C9E800D58CA0 /* Alert.swift */; };
 		2D7D3B5827FB8B9500EA8806 /* Endpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB5229F1FDE0052C391 /* Endpoint.swift */; };
-		2D7D3B5927FB8B9E00EA8806 /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB1229F1F9C0052C391 /* Result.swift */; };
+		2D7D3B5927FB8B9E00EA8806 /* RetryDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB1229F1F9C0052C391 /* RetryDelegate.swift */; };
 		2D7D3B5A27FB8BA800EA8806 /* SearchType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AB9229F21E20052C391 /* SearchType.swift */; };
 		2D7D3B5B27FB8BBA00EA8806 /* Networker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4D4AAF229F1F7B0052C391 /* Networker.swift */; };
 		2D7D3B5C27FB8BD800EA8806 /* TemperatureUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D7D0CEB22A9836100D58CA0 /* TemperatureUnit.swift */; };
@@ -107,15 +105,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		2D7D3B4427FB568300EA8806 /* Embed App Extensions */ = {
+		2D7D3B4427FB568300EA8806 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				2D7D3B4327FB568300EA8806 /* WeatherCute WidgetExtension.appex in Embed App Extensions */,
+				2D7D3B4327FB568300EA8806 /* WeatherCute WidgetExtension.appex in Embed Foundation Extensions */,
 			);
-			name = "Embed App Extensions";
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -134,8 +132,7 @@
 		2D4D4AA9229EFBD80052C391 /* ContentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentViewController.swift; sourceTree = "<group>"; };
 		2D4D4AAC229F1EE60052C391 /* JSONDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONDecoder.swift; sourceTree = "<group>"; };
 		2D4D4AAF229F1F7B0052C391 /* Networker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Networker.swift; sourceTree = "<group>"; };
-		2D4D4AB1229F1F9C0052C391 /* Result.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
-		2D4D4AB3229F1FAD0052C391 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		2D4D4AB1229F1F9C0052C391 /* RetryDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RetryDelegate.swift; sourceTree = "<group>"; };
 		2D4D4AB5229F1FDE0052C391 /* Endpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Endpoint.swift; sourceTree = "<group>"; };
 		2D4D4AB7229F21870052C391 /* Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
 		2D4D4AB9229F21E20052C391 /* SearchType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchType.swift; sourceTree = "<group>"; };
@@ -288,9 +285,8 @@
 		2D4D4AAE229F1EEA0052C391 /* Networking */ = {
 			isa = PBXGroup;
 			children = (
-				2D4D4AB3229F1FAD0052C391 /* DataManager.swift */,
 				2D4D4AAF229F1F7B0052C391 /* Networker.swift */,
-				2D4D4AB1229F1F9C0052C391 /* Result.swift */,
+				2D4D4AB1229F1F9C0052C391 /* RetryDelegate.swift */,
 				2D4D4AAC229F1EE60052C391 /* JSONDecoder.swift */,
 				2D4D4AB5229F1FDE0052C391 /* Endpoint.swift */,
 				2D578425241C01A000AD57FF /* NetworkMonitor.swift */,
@@ -380,7 +376,7 @@
 				2D4D4A82229EEE590052C391 /* Sources */,
 				2D4D4A83229EEE590052C391 /* Frameworks */,
 				2D4D4A84229EEE590052C391 /* Resources */,
-				2D7D3B4427FB568300EA8806 /* Embed App Extensions */,
+				2D7D3B4427FB568300EA8806 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
@@ -433,8 +429,9 @@
 		2D4D4A7E229EEE590052C391 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1620;
-				LastUpgradeCheck = 1320;
+				LastUpgradeCheck = 1630;
 				ORGANIZATIONNAME = "Kate Duncan-Welke";
 				TargetAttributes = {
 					2D4D4A85229EEE590052C391 = {
@@ -503,7 +500,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D4D4AB2229F1F9C0052C391 /* Result.swift in Sources */,
+				2D4D4AB2229F1F9C0052C391 /* RetryDelegate.swift in Sources */,
 				2DB9C16522A085C400B82FEF /* Protocols.swift in Sources */,
 				2D4D4AB0229F1F7B0052C391 /* Networker.swift in Sources */,
 				2D9515F222B814AE003D0EB2 /* AboutViewController.swift in Sources */,
@@ -515,7 +512,6 @@
 				2D4D4AC5229F34B70052C391 /* Stations.swift in Sources */,
 				2DA7E90122A2EE30000B6BFF /* ForecastCollectionViewCell.swift in Sources */,
 				2D4D4ABF229F26440052C391 /* Forecast.swift in Sources */,
-				2D4D4AB4229F1FAD0052C391 /* DataManager.swift in Sources */,
 				2D69B6BE22A6D14D0073DEAD /* StationCollectionViewCell.swift in Sources */,
 				2D7E376127616507007FD4B8 /* PageControllerViewModel.swift in Sources */,
 				2D4D4A8C229EEE590052C391 /* ViewController.swift in Sources */,
@@ -573,7 +569,7 @@
 				2D7D3B5B27FB8BBA00EA8806 /* Networker.swift in Sources */,
 				2D7D3B5E27FB8BFE00EA8806 /* JSONDecoder.swift in Sources */,
 				2D7D3B4D27FB88DB00EA8806 /* ContentViewModel.swift in Sources */,
-				2D7D3B5927FB8B9E00EA8806 /* Result.swift in Sources */,
+				2D7D3B5927FB8B9E00EA8806 /* RetryDelegate.swift in Sources */,
 				2D7D3B4927FB5BEA00EA8806 /* WidgetView.swift in Sources */,
 				2D7D3B5D27FB8BEC00EA8806 /* WeatherLocation.xcdatamodeld in Sources */,
 				2D7D3B5727FB897900EA8806 /* Alert.swift in Sources */,
@@ -581,7 +577,6 @@
 				2D7D3B5627FB897100EA8806 /* Forecast.swift in Sources */,
 				2D7D3B5C27FB8BD800EA8806 /* TemperatureUnit.swift in Sources */,
 				2D7D3B4E27FB88FD00EA8806 /* Icons.swift in Sources */,
-				2D7D3B5227FB894200EA8806 /* DataManager.swift in Sources */,
 				2D75525727FCB853005D69D9 /* CoreDataManager.swift in Sources */,
 				2D7D3B5427FB894E00EA8806 /* LocationSearch.swift in Sources */,
 				2D7D3B5F27FB8C0100EA8806 /* Errors.swift in Sources */,
@@ -663,8 +658,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = A8R365GJ52;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -725,8 +722,10 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = A8R365GJ52;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -751,8 +750,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WeatherCute/WeatherCute.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A8R365GJ52;
 				INFOPLIST_FILE = WeatherCute/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -771,8 +770,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WeatherCute/WeatherCute.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A8R365GJ52;
 				INFOPLIST_FILE = WeatherCute/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 13;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -790,7 +789,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A8R365GJ52;
 				INFOPLIST_FILE = WeatherCuteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -810,7 +808,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = A8R365GJ52;
 				INFOPLIST_FILE = WeatherCuteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -834,7 +831,6 @@
 				CODE_SIGN_ENTITLEMENTS = "WeatherCute WidgetExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = A8R365GJ52;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "WeatherCute Widget/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "WeatherCute Widget";
@@ -864,7 +860,6 @@
 				CODE_SIGN_ENTITLEMENTS = "WeatherCute WidgetExtension.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = A8R365GJ52;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "WeatherCute Widget/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "WeatherCute Widget";
