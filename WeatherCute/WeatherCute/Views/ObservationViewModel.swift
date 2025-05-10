@@ -9,6 +9,8 @@
 import Foundation
 
 public class ObservationViewModel {
+    
+    private let contentViewModel = ContentViewModel()
 
     func getStations() async throws {
         do {
@@ -22,14 +24,16 @@ public class ObservationViewModel {
                 result.append(stationInfo.properties)
             }
             
-            WeatherLocations.stations[PageControllerManager.currentPage] = result
+            if let name = contentViewModel.currentLocation?.name {
+                WeatherLocations.stations[name] = result
+            }
         } catch {
             // handle error
         }
     }
 
     func getStationCount() -> Int {
-        if let stationCount = WeatherLocations.stations[PageControllerManager.currentPage]?.count {
+        if let name = contentViewModel.currentLocation?.name, let stationCount = WeatherLocations.stations[name]?.count {
             return stationCount
         } else {
             return 0
@@ -37,7 +41,7 @@ public class ObservationViewModel {
     }
 
     func getLabel(index: Int) -> String {
-        if let identifierName = WeatherLocations.stations[PageControllerManager.currentPage]?[index].stationIdentifier {
+        if let name = contentViewModel.currentLocation?.name, let identifierName = WeatherLocations.stations[name]?[index].stationIdentifier {
             return identifierName
         } else {
             return "Unknown"
@@ -45,25 +49,27 @@ public class ObservationViewModel {
     }
 
     func getName(index: Int) -> String {
-        if let stationName =  WeatherLocations.stations[PageControllerManager.currentPage]?[index].name {
+        if let name = contentViewModel.currentLocation?.name, let stationName =  WeatherLocations.stations[name]?[index].name {
             return stationName
         } else {
             return "Unknown"
         }
     }
 
-    func resaveObservation(index: Int) {
+    func resaveObservation(location: SavedLocation, index: Int) {
         // save changed observation station into core data object
         var managedContext = CoreDataManager.shared.managedObjectContext
-
-        let current = WeatherLocations.locations[PageControllerManager.currentPage]
-
-        if let stationIdentifier = WeatherLocations.stations[PageControllerManager.currentPage]?[index].stationIdentifier {
-            current.observation = stationIdentifier
+        
+        let currentSaved = WeatherLocations.loadedLocations.filter({ $0.name == location.name }).first
+        var current = WeatherLocations.locations.filter({ $0.name == location.name }).first
+        
+        if let name = current?.name, let stationIdentifier = WeatherLocations.stations[name]?[index].stationIdentifier {
+            currentSaved?.observation = stationIdentifier
+            current?.observationStation = stationIdentifier
         } else {
             return
         }
-
+        
         do {
             try managedContext.save()
             print("resave successful")
@@ -71,5 +77,6 @@ public class ObservationViewModel {
             // this should never be displayed but is here to cover the possibility
             //showAlert(title: "Save failed", message: "Notice: Data has not successfully been saved.")
         }
+        
     }
 }

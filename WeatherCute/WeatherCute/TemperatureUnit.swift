@@ -8,6 +8,16 @@
 
 import Foundation
 
-enum TemperatureUnit {
+enum TemperatureUnit: String, Hashable, CaseIterable, Identifiable {
 	case fahrenheit, celsius
+    var id: Self { return self }
+    
+    var title: String {
+        switch self {
+        case .fahrenheit:
+            return "°F"
+        case .celsius:
+            return "°C"
+        }
+    }
 }

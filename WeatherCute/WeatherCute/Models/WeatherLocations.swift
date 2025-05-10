@@ -9,11 +9,24 @@
 import Foundation
 
 struct WeatherLocations {
-	static var locations: [Saved] = []
+	static var loadedLocations: [Saved] = []
+    static var locations: [SavedLocation] = []
 
-    static var currentConditions: [Int: Current] = [:]
-    static var forecasts: [Int: [ForecastData]] = [:]
-    static var alerts: [Int: [AlertInfo]] = [:]
+    static var currentConditions: [String: Current] = [:]
+    static var forecasts: [String: [ForecastData]] = [:]
+    static var alerts: [String: [AlertInfo]] = [:]
 
-    static var stations: [Int: [Identifier]] = [:]
+    static var stations: [String: [Identifier]] = [:]
+}
+
+struct SavedLocation: Identifiable, Hashable {    
+    var name: String
+    var latitude: Double
+    var longitude: Double
+    var xCoord: Int?
+    var yCoord: Int?
+    var station: String?
+    var observationStation: String?
+    
+    var id: Self { return self }
 }

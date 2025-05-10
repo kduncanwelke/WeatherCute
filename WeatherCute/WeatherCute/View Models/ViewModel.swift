@@ -74,9 +74,14 @@ public class ViewModel {
         var fetchRequest = NSFetchRequest<Saved>(entityName: "Saved")
 
         do {
-            WeatherLocations.locations = try managedContext.fetch(fetchRequest)
+            WeatherLocations.loadedLocations = try managedContext.fetch(fetchRequest)
             print("locations loaded")
             print(WeatherLocations.locations.count)
+            
+            for loadedLocation in WeatherLocations.loadedLocations {
+                var newLocation = SavedLocation(name: loadedLocation.name!, latitude: loadedLocation.latitude, longitude: loadedLocation.longitude, xCoord: Int(loadedLocation.xCoord), yCoord: Int(loadedLocation.yCoord), station: loadedLocation.station, observationStation: loadedLocation.observation)
+                WeatherLocations.locations.append(newLocation)
+            }
         } catch let error as NSError {
             //showAlert(title: "Could not retrieve data", message: "\(error.userInfo)")
         }

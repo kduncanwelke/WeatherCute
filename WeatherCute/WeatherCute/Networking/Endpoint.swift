@@ -18,7 +18,7 @@ enum Endpoint {
 	private var baseURL: URL {
 		return URL(string: "https://api.weather.gov/")!
 	}
-	
+  
 	// generate url based on type
 	func url() -> URL {
 		switch self {
@@ -41,7 +41,7 @@ enum Endpoint {
 			let x = ForecastSearch.gridX
 			let y = ForecastSearch.gridY
 			let station = ForecastSearch.station
-			
+            
 			let components = URLComponents(url: baseURL.appendingPathComponent("gridpoints/\(station)/\(x),\(y)/stations"), resolvingAgainstBaseURL: false)
 			
 			return components!.url!

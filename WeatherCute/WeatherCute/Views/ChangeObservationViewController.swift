@@ -21,6 +21,7 @@ class ChangeObservationViewController: UIViewController, UICollectionViewDelegat
 	var stationNames: [String] = []
 
     private let observationViewModel = ObservationViewModel()
+    private let contentViewModel = ContentViewModel()
 	
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -83,13 +84,15 @@ extension ChangeObservationViewController: UICollectionViewDataSource {
 	}
 	
 	func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        observationViewModel.resaveObservation(index: indexPath.row)
-		NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
-
-        if #available(iOS 14.0, *) {
-            WidgetCenter.shared.reloadAllTimelines()
-        } else {
-            // Fallback on earlier versions
+        if let current = contentViewModel.currentLocation {
+            observationViewModel.resaveObservation(location: current, index: indexPath.row)
+            NotificationCenter.default.post(name: NSNotification.Name(rawValue: "reloadCurrent"), object: nil)
+            
+            if #available(iOS 14.0, *) {
+                WidgetCenter.shared.reloadAllTimelines()
+            } else {
+                // Fallback on earlier versions
+            }
         }
 
 		self.dismiss(animated: true, completion: nil)

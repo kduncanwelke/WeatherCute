@@ -22,31 +22,6 @@ public class EditViewModel {
 
     func removeLocation(index: Int) {
         // reorder dictionaries
-        if index == WeatherLocations.locations.count - 1 {
-            // do nothing, this is the last item so nothing has to be shifted
-        } else {
-            for (page, data) in WeatherLocations.currentConditions {
-                if page > index {
-                    var newIndex = page - 1
-                    WeatherLocations.currentConditions[newIndex] = data
-                }
-            }
-
-            for (page, data) in WeatherLocations.forecasts {
-                if page > index {
-                    var newIndex = page - 1
-                    WeatherLocations.forecasts[newIndex] = data
-                }
-            }
-
-            for (page, data) in WeatherLocations.alerts {
-                if page > index {
-                    var newIndex = page - 1
-                    WeatherLocations.alerts[newIndex] = data
-                }
-            }
-        }
-
         deleteLocation(index: index)
 
         // reload widget if first location is changed, as widget uses first
@@ -59,55 +34,42 @@ public class EditViewModel {
         }
     }
 
-    func swap(source: Int, destination: Int) {
-        // swap dictionary data to the correct order
-        let firstCondition = WeatherLocations.currentConditions[source]
-        let secondCondition = WeatherLocations.currentConditions[destination]
-        WeatherLocations.currentConditions[destination] = firstCondition
-        WeatherLocations.currentConditions[source] = secondCondition
-
-        let firstForecast = WeatherLocations.forecasts[source]
-        let secondForecast = WeatherLocations.forecasts[destination]
-        WeatherLocations.forecasts[destination] = firstForecast
-        WeatherLocations.forecasts[source] = secondForecast
-
-        let firstAlert = WeatherLocations.alerts[source]
-        let secondAlert = WeatherLocations.alerts[destination]
-        WeatherLocations.alerts[destination] = firstAlert
-        WeatherLocations.alerts[source] = secondAlert
-
-        resaveLocations(source: source, destination: destination)
-    }
-
     func deleteLocation(index: Int) {
         var managedContext = CoreDataManager.shared.managedObjectContext
 
-        managedContext.delete(WeatherLocations.locations[index])
-
+        let name = WeatherLocations.locations[index].name
+        managedContext.delete(WeatherLocations.loadedLocations[index])
+        
         do {
             try managedContext.save()
             print("delete successful")
         } catch {
             print("Failed to save")
         }
-
+        
         WeatherLocations.locations.remove(at: index)
-        WeatherLocations.alerts.removeValue(forKey: index)
-        WeatherLocations.currentConditions.removeValue(forKey: index)
-        WeatherLocations.forecasts.removeValue(forKey: index)
-
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
-        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
+        WeatherLocations.alerts.removeValue(forKey: name)
+        WeatherLocations.currentConditions.removeValue(forKey: name)
+        WeatherLocations.forecasts.removeValue(forKey: name)
+        
+        //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "getPrevPage"), object: nil)
+        //NotificationCenter.default.post(name: NSNotification.Name(rawValue: "updatePageControl"), object: nil)
     }
 
     func resaveLocations(source: Int, destination: Int) {
         var managedContext = CoreDataManager.shared.managedObjectContext
 
-        let locationsList = WeatherLocations.locations
+        let locationsList = WeatherLocations.loadedLocations
 
-        var first = WeatherLocations.locations[source]
-        var second = WeatherLocations.locations[destination]
+        var first = WeatherLocations.loadedLocations[source]
+        var second = WeatherLocations.loadedLocations[destination]
 
+        var firstLocation = WeatherLocations.locations[source]
+        var secondLocation = WeatherLocations.locations[destination]
+        
+        WeatherLocations.locations[destination] = firstLocation
+        WeatherLocations.locations[source] = secondLocation
+        
         // swap values here to ensure they are saved
         let latitude1 = first.latitude
         let longitude1 = first.longitude

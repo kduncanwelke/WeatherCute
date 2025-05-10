@@ -10,39 +10,40 @@ import Foundation
 import UIKit
 
 public class ContentViewModel {
+    
+    var unit: TemperatureUnit = .fahrenheit
 
     weak var delegate: RetryDelegate?
 
     func getLocationsCount() -> Int {
         return WeatherLocations.locations.count
     }
-
-    func setSearchParameters() {
+    
+    func setSearchParameters(for index: Int) {
         print("set search")
-        print(PageControllerManager.currentPage)
-        var location = WeatherLocations.locations[PageControllerManager.currentPage]
+        var location = WeatherLocations.locations[index]
         
         LocationSearch.latitude = location.latitude
         LocationSearch.longitude = location.longitude
 
-        ForecastSearch.gridX = Int(location.xCoord)
-        ForecastSearch.gridY = Int(location.yCoord)
+        ForecastSearch.gridX = Int(location.xCoord ?? 0)
+        ForecastSearch.gridY = Int(location.yCoord ?? 0)
         ForecastSearch.station = location.station ?? ""
-        ForecastSearch.observationStation = location.observation ?? ""
+        ForecastSearch.observationStation = location.observationStation ?? ""
     }
 
-    func getWeatherData() async throws {
+    func getWeatherData(index: Int) async throws {
         do {
             let response = try await Networker<Current>.fetch()
         
-            WeatherLocations.currentConditions[PageControllerManager.currentPage] = response
-            print("for page \(PageControllerManager.currentPage)")
+            let name = WeatherLocations.locations[index].name
+            WeatherLocations.currentConditions[name] = response
         } catch {
             // handle error
         }
     }
 
-    func getForecastData(retried: Bool) async throws {
+    func getForecastData(index: Int, retried: Bool) async throws {
         do {
             let response = try await Networker<Forecast>.fetch()
             
@@ -53,7 +54,9 @@ public class ContentViewModel {
                 forecasts.append(forecast)
             }
 
-            WeatherLocations.forecasts[PageControllerManager.currentPage] = forecasts
+            let name = WeatherLocations.locations[index].name
+            WeatherLocations.forecasts[name] = forecasts
+            
             if retried {
                 delegate?.showActivityIndicator(display: false)
             }
@@ -65,13 +68,13 @@ public class ContentViewModel {
                     delegate?.showActivityIndicator(display: true)
                     // retry 500 error request; per NOAA ServiceNow support 500 errors can typically be fixed with a second request (use brief wait to avoid rate limit)
                     try await Task.sleep(nanoseconds: 5_000_000_000)
-                    try await getForecastData(retried: true)
+                    try await getForecastData(index: index, retried: true)
                 }
             }
         }
     }
 
-    func getAlerts() async throws {
+    func getAlerts(index: Int) async throws {
         do {
             let response = try await Networker<Alert>.fetch()
             print("fetch alerts")
@@ -83,14 +86,17 @@ public class ContentViewModel {
             alertList.append(alert)
             }
             
-            WeatherLocations.alerts[PageControllerManager.currentPage] = alertList
+            let name = WeatherLocations.locations[index].name
+            WeatherLocations.alerts[name] = alertList
         } catch {
             // handle error
         }
     }
 
-    func isLoaded() -> Bool {
-        if WeatherLocations.currentConditions[PageControllerManager.currentPage] != nil && !(WeatherLocations.forecasts[PageControllerManager.currentPage]?.isEmpty ?? true) && WeatherLocations.alerts[PageControllerManager.currentPage] != nil  {
+    func isLoaded(index: Int) -> Bool {
+        let name = WeatherLocations.locations[index].name
+        
+        if WeatherLocations.currentConditions[name] != nil && !(WeatherLocations.forecasts[name]?.isEmpty ?? true) && WeatherLocations.alerts[name] != nil  {
             return true
         } else {
             return false
@@ -115,9 +121,10 @@ public class ContentViewModel {
 
     // view config
 
-    func isDayCurrently() -> Bool?  {
-        if let weatherIcon = WeatherLocations.currentConditions[PageControllerManager.currentPage]?.properties.icon {
-
+    func isDayCurrently(index: Int) -> Bool?  {
+        let name = WeatherLocations.locations[index].name
+        
+        if let weatherIcon = WeatherLocations.currentConditions[name]?.properties.icon {
             let dayNight = weatherIcon.components(separatedBy: "/")[5]
 
             if dayNight == "day" {
@@ -132,25 +139,27 @@ public class ContentViewModel {
         }
     }
 
-    func getLocationName() -> String {
-        return WeatherLocations.locations[PageControllerManager.currentPage].name ?? "Unknown"
+    func getLocationName(index: Int) -> String {
+        return WeatherLocations.locations[index].name
     }
 
     // widget version
-    func getLocationName(useStub: Bool) -> String {
+    func getLocationName(index: Int, useStub: Bool) -> String {
         if useStub {
             return "Your Location"
         } else {
-            return WeatherLocations.locations[PageControllerManager.currentPage].name ?? "Unknown"
+            return WeatherLocations.locations[index].name
         }
     }
 
-    func getObservationName() -> String {
-        return "Current conditions from \(WeatherLocations.locations[PageControllerManager.currentPage].observation ?? "")"
+    func getObservationName(index: Int) -> String {
+        return "Current conditions from \(WeatherLocations.locations[index].observationStation ?? "")"
     }
 
-    func getCurrentTemp() -> String {
-        if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+    func getCurrentTemp(index: Int) -> String {
+        let name = WeatherLocations.locations[index].name
+        
+        if let current = WeatherLocations.currentConditions[name] {
             if let temp = current.properties.temperature.value {
                 switch Temp.currentUnit {
                 case .fahrenheit:
@@ -168,11 +177,12 @@ public class ContentViewModel {
     }
 
     // widget version
-    func getCurrentTemp(useStub: Bool) -> String {
+    func getCurrentTemp(index: Int, useStub: Bool) -> String {
         if useStub {
             return " 75°"
         } else {
-            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let current = WeatherLocations.currentConditions[name] {
                 if let temp = current.properties.temperature.value {
                     switch Temp.currentUnit {
                     case .fahrenheit:
@@ -190,8 +200,9 @@ public class ContentViewModel {
         }
     }
 
-    func getCurrentDescription() -> String {
-        if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+    func getCurrentDescription(index: Int) -> String {
+        let name = WeatherLocations.locations[index].name
+        if let current = WeatherLocations.currentConditions[name]  {
             if current.properties.textDescription == "" {
                 return "No current reporting"
             } else {
@@ -203,11 +214,12 @@ public class ContentViewModel {
     }
 
     // widget version
-    func getCurrentDescription(useStub: Bool) -> String {
+    func getCurrentDescription(index: Int, useStub: Bool) -> String {
         if useStub {
             return "Partly Cloudy"
         } else {
-            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let current = WeatherLocations.currentConditions[name] {
                 if current.properties.textDescription == "" {
                     return "No current reporting"
                 } else {
@@ -219,8 +231,9 @@ public class ContentViewModel {
         }
     }
 
-    func getCurrentHumidity() -> String {
-        if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+    func getCurrentHumidity(index: Int) -> String {
+        let name = WeatherLocations.locations[index].name
+        if let current = WeatherLocations.currentConditions[name] {
             if let humidity = current.properties.relativeHumidity.value {
                 return "\(Int(humidity))%"
             } else {
@@ -232,11 +245,12 @@ public class ContentViewModel {
     }
 
     // widget version
-    func getCurrentHumidity(useStub: Bool) -> String {
+    func getCurrentHumidity(index: Int, useStub: Bool) -> String {
         if useStub {
             return "50%"
         } else {
-            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let current = WeatherLocations.currentConditions[name] {
                 if let humidity = current.properties.relativeHumidity.value {
                     return "\(Int(humidity))%"
                 } else {
@@ -248,8 +262,9 @@ public class ContentViewModel {
         }
     }
 
-    func getCurrentDewpoint() -> String {
-        if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+    func getCurrentDewpoint(index: Int) -> String {
+        let name = WeatherLocations.locations[index].name
+        if let current = WeatherLocations.currentConditions[name] {
             if let dew = current.properties.dewpoint.value {
                 switch Temp.currentUnit {
                 case .fahrenheit:
@@ -267,11 +282,12 @@ public class ContentViewModel {
     }
 
     // widget version
-    func getCurrentDewpoint(useStub: Bool) -> String {
+    func getCurrentDewpoint(index: Int, useStub: Bool) -> String {
         if useStub {
             return " 60°"
         } else {
-            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let current = WeatherLocations.currentConditions[name] {
                 if let dew = current.properties.dewpoint.value {
                     switch Temp.currentUnit {
                     case .fahrenheit:
@@ -289,8 +305,9 @@ public class ContentViewModel {
         }
     }
 
-    func getCurrentHeatChill() -> String {
-        if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+    func getCurrentHeatChill(index: Int) -> String {
+        let name = WeatherLocations.locations[index].name
+        if let current = WeatherLocations.currentConditions[name] {
             if let heat = current.properties.heatIndex.value {
                 switch Temp.currentUnit {
                 case .fahrenheit:
@@ -316,11 +333,12 @@ public class ContentViewModel {
     }
 
     // widget version
-    func getCurrentHeatChill(useStub: Bool) -> String {
+    func getCurrentHeatChill(index: Int, useStub: Bool) -> String {
         if useStub {
             return " 79°"
         } else {
-            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let current = WeatherLocations.currentConditions[name] {
                 if let heat = current.properties.heatIndex.value {
                     switch Temp.currentUnit {
                     case .fahrenheit:
@@ -346,8 +364,9 @@ public class ContentViewModel {
         }
     }
 
-    func setHeatChillLabel() -> String {
-        if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+    func setHeatChillLabel(index: Int) -> String {
+        let name = WeatherLocations.locations[index].name
+        if let current = WeatherLocations.currentConditions[name] {
             if let heat = current.properties.heatIndex.value {
                 return "Heat Index"
             } else if let chill = current.properties.windChill.value {
@@ -361,11 +380,12 @@ public class ContentViewModel {
     }
 
     // widget version
-    func setHeatChillLabel(useStub: Bool) -> String {
+    func setHeatChillLabel(index: Int, useStub: Bool) -> String {
         if useStub {
             return "Heat Index"
         } else {
-            if let current = WeatherLocations.currentConditions[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let current = WeatherLocations.currentConditions[name] {
                 if let heat = current.properties.heatIndex.value {
                     return "Heat Index"
                 } else if let chill = current.properties.windChill.value {
@@ -380,8 +400,8 @@ public class ContentViewModel {
     }
 
 
-    func getCurrentConditionImage() -> UIImage? {
-        if let isDay = isDayCurrently(), let iconString = getIcon() {
+    func getCurrentConditionImage(index: Int) -> UIImage? {
+        if let isDay = isDayCurrently(index: index), let iconString = getIcon(index: index) {
             return getImage(icon: iconString, isDaytime: isDay)
         } else {
             return nil
@@ -389,11 +409,11 @@ public class ContentViewModel {
     }
 
     // widget version
-    func getCurrentConditionImage(useStub: Bool) -> UIImage? {
+    func getCurrentConditionImage(index: Int, useStub: Bool) -> UIImage? {
         if useStub {
             return UIImage(named: "partlycloudy")
         } else {
-            if let isDay = isDayCurrently(), let iconString = getIcon() {
+            if let isDay = isDayCurrently(index: index), let iconString = getIcon(index: index) {
                 return getImage(icon: iconString, isDaytime: isDay)
             } else {
                 return nil
@@ -401,8 +421,9 @@ public class ContentViewModel {
         }
     }
 
-    func hideAlertButton() -> Bool {
-        if let alerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+    func hideAlertButton(index: Int) -> Bool {
+        let name = WeatherLocations.locations[index].name
+        if let alerts = WeatherLocations.alerts[name] {
             if alerts.isEmpty {
                 return true
             } else {
@@ -413,8 +434,9 @@ public class ContentViewModel {
         }
     }
 
-    func getAlertButton() -> String {
-        if let alerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+    func getAlertButton(index: Int) -> String {
+        let name = WeatherLocations.locations[index].name
+        if let alerts = WeatherLocations.alerts[name] {
             if alerts.isEmpty {
                 return "none"
             } else {
@@ -426,11 +448,12 @@ public class ContentViewModel {
     }
 
     // widget version
-    func getAlertButton(useStub: Bool) -> String {
+    func getAlertButton(index: Int, useStub: Bool) -> String {
         if useStub {
             return "none"
         } else {
-            if let alerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let alerts = WeatherLocations.alerts[name] {
                 if alerts.isEmpty {
                     return "none"
                 } else {
@@ -444,16 +467,18 @@ public class ContentViewModel {
 
     // collection view
 
-    func getForecastCount() -> Int {
-        if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+    func getForecastCount(index: Int) -> Int {
+        let name = WeatherLocations.locations[index].name
+        if let forecasts = WeatherLocations.forecasts[name] {
             return forecasts.count
         } else {
             return 0
         }
     }
-
+    
     func getForecastName(index: Int) -> String {
-        if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+        let name = WeatherLocations.locations[index].name
+        if let forecasts = WeatherLocations.forecasts[name] {
             return forecasts[index].name
         } else {
             return ""
@@ -465,7 +490,8 @@ public class ContentViewModel {
         if useStub {
             return "Day Name"
         } else {
-            if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let forecasts = WeatherLocations.forecasts[name] {
                 return forecasts[index].name
             } else {
                 return "-"
@@ -474,7 +500,8 @@ public class ContentViewModel {
     }
 
     func getForecastTemp(index: Int) -> String {
-        if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+        let name = WeatherLocations.locations[index].name
+        if let forecasts = WeatherLocations.forecasts[name] {
             let temp = forecasts[index].temperature
 
             switch Temp.currentUnit {
@@ -494,7 +521,8 @@ public class ContentViewModel {
         if useStub {
             return " 72°"
         } else {
-            if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let forecasts = WeatherLocations.forecasts[name] {
                 let temp = forecasts[index].temperature
 
                 switch Temp.currentUnit {
@@ -511,7 +539,8 @@ public class ContentViewModel {
     }
 
     func getForecastDetail(index: Int) -> String {
-        if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+        let name = WeatherLocations.locations[index].name
+        if let forecasts = WeatherLocations.forecasts[name] {
             return forecasts[index].detailedForecast
         } else {
             return ""
@@ -519,7 +548,8 @@ public class ContentViewModel {
     }
 
     func getIconText(index: Int) -> String {
-        if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+        let name = WeatherLocations.locations[index].name
+        if let forecasts = WeatherLocations.forecasts[name] {
             let separated = forecasts[index].icon.components(separatedBy: "/")[6]
             let icon = separated.components(separatedBy: (","))[0].components(separatedBy: "?")[0]
             
@@ -530,7 +560,8 @@ public class ContentViewModel {
     }
 
     func getForecastIcon(index: Int) -> UIImage? {
-        if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+        let name = WeatherLocations.locations[index].name
+        if let forecasts = WeatherLocations.forecasts[name] {
             var iconText = getIconText(index: index)
             return getImage(icon: iconText, isDaytime: forecasts[index].isDaytime)
         } else {
@@ -543,7 +574,8 @@ public class ContentViewModel {
         if useStub {
             return UIImage(named: "sunny")
         } else {
-            if let forecasts = WeatherLocations.forecasts[PageControllerManager.currentPage] {
+            let name = WeatherLocations.locations[index].name
+            if let forecasts = WeatherLocations.forecasts[name] {
                 var iconText = getIconText(index: index)
                 return getImage(icon: iconText, isDaytime: forecasts[index].isDaytime)
             } else {
@@ -552,8 +584,9 @@ public class ContentViewModel {
         }
     }
 
-    func getIcon() -> String? {
-        if let weatherIcon = WeatherLocations.currentConditions[PageControllerManager.currentPage]?.properties.icon {
+    func getIcon(index: Int) -> String? {
+        let name = WeatherLocations.locations[index].name
+        if let weatherIcon = WeatherLocations.currentConditions[name]?.properties.icon {
 
             let separated = weatherIcon.components(separatedBy: "/")[6]
 

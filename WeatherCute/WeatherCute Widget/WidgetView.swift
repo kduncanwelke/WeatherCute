@@ -43,7 +43,7 @@ struct SmallWidgetView: View {
             Color(UIColor(named: "Custom Background Color") ?? UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
 
             VStack(spacing: 0) {
-                Text(viewModel.getLocationName(useStub: useStub))
+                Text(viewModel.getLocationName(index: 0, useStub: useStub))
                     .font(.system(size: 16.0))
                     .fontWeight(.medium)
                     .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -54,11 +54,11 @@ struct SmallWidgetView: View {
                 Image("none")
                     .resizable()
                     .scaledToFit()
-                Text(viewModel.getCurrentTemp(useStub: useStub))
+                Text(viewModel.getCurrentTemp(index: 0, useStub: useStub))
                     .font(.system(size: 22.0))
                     .fontWeight(.semibold)
                     .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                Text(viewModel.getCurrentDescription(useStub: useStub))
+                Text(viewModel.getCurrentDescription(index: 0, useStub: useStub))
                     .font(.system(size: 15.0))
                     .fontWeight(.medium)
                     .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -71,7 +71,7 @@ struct SmallWidgetView: View {
             .frame(maxWidth: .infinity)
             .background(
                 GeometryReader { geo in
-                    Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
+                    Image(uiImage: viewModel.getCurrentConditionImage(index: 0, useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
                         .resizable()
                         .scaledToFit()
                         .frame(width: geo.size.width * 0.95)
@@ -80,7 +80,7 @@ struct SmallWidgetView: View {
             )
 
             GeometryReader { geo in
-                Image(viewModel.getAlertButton(useStub: useStub))
+                Image(viewModel.getAlertButton(index: 0, useStub: useStub))
                     .resizable()
                     .frame(width: 30, height: 30)
                     .scaledToFit()
@@ -101,7 +101,7 @@ struct MediumWidgetView: View {
 
             HStack {
                 GeometryReader { geo in
-                    Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
+                    Image(uiImage: viewModel.getCurrentConditionImage(index: 0, useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
                         .resizable()
                         .scaledToFit()
                         .frame(width: geo.size.width * 0.95)
@@ -109,17 +109,17 @@ struct MediumWidgetView: View {
                 }
 
                 VStack(spacing: 0) {
-                    Text(viewModel.getLocationName(useStub: useStub))
+                    Text(viewModel.getLocationName(index: 0, useStub: useStub))
                         .font(.system(size: 16.0))
                         .fontWeight(.medium)
                         .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
                         .padding(.top, 10)
                         .multilineTextAlignment(.center)
-                    Text(viewModel.getCurrentTemp(useStub: useStub))
+                    Text(viewModel.getCurrentTemp(index: 0, useStub: useStub))
                         .font(.system(size: 22.0))
                         .fontWeight(.semibold)
                         .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                    Text(viewModel.getCurrentDescription(useStub: useStub))
+                    Text(viewModel.getCurrentDescription(index: 0, useStub: useStub))
                         .font(.system(size: 15.0))
                         .fontWeight(.medium)
                         .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -141,7 +141,7 @@ struct MediumWidgetView: View {
             }
 
             GeometryReader { geo in
-                Image(viewModel.getAlertButton(useStub: useStub))
+                Image(viewModel.getAlertButton(index: 0, useStub: useStub))
                     .resizable()
                     .frame(width: 30, height: 30)
                     .scaledToFit()
@@ -161,7 +161,7 @@ struct LargeWidgetView: View {
             Color(UIColor(named: "Custom Background Color") ?? UIColor(red: 0.14, green: 0.64, blue: 1.00, alpha: 1.00))
             
             VStack(spacing: 0) {
-                Text(viewModel.getLocationName(useStub: useStub))
+                Text(viewModel.getLocationName(index: 0, useStub: useStub))
                     .font(.system(size: 16.0))
                     .fontWeight(.medium)
                     .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -170,11 +170,11 @@ struct LargeWidgetView: View {
                 Image("none")
                     .resizable()
                     .scaledToFit()
-                Text(viewModel.getCurrentTemp(useStub: useStub))
+                Text(viewModel.getCurrentTemp(index: 0, useStub: useStub))
                     .font(.system(size: 22.0))
                     .fontWeight(.semibold)
                     .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                Text(viewModel.getCurrentDescription(useStub: useStub))
+                Text(viewModel.getCurrentDescription(index: 0, useStub: useStub))
                     .font(.system(size: 15.0))
                     .fontWeight(.medium)
                     .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -188,7 +188,7 @@ struct LargeWidgetView: View {
                         Text("Humidity")
                             .font(.system(size: 16.0))
                             .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                        Text(viewModel.getCurrentHumidity(useStub: useStub))
+                        Text(viewModel.getCurrentHumidity(index: 0, useStub: useStub))
                             .font(.system(size: 17.0))
                             .fontWeight(.semibold)
                             .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -200,7 +200,7 @@ struct LargeWidgetView: View {
                         Text("Dewpoint")
                             .font(.system(size: 16.0))
                             .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                        Text(viewModel.getCurrentDewpoint(useStub: useStub))
+                        Text(viewModel.getCurrentDewpoint(index: 0, useStub: useStub))
                             .font(.system(size: 17.0))
                             .fontWeight(.semibold)
                             .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -209,10 +209,10 @@ struct LargeWidgetView: View {
                     Spacer()
 
                     VStack {
-                        Text(viewModel.setHeatChillLabel(useStub: useStub))
+                        Text(viewModel.setHeatChillLabel(index: 0, useStub: useStub))
                             .font(.system(size: 16.0))
                             .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                        Text(viewModel.getCurrentHeatChill(useStub: useStub))
+                        Text(viewModel.getCurrentHeatChill(index: 0, useStub: useStub))
                             .font(.system(size: 17.0))
                             .fontWeight(.semibold)
                             .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -237,7 +237,7 @@ struct LargeWidgetView: View {
 
             .background(
                 GeometryReader { geo in
-                    Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
+                    Image(uiImage: viewModel.getCurrentConditionImage(index: 0, useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
                         .resizable()
                         .scaledToFit()
                         .frame(width: geo.size.width * 0.95)
@@ -246,7 +246,7 @@ struct LargeWidgetView: View {
             )
 
             GeometryReader { geo in
-                Image(viewModel.getAlertButton(useStub: useStub))
+                Image(viewModel.getAlertButton(index: 0, useStub: useStub))
                     .resizable()
                     .frame(width: 40, height: 40)
                     .scaledToFit()
@@ -269,7 +269,7 @@ struct ExtraLargeWidgetView: View {
                 VStack {
                     Spacer()
 
-                    Text(viewModel.getLocationName(useStub: useStub))
+                    Text(viewModel.getLocationName(index: 0, useStub: useStub))
                         .font(.system(size: 16.0))
                         .fontWeight(.medium)
                         .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -277,11 +277,11 @@ struct ExtraLargeWidgetView: View {
                     Image("none")
                         .resizable()
                         .scaledToFit()
-                    Text(viewModel.getCurrentTemp(useStub: useStub))
+                    Text(viewModel.getCurrentTemp(index: 0, useStub: useStub))
                         .font(.system(size: 22.0))
                         .fontWeight(.semibold)
                         .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                    Text(viewModel.getCurrentDescription(useStub: useStub))
+                    Text(viewModel.getCurrentDescription(index: 0, useStub: useStub))
                         .font(.system(size: 15.0))
                         .fontWeight(.medium)
                         .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -294,7 +294,7 @@ struct ExtraLargeWidgetView: View {
                             Text("Humidity")
                                 .font(.system(size: 16.0))
                                 .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                            Text(viewModel.getCurrentHumidity(useStub: useStub))
+                            Text(viewModel.getCurrentHumidity(index: 0, useStub: useStub))
                                 .font(.system(size: 17.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -306,7 +306,7 @@ struct ExtraLargeWidgetView: View {
                             Text("Dewpoint")
                                 .font(.system(size: 16.0))
                                 .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                            Text(viewModel.getCurrentDewpoint(useStub: useStub))
+                            Text(viewModel.getCurrentDewpoint(index: 0, useStub: useStub))
                                 .font(.system(size: 17.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -315,10 +315,10 @@ struct ExtraLargeWidgetView: View {
                         Spacer()
 
                         VStack {
-                            Text(viewModel.setHeatChillLabel(useStub: useStub))
+                            Text(viewModel.setHeatChillLabel(index: 0, useStub: useStub))
                                 .font(.system(size: 16.0))
                                 .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
-                            Text(viewModel.getCurrentHeatChill(useStub: useStub))
+                            Text(viewModel.getCurrentHeatChill(index: 0, useStub: useStub))
                                 .font(.system(size: 17.0))
                                 .fontWeight(.semibold)
                                 .foregroundColor(Color(UIColor(red: 0.00, green: 0.07, blue: 0.12, alpha: 1.00)))
@@ -472,7 +472,7 @@ struct ExtraLargeWidgetView: View {
 
             .background(
                 GeometryReader { geo in
-                    Image(uiImage: viewModel.getCurrentConditionImage(useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
+                    Image(uiImage: viewModel.getCurrentConditionImage(index: 0, useStub: useStub) ??   #imageLiteral(resourceName: "none.png"))
                         .resizable()
                         .scaledToFit()
                         .frame(width: geo.size.width * 0.5)
@@ -481,7 +481,7 @@ struct ExtraLargeWidgetView: View {
             )
 
             GeometryReader { geo in
-                Image(viewModel.getAlertButton(useStub: useStub))
+                Image(viewModel.getAlertButton(index: 0, useStub: useStub))
                     .resizable()
                     .frame(width: 40, height: 40)
                     .scaledToFit()

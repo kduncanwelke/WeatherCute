@@ -78,6 +78,6 @@ extension EditViewController: UITableViewDragDelegate {
 
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         // Update the model
-        editViewModel.swap(source: sourceIndexPath.row, destination: destinationIndexPath.row)
+        editViewModel.resaveLocations(source: sourceIndexPath.row, destination: destinationIndexPath.row)
     }
 }

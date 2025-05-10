@@ -105,7 +105,7 @@ class ContentViewController: UIViewController, UICollectionViewDelegate, UIColle
     }
 
     func getData(reload: Bool) {
-        contentViewModel.setSearchParameters()
+        //contentViewModel.setSearchParameters()
         collectionViewActivityIndicator.startAnimating()
         activityIndicator.startAnimating()
         dataUnavailableLabel.isHidden = true

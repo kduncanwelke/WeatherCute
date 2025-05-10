@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 
 public class AlertsViewModel {
+    
+    private let contentViewModel = ContentViewModel()
 
     var currentAlertIndex = 0
 
@@ -34,7 +36,7 @@ public class AlertsViewModel {
     }
 
     func configureNextButton() -> (enableButton: Bool, color: UIColor) {
-        if let alertsCount = WeatherLocations.alerts[PageControllerManager.currentPage]?.count {
+        if let name = contentViewModel.currentLocation?.name, let alertsCount = WeatherLocations.alerts[name]?.count {
             if (currentAlertIndex == alertsCount - 1) || alertsCount == 1 {
                 return (false, UIColor.clear)
             } else {
@@ -46,7 +48,7 @@ public class AlertsViewModel {
     }
 
     func getAlertTitle() -> String {
-        if let currentAlerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+        if let name = contentViewModel.currentLocation?.name, let currentAlerts = WeatherLocations.alerts[name] {
             var alert = currentAlerts[currentAlertIndex]
             return alert.properties.event
         } else {
@@ -55,7 +57,7 @@ public class AlertsViewModel {
     }
 
     func getAlertSeverity() -> String {
-        if let currentAlerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+        if let name = contentViewModel.currentLocation?.name, let currentAlerts = WeatherLocations.alerts[name] {
             var alert = currentAlerts[currentAlertIndex]
             return alert.properties.severity
         } else {
@@ -64,7 +66,7 @@ public class AlertsViewModel {
     }
 
     func getAlertCertainty() -> String {
-        if let currentAlerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+        if let name = contentViewModel.currentLocation?.name, let currentAlerts = WeatherLocations.alerts[name] {
             var alert = currentAlerts[currentAlertIndex]
             return alert.properties.certainty
         } else {
@@ -73,7 +75,7 @@ public class AlertsViewModel {
     }
 
     func getAlertUrgency() -> String {
-        if let currentAlerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+        if let name = contentViewModel.currentLocation?.name, let currentAlerts = WeatherLocations.alerts[name] {
             var alert = currentAlerts[currentAlertIndex]
             return alert.properties.urgency
         } else {
@@ -82,7 +84,7 @@ public class AlertsViewModel {
     }
 
     func getInstruction() -> String {
-        if let currentAlerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+        if let name = contentViewModel.currentLocation?.name, let currentAlerts = WeatherLocations.alerts[name] {
             var alert = currentAlerts[currentAlertIndex]
             var instruction = alert.properties.instruction.replacingOccurrences(of: "\n", with: " ")
 
@@ -97,7 +99,7 @@ public class AlertsViewModel {
     }
 
     func getDescription() -> String {
-        if let currentAlerts = WeatherLocations.alerts[PageControllerManager.currentPage] {
+        if let name = contentViewModel.currentLocation?.name, let currentAlerts = WeatherLocations.alerts[name] {
             var alert = currentAlerts[currentAlertIndex]
             return alert.properties.headline.replacingOccurrences(of: "\n", with: " ")
         } else {

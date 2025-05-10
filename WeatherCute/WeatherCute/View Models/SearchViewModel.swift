@@ -168,15 +168,17 @@ public class SearchViewModel {
     func saveLocation(annotation: MKAnnotation) {
         var managedContext = CoreDataManager.shared.managedObjectContext
 
-        let newLocation = Saved(context: managedContext)
+        let newLocationSave = Saved(context: managedContext)
+        let name = annotation.title ?? ""
+        let newLocation = SavedLocation(name: name ?? "", latitude: LocationSearch.latitude, longitude: LocationSearch.longitude, xCoord: ForecastSearch.gridX, yCoord: ForecastSearch.gridY, station: ForecastSearch.station, observationStation: ForecastSearch.observationStation)
 
-        newLocation.latitude = LocationSearch.latitude
-        newLocation.longitude = LocationSearch.longitude
-        newLocation.name = annotation.title ?? ""
-        newLocation.observation = ForecastSearch.observationStation
-        newLocation.station = ForecastSearch.station
-        newLocation.xCoord = Int16(ForecastSearch.gridX)
-        newLocation.yCoord = Int16(ForecastSearch.gridY)
+        newLocationSave.latitude = LocationSearch.latitude
+        newLocationSave.longitude = LocationSearch.longitude
+        newLocationSave.name = name
+        newLocationSave.observation = ForecastSearch.observationStation
+        newLocationSave.station = ForecastSearch.station
+        newLocationSave.xCoord = Int16(ForecastSearch.gridX)
+        newLocationSave.yCoord = Int16(ForecastSearch.gridY)
 
         if WeatherLocations.locations.isEmpty {
             if #available(iOS 14.0, *) {
@@ -187,6 +189,7 @@ public class SearchViewModel {
             }
         }
 
+        WeatherLocations.loadedLocations.append(newLocationSave)
         WeatherLocations.locations.append(newLocation)
 
         do {

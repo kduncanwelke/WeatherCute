@@ -36,19 +36,19 @@ struct Provider: TimelineProvider {
         var entries: [MyTimelineEntry] = []
 
         viewModel.loadLocations()
-        contentViewModel.setSearchParameters()
+        contentViewModel.setSearchParameters(for: 0)
         
         Task {
             do {
-                try await contentViewModel.getForecastData(retried: false)
+                try await contentViewModel.getForecastData(index: 0, retried: false)
             } catch {}
             
             do {
-                try await contentViewModel.getWeatherData()
+                try await contentViewModel.getWeatherData(index: 0)
             } catch {}
             
             do {
-                try await contentViewModel.getAlerts()
+                try await contentViewModel.getAlerts(index: 0)
                 let currentDate = Date()
                 
                 let entryDate = Calendar.current.date(byAdding: .hour, value: 1, to: currentDate)!
